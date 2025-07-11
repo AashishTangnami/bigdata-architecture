@@ -1,0 +1,1786 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Hadoop HDFS Architecture - Interactive Visualization</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+                color: #333;
+                overflow-x: auto;
+            }
+
+            .container {
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+
+            .header {
+                text-align: center;
+                margin-bottom: 40px;
+                color: white;
+            }
+
+            .header h1 {
+                font-size: 2.5em;
+                margin-bottom: 10px;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            }
+
+            .header p {
+                font-size: 1.2em;
+                opacity: 0.9;
+            }
+
+            .architecture-diagram {
+                background: white;
+                border-radius: 20px;
+                padding: 30px;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+                margin-bottom: 30px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .architecture-diagram::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 5px;
+                background: linear-gradient(
+                    90deg,
+                    #ff6b6b,
+                    #4ecdc4,
+                    #45b7d1,
+                    #96ceb4
+                );
+            }
+
+            .cluster-section {
+                margin-bottom: 40px;
+                position: relative;
+            }
+
+            .section-title {
+                font-size: 1.5em;
+                font-weight: bold;
+                margin-bottom: 20px;
+                color: #2c3e50;
+                text-align: center;
+                padding: 10px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border-radius: 10px;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            }
+
+            .master-slave-container {
+                display: flex;
+                gap: 30px;
+                justify-content: space-between;
+                align-items: flex-start;
+                flex-wrap: wrap;
+            }
+
+            .namenode-section {
+                flex: 1;
+                min-width: 300px;
+                background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+                border-radius: 15px;
+                padding: 25px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                transition:
+                    transform 0.3s ease,
+                    box-shadow 0.3s ease;
+            }
+
+            .namenode-section:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            }
+
+            .datanode-section {
+                flex: 2;
+                min-width: 400px;
+                background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+                border-radius: 15px;
+                padding: 25px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                transition:
+                    transform 0.3s ease,
+                    box-shadow 0.3s ease;
+            }
+
+            .datanode-section:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            }
+
+            .component-title {
+                font-size: 1.3em;
+                font-weight: bold;
+                margin-bottom: 15px;
+                color: #2c3e50;
+                text-align: center;
+            }
+
+            .component-box {
+                background: white;
+                border-radius: 10px;
+                padding: 15px;
+                margin-bottom: 15px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+                cursor: pointer;
+                border-left: 4px solid #3498db;
+            }
+
+            .component-box:hover {
+                background: #f8f9fa;
+                transform: translateX(5px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            }
+
+            .component-box.active {
+                border-left-color: #e74c3c;
+                background: #fff5f5;
+            }
+
+            .component-name {
+                font-weight: bold;
+                color: #2c3e50;
+                margin-bottom: 5px;
+            }
+
+            .component-desc {
+                font-size: 0.9em;
+                color: #5a6c7d;
+                line-height: 1.4;
+            }
+
+            .datanode-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 15px;
+                margin-top: 15px;
+            }
+
+            .datanode-item {
+                background: white;
+                border-radius: 10px;
+                padding: 15px;
+                text-align: center;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+                cursor: pointer;
+                border: 2px solid transparent;
+            }
+
+            .datanode-item:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+                border-color: #3498db;
+            }
+
+            .datanode-item.active {
+                border-color: #e74c3c;
+                background: #fff5f5;
+            }
+
+            .datanode-name {
+                font-weight: bold;
+                color: #2c3e50;
+                margin-bottom: 5px;
+            }
+
+            .block-visualization {
+                display: flex;
+                gap: 5px;
+                justify-content: center;
+                margin-top: 10px;
+            }
+
+            .block {
+                width: 20px;
+                height: 20px;
+                background: #3498db;
+                border-radius: 3px;
+                transition: all 0.3s ease;
+                cursor: pointer;
+            }
+
+            .block:hover {
+                background: #e74c3c;
+                transform: scale(1.2);
+            }
+
+            .replication-demo {
+                background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+                border-radius: 15px;
+                padding: 25px;
+                margin-top: 30px;
+                text-align: center;
+            }
+
+            .replication-title {
+                font-size: 1.3em;
+                font-weight: bold;
+                margin-bottom: 20px;
+                color: #2c3e50;
+            }
+
+            .replication-visual {
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+                align-items: center;
+                flex-wrap: wrap;
+            }
+
+            .replica-block {
+                width: 60px;
+                height: 60px;
+                background: #3498db;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-weight: bold;
+                font-size: 1.2em;
+                transition: all 0.3s ease;
+                cursor: pointer;
+            }
+
+            .replica-block:hover {
+                transform: scale(1.1);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            }
+
+            .replica-arrow {
+                font-size: 1.5em;
+                color: #2c3e50;
+            }
+
+            .info-panel {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border-radius: 15px;
+                padding: 25px;
+                margin-top: 30px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            }
+
+            .info-title {
+                font-size: 1.3em;
+                font-weight: bold;
+                margin-bottom: 15px;
+                text-align: center;
+            }
+
+            .info-content {
+                display: none;
+                line-height: 1.6;
+            }
+
+            .info-content.active {
+                display: block;
+                animation: fadeIn 0.5s ease-in-out;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .controls {
+                text-align: center;
+                margin-top: 30px;
+            }
+
+            .control-btn {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border: none;
+                padding: 12px 25px;
+                border-radius: 25px;
+                font-size: 1em;
+                font-weight: bold;
+                cursor: pointer;
+                margin: 0 10px;
+                transition: all 0.3s ease;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            }
+
+            .control-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            }
+
+            .control-btn.active {
+                background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            }
+
+            .rack-visualization {
+                background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+                border-radius: 15px;
+                padding: 25px;
+                margin-top: 30px;
+            }
+
+            .rack-title {
+                font-size: 1.3em;
+                font-weight: bold;
+                margin-bottom: 20px;
+                color: #2c3e50;
+                text-align: center;
+            }
+
+            .rack-container {
+                display: flex;
+                gap: 20px;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .rack {
+                background: white;
+                border-radius: 10px;
+                padding: 20px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+            }
+
+            .rack:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            }
+
+            .rack-name {
+                font-weight: bold;
+                color: #2c3e50;
+                margin-bottom: 10px;
+                text-align: center;
+            }
+
+            .rack-nodes {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            .rack-node {
+                background: #ecf0f1;
+                border-radius: 5px;
+                padding: 8px;
+                text-align: center;
+                font-size: 0.9em;
+                transition: all 0.3s ease;
+                cursor: pointer;
+            }
+
+            .rack-node:hover {
+                background: #3498db;
+                color: white;
+            }
+
+            @media (max-width: 768px) {
+                .master-slave-container {
+                    flex-direction: column;
+                }
+
+                .namenode-section,
+                .datanode-section {
+                    min-width: 100%;
+                }
+
+                .datanode-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .replication-visual {
+                    flex-direction: column;
+                }
+
+                .rack-container {
+                    flex-direction: column;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>🔧 Hadoop HDFS Architecture</h1>
+                <p>
+                    Interactive visualization of the core components and data
+                    flow
+                </p>
+            </div>
+
+            <!-- HDFS Job Execution & Resource Allocation Visualization -->
+            <div
+                class="job-execution-visualization"
+                style="margin-bottom: 40px"
+            >
+                <div class="section-title">
+                    HDFS Job Execution & Resource Allocation
+                </div>
+                <div
+                    class="cluster-nodes"
+                    style="
+                        display: flex;
+                        gap: 30px;
+                        justify-content: center;
+                        margin-bottom: 20px;
+                    "
+                >
+                    <div
+                        class="node"
+                        id="node-1"
+                        style="
+                            background: #fff;
+                            border-radius: 10px;
+                            padding: 20px;
+                            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+                            min-width: 180px;
+                        "
+                    >
+                        <div
+                            class="node-title"
+                            style="font-weight: bold; margin-bottom: 8px"
+                        >
+                            Node 1
+                        </div>
+                        <div class="resources">
+                            <span class="cpu"
+                                >CPU: <span id="cpu-1">8</span>/8</span
+                            >
+                            <span class="mem"
+                                >Mem: <span id="mem-1">16</span>GB/16GB</span
+                            >
+                        </div>
+                        <div
+                            class="containers"
+                            id="containers-1"
+                            style="margin-top: 10px"
+                        ></div>
+                    </div>
+                    <div
+                        class="node"
+                        id="node-2"
+                        style="
+                            background: #fff;
+                            border-radius: 10px;
+                            padding: 20px;
+                            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+                            min-width: 180px;
+                        "
+                    >
+                        <div
+                            class="node-title"
+                            style="font-weight: bold; margin-bottom: 8px"
+                        >
+                            Node 2
+                        </div>
+                        <div class="resources">
+                            <span class="cpu"
+                                >CPU: <span id="cpu-2">8</span>/8</span
+                            >
+                            <span class="mem"
+                                >Mem: <span id="mem-2">16</span>GB/16GB</span
+                            >
+                        </div>
+                        <div
+                            class="containers"
+                            id="containers-2"
+                            style="margin-top: 10px"
+                        ></div>
+                    </div>
+                    <div
+                        class="node"
+                        id="node-3"
+                        style="
+                            background: #fff;
+                            border-radius: 10px;
+                            padding: 20px;
+                            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+                            min-width: 180px;
+                        "
+                    >
+                        <div
+                            class="node-title"
+                            style="font-weight: bold; margin-bottom: 8px"
+                        >
+                            Node 3
+                        </div>
+                        <div class="resources">
+                            <span class="cpu"
+                                >CPU: <span id="cpu-3">8</span>/8</span
+                            >
+                            <span class="mem"
+                                >Mem: <span id="mem-3">16</span>GB/16GB</span
+                            >
+                        </div>
+                        <div
+                            class="containers"
+                            id="containers-3"
+                            style="margin-top: 10px"
+                        ></div>
+                    </div>
+                </div>
+                <div
+                    class="job-steps"
+                    style="text-align: center; margin-bottom: 15px"
+                >
+                    <button class="control-btn" onclick="showPreviousJobStep()">
+                        Previous
+                    </button>
+                    <span
+                        id="job-step-counter"
+                        style="font-size: 1em; margin-right: 10px; color: white"
+                    ></span>
+                    <span
+                        id="job-step-title"
+                        style="
+                            font-size: 1.1em;
+                            font-weight: bold;
+                            margin: 0 18px;
+                            color: white;
+                        "
+                    ></span>
+                    <button class="control-btn" onclick="showNextJobStep()">
+                        Next
+                    </button>
+                </div>
+                <div
+                    class="info-panel"
+                    id="job-info-panel"
+                    style="
+                        background: #e3f2fd;
+                        color: #333;
+                        border-radius: 10px;
+                        padding: 15px;
+                        text-align: left;
+                        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+                    "
+                ></div>
+            </div>
+
+            <div class="architecture-diagram">
+                <div class="cluster-section">
+                    <div class="section-title">Master-Slave Architecture</div>
+                    <div
+                        class="info-panel"
+                        style="
+                            background: #222;
+                            color: #fff;
+                            margin-top: 10px;
+                            border-radius: 8px;
+                            padding: 12px;
+                        "
+                    >
+                        <strong>Storage Details:</strong>
+                        <ul style="margin-left: 18px">
+                            <li>
+                                <strong>NameNode:</strong> Metadata and
+                                namespace in RAM; persistent FsImage/EditLog on
+                                disk.
+                            </li>
+                            <li>
+                                <strong>DataNodes:</strong> Data blocks on local
+                                disk (HDD/SSD); communication info in RAM.
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="master-slave-container">
+                        <div class="namenode-section">
+                            <div class="component-title">
+                                🎯 NameNode (Master)
+                            </div>
+                            <div
+                                class="component-box"
+                                onclick="showInfo('namenode')"
+                            >
+                                <div class="component-name">
+                                    File System Namespace
+                                </div>
+                                <div class="component-desc">
+                                    Manages directory structure, file metadata,
+                                    and permissions
+                                </div>
+                            </div>
+                            <div
+                                class="component-box"
+                                onclick="showInfo('metadata')"
+                            >
+                                <div class="component-name">
+                                    Block Management
+                                </div>
+                                <div class="component-desc">
+                                    Tracks block locations and replication
+                                    across DataNodes
+                                </div>
+                            </div>
+                            <div
+                                class="component-box"
+                                onclick="showInfo('fsimage')"
+                            >
+                                <div class="component-name">
+                                    FsImage & EditLog
+                                </div>
+                                <div class="component-desc">
+                                    Persistent storage of namespace and
+                                    transaction logs
+                                </div>
+                            </div>
+                            <div
+                                class="component-box"
+                                onclick="showInfo('heartbeat')"
+                            >
+                                <div class="component-name">
+                                    Heartbeat Monitor
+                                </div>
+                                <div class="component-desc">
+                                    Monitors DataNode health and availability
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="datanode-section">
+                            <div class="component-title">
+                                💾 DataNodes (Slaves)
+                            </div>
+                            <div class="datanode-grid">
+                                <div
+                                    class="datanode-item"
+                                    id="datanode-1"
+                                    onclick="showDataNodeInfo('dn1')"
+                                >
+                                    <div class="datanode-name">DataNode 1</div>
+                                    <div class="block-visualization">
+                                        <div
+                                            class="block"
+                                            id="block-b1"
+                                            onclick="event.stopPropagation(); showBlockInfo('b1')"
+                                        ></div>
+                                        <div
+                                            class="block"
+                                            id="block-b2"
+                                            onclick="event.stopPropagation(); showBlockInfo('b2')"
+                                        ></div>
+                                        <div
+                                            class="block"
+                                            id="block-b3"
+                                            onclick="event.stopPropagation(); showBlockInfo('b3')"
+                                        ></div>
+                                    </div>
+                                </div>
+                                <div
+                                    class="datanode-item"
+                                    id="datanode-2"
+                                    onclick="showDataNodeInfo('dn2')"
+                                >
+                                    <div class="datanode-name">DataNode 2</div>
+                                    <div class="block-visualization">
+                                        <div
+                                            class="block"
+                                            id="block-b4"
+                                            onclick="event.stopPropagation(); showBlockInfo('b4')"
+                                        ></div>
+                                        <div
+                                            class="block"
+                                            id="block-b5"
+                                            onclick="event.stopPropagation(); showBlockInfo('b5')"
+                                        ></div>
+                                        <div
+                                            class="block"
+                                            id="block-b6"
+                                            onclick="event.stopPropagation(); showBlockInfo('b6')"
+                                        ></div>
+                                    </div>
+                                </div>
+                                <div
+                                    class="datanode-item"
+                                    id="datanode-3"
+                                    onclick="showDataNodeInfo('dn3')"
+                                >
+                                    <div class="datanode-name">DataNode 3</div>
+                                    <div class="block-visualization">
+                                        <div
+                                            class="block"
+                                            id="block-b7"
+                                            onclick="event.stopPropagation(); showBlockInfo('b7')"
+                                        ></div>
+                                        <div
+                                            class="block"
+                                            id="block-b8"
+                                            onclick="event.stopPropagation(); showBlockInfo('b8')"
+                                        ></div>
+                                        <div
+                                            class="block"
+                                            id="block-b9"
+                                            onclick="event.stopPropagation(); showBlockInfo('b9')"
+                                        ></div>
+                                    </div>
+                                </div>
+                                <div
+                                    class="datanode-item"
+                                    id="datanode-4"
+                                    onclick="showDataNodeInfo('dn4')"
+                                >
+                                    <div class="datanode-name">DataNode 4</div>
+                                    <div class="block-visualization">
+                                        <div
+                                            class="block"
+                                            id="block-b10"
+                                            onclick="event.stopPropagation(); showBlockInfo('b10')"
+                                        ></div>
+                                        <div
+                                            class="block"
+                                            id="block-b11"
+                                            onclick="event.stopPropagation(); showBlockInfo('b11')"
+                                        ></div>
+                                        <div
+                                            class="block"
+                                            id="block-b12"
+                                            onclick="event.stopPropagation(); showBlockInfo('b12')"
+                                        ></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="replication-demo">
+                    <div class="replication-title">
+                        📊 Block Replication Strategy (Default: 3 Replicas)
+                    </div>
+                    <div class="replication-visual">
+                        <div
+                            class="replica-block"
+                            onclick="showReplicationInfo('local')"
+                        >
+                            R1
+                        </div>
+                        <div class="replica-arrow">→</div>
+                        <div
+                            class="replica-block"
+                            onclick="showReplicationInfo('remote1')"
+                        >
+                            R2
+                        </div>
+                        <div class="replica-arrow">→</div>
+                        <div
+                            class="replica-block"
+                            onclick="showReplicationInfo('remote2')"
+                        >
+                            R3
+                        </div>
+                    </div>
+                    <div
+                        style="margin-top: 15px; font-size: 0.9em; color: #555"
+                    >
+                        Click on replicas to learn about placement strategy
+                    </div>
+                    <div
+                        class="info-panel"
+                        style="
+                            background: #222;
+                            color: #fff;
+                            margin-top: 10px;
+                            border-radius: 8px;
+                            padding: 12px;
+                        "
+                    >
+                        <strong>Block Replica Storage:</strong>
+                        <ul style="margin-left: 18px">
+                            <li>
+                                Each block replica is stored as a file on the
+                                local disk (HDD/SSD) of a DataNode.
+                            </li>
+                            <li>
+                                Replicas are distributed across DataNodes in
+                                different racks for fault tolerance.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="rack-visualization">
+                    <div class="rack-title">🏢 Rack-Aware Architecture</div>
+                    <div class="rack-container">
+                        <div class="rack">
+                            <div class="rack-name">Rack 1</div>
+                            <div class="rack-nodes">
+                                <div
+                                    class="rack-node"
+                                    onclick="showRackInfo('r1n1')"
+                                >
+                                    Node 1
+                                </div>
+                                <div
+                                    class="rack-node"
+                                    onclick="showRackInfo('r1n2')"
+                                >
+                                    Node 2
+                                </div>
+                                <div
+                                    class="rack-node"
+                                    onclick="showRackInfo('r1n3')"
+                                >
+                                    Node 3
+                                </div>
+                                <div
+                                    class="rack-node"
+                                    onclick="showRackInfo('r1n4')"
+                                >
+                                    Node 4
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rack">
+                            <div class="rack-name">Rack 2</div>
+                            <div class="rack-nodes">
+                                <div
+                                    class="rack-node"
+                                    onclick="showRackInfo('r2n1')"
+                                >
+                                    Node 1
+                                </div>
+                                <div
+                                    class="rack-node"
+                                    onclick="showRackInfo('r2n2')"
+                                >
+                                    Node 2
+                                </div>
+                                <div
+                                    class="rack-node"
+                                    onclick="showRackInfo('r2n3')"
+                                >
+                                    Node 3
+                                </div>
+                                <div
+                                    class="rack-node"
+                                    onclick="showRackInfo('r2n4')"
+                                >
+                                    Node 4
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rack">
+                            <div class="rack-name">Rack 3</div>
+                            <div class="rack-nodes">
+                                <div
+                                    class="rack-node"
+                                    onclick="showRackInfo('r3n1')"
+                                >
+                                    Node 1
+                                </div>
+                                <div
+                                    class="rack-node"
+                                    onclick="showRackInfo('r3n2')"
+                                >
+                                    Node 2
+                                </div>
+                                <div
+                                    class="rack-node"
+                                    onclick="showRackInfo('r3n3')"
+                                >
+                                    Node 3
+                                </div>
+                                <div
+                                    class="rack-node"
+                                    onclick="showRackInfo('r3n4')"
+                                >
+                                    Node 4
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="info-panel"
+                        style="
+                            background: #222;
+                            color: #fff;
+                            margin-top: 10px;
+                            border-radius: 8px;
+                            padding: 12px;
+                        "
+                    >
+                        <strong>Rack-Aware Placement:</strong>
+                        <ul style="margin-left: 18px">
+                            <li>
+                                Racks are network groupings; DataNodes in each
+                                rack store replicas on their own disks.
+                            </li>
+                            <li>
+                                Replica placement is managed by the NameNode to
+                                optimize reliability and network usage.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="control-btn" onclick="showOverview()">
+                    Overview
+                </button>
+                <button class="control-btn" onclick="showDataFlow()">
+                    Data Flow
+                </button>
+                <button class="control-btn" onclick="showFailureHandling()">
+                    Failure Handling
+                </button>
+                <button class="control-btn" onclick="showPerformance()">
+                    Performance
+                </button>
+            </div>
+
+            <div class="info-panel">
+                <div class="info-title">📚 Information Panel</div>
+                <div class="info-content active" id="overview">
+                    <h3>HDFS Overview</h3>
+                    <p>
+                        The Hadoop Distributed File System (HDFS) is designed to
+                        store very large files across multiple machines
+                        reliably. It follows a master-slave architecture where:
+                    </p>
+                    <ul style="margin-left: 20px; margin-top: 10px">
+                        <li>
+                            <strong>NameNode:</strong> The master server that
+                            manages the file system namespace and metadata
+                        </li>
+                        <li>
+                            <strong>DataNodes:</strong> Worker nodes that store
+                            the actual data blocks
+                        </li>
+                        <li>
+                            <strong>Blocks:</strong> Files are split into 128MB
+                            blocks by default
+                        </li>
+                        <li>
+                            <strong>Replication:</strong> Each block is
+                            replicated 3 times for fault tolerance
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="info-content" id="namenode">
+                    <h3>NameNode - The Master</h3>
+                    <p>
+                        The NameNode is the central authority that manages the
+                        HDFS file system. It maintains the complete file system
+                        namespace in memory and handles all metadata operations.
+                        Key responsibilities include:
+                    </p>
+                    <ul style="margin-left: 20px; margin-top: 10px">
+                        <li>
+                            Managing file system namespace (directories, files,
+                            permissions)
+                        </li>
+                        <li>Mapping files to blocks and blocks to DataNodes</li>
+                        <li>Handling client requests for file operations</li>
+                        <li>Monitoring DataNode health through heartbeats</li>
+                        <li>Coordinating block replication and recovery</li>
+                    </ul>
+                </div>
+
+                <div class="info-content" id="metadata">
+                    <h3>Block Management</h3>
+                    <p>
+                        HDFS splits large files into blocks (default 128MB) for
+                        distributed storage. The NameNode maintains a mapping of
+                        which blocks belong to which files and where each block
+                        is stored across DataNodes. This enables parallel
+                        processing and fault tolerance.
+                    </p>
+                </div>
+
+                <div class="info-content" id="fsimage">
+                    <h3>FsImage & EditLog</h3>
+                    <p>
+                        The NameNode persists the file system namespace using
+                        two key files:
+                    </p>
+                    <ul style="margin-left: 20px; margin-top: 10px">
+                        <li>
+                            <strong>FsImage:</strong> A checkpoint of the entire
+                            file system namespace
+                        </li>
+                        <li>
+                            <strong>EditLog:</strong> A transaction log of all
+                            changes since the last checkpoint
+                        </li>
+                    </ul>
+                    <p>
+                        During startup, the NameNode reads both files to
+                        reconstruct the current state of the file system.
+                    </p>
+                </div>
+
+                <div class="info-content" id="heartbeat">
+                    <h3>Heartbeat Monitoring</h3>
+                    <p>
+                        DataNodes send periodic heartbeat messages to the
+                        NameNode to indicate they are alive and functioning. If
+                        a DataNode fails to send heartbeats for a configurable
+                        period (default 10+ minutes), the NameNode marks it as
+                        dead and initiates block recovery on other DataNodes.
+                    </p>
+                </div>
+
+                <div class="info-content" id="dataflow">
+                    <h3>Data Flow in HDFS</h3>
+                    <p>When writing data to HDFS:</p>
+                    <ol style="margin-left: 20px; margin-top: 10px">
+                        <li>Client contacts NameNode for block allocation</li>
+                        <li>
+                            NameNode returns list of DataNodes for block
+                            placement
+                        </li>
+                        <li>
+                            Client writes data to first DataNode in pipeline
+                        </li>
+                        <li>Data is pipelined through all replica DataNodes</li>
+                        <li>Each DataNode acknowledges successful write</li>
+                    </ol>
+                    <p>
+                        When reading data, the client contacts the NameNode to
+                        get block locations, then reads directly from the
+                        nearest DataNode.
+                    </p>
+                </div>
+
+                <div class="info-content" id="failure">
+                    <h3>Failure Handling</h3>
+                    <p>HDFS is designed to handle failures gracefully:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px">
+                        <li>
+                            <strong>DataNode Failure:</strong> Detected via
+                            missing heartbeats; blocks are re-replicated
+                        </li>
+                        <li>
+                            <strong>Data Corruption:</strong> Detected via
+                            checksums; corrupted blocks are re-replicated
+                        </li>
+                        <li>
+                            <strong>Network Partitions:</strong> Handled through
+                            careful timeout and recovery mechanisms
+                        </li>
+                        <li>
+                            <strong>NameNode Failure:</strong> Addressed through
+                            High Availability (HA) setups
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="info-content" id="performance">
+                    <h3>Performance Characteristics</h3>
+                    <p>HDFS is optimized for:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px">
+                        <li>
+                            <strong>High Throughput:</strong> Designed for batch
+                            processing, not low-latency access
+                        </li>
+                        <li>
+                            <strong>Large Files:</strong> Optimized for files in
+                            gigabytes to terabytes
+                        </li>
+                        <li>
+                            <strong>Write-Once, Read-Many:</strong> Files are
+                            typically written once and read multiple times
+                        </li>
+                        <li>
+                            <strong>Streaming Access:</strong> Sequential
+                            reading patterns are preferred
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="info-content" id="replication-local">
+                    <h3>Local Replica (R1)</h3>
+                    <p>
+                        The first replica is placed on the local DataNode (if
+                        the client is on a DataNode) or a random DataNode in the
+                        same rack as the client. This minimizes network traffic
+                        for the initial write.
+                    </p>
+                </div>
+
+                <div class="info-content" id="replication-remote1">
+                    <h3>Remote Replica (R2)</h3>
+                    <p>
+                        The second replica is placed on a DataNode in a
+                        different rack from the first replica. This provides
+                        rack-level fault tolerance and improves read performance
+                        by distributing load.
+                    </p>
+                </div>
+
+                <div class="info-content" id="replication-remote2">
+                    <h3>Remote Replica (R3)</h3>
+                    <p>
+                        The third replica is placed on a different DataNode in
+                        the same rack as the second replica. This balances
+                        network traffic while maintaining fault tolerance.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // --- HDFS Job Execution & Resource Allocation Visualization ---
+            const jobSteps = [
+                {
+                    title: "User Submits Job",
+                    info: "The user submits a job (e.g., MapReduce) to the Hadoop cluster. The job is sent to the ResourceManager.",
+                    resources: [8, 8, 8],
+                    mems: [16, 16, 16],
+                    containers: [[], [], []],
+                },
+                {
+                    title: "ApplicationMaster Requests Resources",
+                    info: "The ApplicationMaster negotiates with the ResourceManager for containers (CPU/memory) to run tasks.",
+                    resources: [8, 8, 8],
+                    mems: [16, 16, 16],
+                    containers: [[], [], []],
+                },
+                {
+                    title: "ResourceManager Allocates Containers",
+                    info: "ResourceManager allocates containers on available nodes. Resources are reserved for Map/Reduce tasks.",
+                    resources: [7, 7, 8],
+                    mems: [14, 14, 16],
+                    containers: [["Map"], ["Map"], []],
+                },
+                {
+                    title: "Containers Launched on Nodes",
+                    info: "Map tasks are launched in containers on Node 1 and Node 2. Resources are consumed accordingly.",
+                    resources: [6, 6, 8],
+                    mems: [12, 12, 16],
+                    containers: [["Map", "Map"], ["Map", "Map"], []],
+                },
+                {
+                    title: "NameNode Locates Data Blocks",
+                    info: "NameNode provides metadata and locates the data blocks needed for the job. Tasks are assigned to nodes with data locality.",
+                    resources: [6, 6, 8],
+                    mems: [12, 12, 16],
+                    containers: [["Map", "Map"], ["Map", "Map"], []],
+                },
+                {
+                    title: "DataNodes Execute Map Tasks",
+                    info: "DataNodes execute Map tasks on the data blocks. Intermediate results are produced.",
+                    resources: [5, 5, 8],
+                    mems: [10, 10, 16],
+                    containers: [
+                        ["Map", "Map", "Map"],
+                        ["Map", "Map", "Map"],
+                        [],
+                    ],
+                },
+                {
+                    title: "Shuffle and Sort Phase",
+                    info: "Intermediate results are shuffled and sorted across the cluster. Containers are allocated for Reduce tasks.",
+                    resources: [5, 5, 7],
+                    mems: [10, 10, 14],
+                    containers: [
+                        ["Map", "Map", "Map"],
+                        ["Map", "Map", "Map"],
+                        ["Reduce"],
+                    ],
+                },
+                {
+                    title: "Reduce Phase",
+                    info: "Reduce tasks aggregate the results and produce final output. Resources are consumed on Node 3.",
+                    resources: [5, 5, 6],
+                    mems: [10, 10, 12],
+                    containers: [
+                        ["Map", "Map", "Map"],
+                        ["Map", "Map", "Map"],
+                        ["Reduce", "Reduce"],
+                    ],
+                },
+                {
+                    title: "Output Written to HDFS",
+                    info: "Final output is written back to HDFS. Resources are released and containers are freed.",
+                    resources: [8, 8, 8],
+                    mems: [16, 16, 16],
+                    containers: [[], [], []],
+                },
+            ];
+            let currentJobStep = 0;
+
+            function updateJobVisualization() {
+                // Update node resources and containers
+                for (let i = 1; i <= 3; i++) {
+                    document.getElementById(`cpu-${i}`).textContent =
+                        jobSteps[currentJobStep].resources[i - 1];
+                    document.getElementById(`mem-${i}`).textContent =
+                        jobSteps[currentJobStep].mems[i - 1];
+                    const containersDiv = document.getElementById(
+                        `containers-${i}`,
+                    );
+                    containersDiv.innerHTML = "";
+                    jobSteps[currentJobStep].containers[i - 1].forEach(
+                        (task, idx) => {
+                            const el = document.createElement("div");
+                            el.className = "container-box";
+                            el.style =
+                                "display:inline-block;background:#2a7ae2;color:#fff;border-radius:6px;padding:4px 10px;margin:2px 2px;font-size:0.95em;box-shadow:0 2px 8px rgba(42,122,226,0.08);";
+                            el.textContent = task + " Task";
+                            containersDiv.appendChild(el);
+                        },
+                    );
+                }
+                // Update step counter, title and info
+                document.getElementById("job-step-counter").textContent =
+                    `Step ${currentJobStep + 1} of ${jobSteps.length}`;
+                document.getElementById("job-step-title").textContent =
+                    jobSteps[currentJobStep].title;
+                document.getElementById("job-info-panel").textContent =
+                    jobSteps[currentJobStep].info;
+
+                // --- Integration with DataNodes, Blocks, Replicas, Racks ---
+                // Clear all highlights first
+                for (let i = 1; i <= 4; i++) {
+                    document
+                        .getElementById(`datanode-${i}`)
+                        .classList.remove("active");
+                }
+                for (let i = 1; i <= 12; i++) {
+                    document.getElementById(`block-b${i}`).style.background =
+                        "#3498db";
+                }
+                ["replica-local", "replica-remote1", "replica-remote2"].forEach(
+                    (id) => {
+                        document.getElementById(id).style.background =
+                            "#3498db";
+                    },
+                );
+                for (let i = 1; i <= 3; i++) {
+                    document.getElementById(`rack-${i}`).style.background =
+                        "white";
+                    for (let j = 1; j <= 4; j++) {
+                        document.getElementById(
+                            `rack-node-r${i}n${j}`,
+                        ).style.background = "#ecf0f1";
+                        document.getElementById(
+                            `rack-node-r${i}n${j}`,
+                        ).style.color = "#2c3e50";
+                    }
+                }
+
+                // Step-specific highlights
+                if (
+                    currentJobStep === 2 ||
+                    currentJobStep === 3 ||
+                    currentJobStep === 4 ||
+                    currentJobStep === 5
+                ) {
+                    // Map tasks on DataNode 1 and 2
+                    document
+                        .getElementById("datanode-1")
+                        .classList.add("active");
+                    document
+                        .getElementById("datanode-2")
+                        .classList.add("active");
+                    // Highlight blocks on DataNode 1 and 2
+                    [
+                        "block-b1",
+                        "block-b2",
+                        "block-b3",
+                        "block-b4",
+                        "block-b5",
+                        "block-b6",
+                    ].forEach((id) => {
+                        document.getElementById(id).style.background =
+                            "#e74c3c";
+                    });
+                    // Highlight Rack 1
+                    document.getElementById("rack-1").style.background =
+                        "#ffe082";
+                    // Highlight Rack 1 nodes
+                    for (let j = 1; j <= 4; j++) {
+                        document.getElementById(
+                            `rack-node-r1n${j}`,
+                        ).style.background = "#ffe082";
+                        document.getElementById(
+                            `rack-node-r1n${j}`,
+                        ).style.color = "#333";
+                    }
+                }
+                if (currentJobStep === 6 || currentJobStep === 7) {
+                    // Reduce tasks on DataNode 3
+                    document
+                        .getElementById("datanode-3")
+                        .classList.add("active");
+                    ["block-b7", "block-b8", "block-b9"].forEach((id) => {
+                        document.getElementById(id).style.background =
+                            "#27ae60";
+                    });
+                    // Highlight Rack 2
+                    document.getElementById("rack-2").style.background =
+                        "#b2ebf2";
+                    for (let j = 1; j <= 4; j++) {
+                        document.getElementById(
+                            `rack-node-r2n${j}`,
+                        ).style.background = "#b2ebf2";
+                        document.getElementById(
+                            `rack-node-r2n${j}`,
+                        ).style.color = "#333";
+                    }
+                }
+                if (currentJobStep === 8) {
+                    // Output written, highlight all DataNodes and replica blocks
+                    for (let i = 1; i <= 4; i++) {
+                        document
+                            .getElementById(`datanode-${i}`)
+                            .classList.add("active");
+                    }
+                    [
+                        "replica-local",
+                        "replica-remote1",
+                        "replica-remote2",
+                    ].forEach((id) => {
+                        document.getElementById(id).style.background =
+                            "#27ae60";
+                    });
+                    // Highlight Rack 3
+                    document.getElementById("rack-3").style.background =
+                        "#c5e1a5";
+                    for (let j = 1; j <= 4; j++) {
+                        document.getElementById(
+                            `rack-node-r3n${j}`,
+                        ).style.background = "#c5e1a5";
+                        document.getElementById(
+                            `rack-node-r3n${j}`,
+                        ).style.color = "#333";
+                    }
+                }
+            }
+
+            function showPreviousJobStep() {
+                if (currentJobStep > 0) currentJobStep--;
+                updateJobVisualization();
+            }
+            function showNextJobStep() {
+                if (currentJobStep < jobSteps.length - 1) currentJobStep++;
+                updateJobVisualization();
+            }
+            // Initialize visualization on page load
+            document.addEventListener(
+                "DOMContentLoaded",
+                updateJobVisualization,
+            );
+
+            // --- Existing functions below ---
+            function showInfo(type) {
+                // Remove active class from all component boxes
+                document.querySelectorAll(".component-box").forEach((box) => {
+                    box.classList.remove("active");
+                });
+
+                // Add active class to clicked component
+                event.target.closest(".component-box").classList.add("active");
+
+                // Hide all info content
+                document
+                    .querySelectorAll(".info-content")
+                    .forEach((content) => {
+                        content.classList.remove("active");
+                    });
+
+                // Show selected info content
+                document.getElementById(type).classList.add("active");
+            }
+
+            function showDataNodeInfo(nodeId) {
+                // Remove active class from all datanode items
+                document.querySelectorAll(".datanode-item").forEach((item) => {
+                    item.classList.remove("active");
+                });
+
+                // Add active class to clicked datanode
+                event.target.closest(".datanode-item").classList.add("active");
+
+                // Hide all info content
+                document
+                    .querySelectorAll(".info-content")
+                    .forEach((content) => {
+                        content.classList.remove("active");
+                    });
+
+                // Show datanode specific info
+                const infoPanel =
+                    document.querySelector(
+                        ".info-panel .info-content.active",
+                    ) || document.getElementById("overview");
+                infoPanel.classList.remove("active");
+
+                // Create temporary info content
+                const tempInfo = document.createElement("div");
+                tempInfo.className = "info-content active";
+                tempInfo.innerHTML = `
+                <h3>DataNode Information</h3>
+                <p>DataNodes are the worker nodes in HDFS that store the actual data blocks. Each DataNode:</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Stores data blocks in its local file system</li>
+                    <li>Sends periodic heartbeats to the NameNode</li>
+                    <li>Reports its block inventory via BlockReports</li>
+                    <li>Handles read/write requests from clients</li>
+                    <li>Participates in block replication pipelines</li>
+                </ul>
+                <p>Click on blocks to see individual block information.</p>
+            `;
+
+                document.querySelector(".info-panel").appendChild(tempInfo);
+
+                // Remove temp info after 10 seconds
+                setTimeout(() => {
+                    if (tempInfo.parentNode) {
+                        tempInfo.parentNode.removeChild(tempInfo);
+                        document
+                            .getElementById("overview")
+                            .classList.add("active");
+                    }
+                }, 10000);
+            }
+
+            function showBlockInfo(blockId) {
+                // Create temporary info content for block
+                const tempInfo = document.createElement("div");
+                tempInfo.className = "info-content active";
+                tempInfo.innerHTML = `
+                <h3>Block Information</h3>
+                <p>HDFS blocks are the fundamental units of storage:</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li><strong>Size:</strong> Default 128MB (configurable)</li>
+                    <li><strong>Replication:</strong> Default 3 copies across different DataNodes</li>
+                    <li><strong>Checksum:</strong> Each block has a checksum for data integrity</li>
+                    <li><strong>Location:</strong> Tracked by NameNode's block mapping</li>
+                    <li><strong>Pipeline:</strong> Replicated using a write pipeline across DataNodes</li>
+                </ul>
+                <p>Block ${blockId} is part of the distributed storage system ensuring fault tolerance and parallel access.</p>
+            `;
+
+                // Remove existing active content
+                document
+                    .querySelectorAll(".info-content")
+                    .forEach((content) => {
+                        content.classList.remove("active");
+                    });
+
+                document.querySelector(".info-panel").appendChild(tempInfo);
+
+                // Remove temp info after 8 seconds
+                setTimeout(() => {
+                    if (tempInfo.parentNode) {
+                        tempInfo.parentNode.removeChild(tempInfo);
+                        document
+                            .getElementById("overview")
+                            .classList.add("active");
+                    }
+                }, 8000);
+            }
+
+            function showReplicationInfo(type) {
+                // Remove active class from all replica blocks
+                document.querySelectorAll(".replica-block").forEach((block) => {
+                    block.style.transform = "scale(1)";
+                    block.style.boxShadow = "none";
+                });
+
+                // Highlight selected replica
+                event.target.style.transform = "scale(1.2)";
+                event.target.style.boxShadow = "0 10px 20px rgba(0,0,0,0.3)";
+
+                // Hide all info content
+                document
+                    .querySelectorAll(".info-content")
+                    .forEach((content) => {
+                        content.classList.remove("active");
+                    });
+
+                // Show replication info
+                document
+                    .getElementById("replication-" + type)
+                    .classList.add("active");
+            }
+
+            function showRackInfo(nodeId) {
+                // Remove previous highlights
+                document.querySelectorAll(".rack-node").forEach((node) => {
+                    node.style.background = "#ecf0f1";
+                    node.style.color = "#2c3e50";
+                });
+
+                // Highlight selected node
+                event.target.style.background = "#e74c3c";
+                event.target.style.color = "white";
+
+                // Show rack info
+                const tempInfo = document.createElement("div");
+                tempInfo.className = "info-content active";
+                tempInfo.innerHTML = `
+                <h3>Rack-Aware Placement</h3>
+                <p>HDFS uses rack awareness to optimize data placement and network bandwidth:</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li><strong>Rack Topology:</strong> Network topology is considered for block placement</li>
+                    <li><strong>Cross-Rack Replication:</strong> Replicas are placed across different racks</li>
+                    <li><strong>Network Optimization:</strong> Reduces inter-rack traffic during writes</li>
+                    <li><strong>Fault Tolerance:</strong> Protects against rack-level failures</li>
+                    <li><strong>Load Balancing:</strong> Distributes read requests across racks</li>
+                </ul>
+                <p>Node ${nodeId} participates in the rack-aware replication strategy.</p>
+            `;
+
+                // Remove existing active content
+                document
+                    .querySelectorAll(".info-content")
+                    .forEach((content) => {
+                        content.classList.remove("active");
+                    });
+
+                document.querySelector(".info-panel").appendChild(tempInfo);
+
+                // Remove temp info after 10 seconds
+                setTimeout(() => {
+                    if (tempInfo.parentNode) {
+                        tempInfo.parentNode.removeChild(tempInfo);
+                        document
+                            .getElementById("overview")
+                            .classList.add("active");
+                    }
+                }, 10000);
+            }
+
+            function showOverview() {
+                // Remove active class from all buttons
+                document.querySelectorAll(".control-btn").forEach((btn) => {
+                    btn.classList.remove("active");
+                });
+
+                // Add active class to clicked button
+                event.target.classList.add("active");
+
+                // Hide all info content
+                document
+                    .querySelectorAll(".info-content")
+                    .forEach((content) => {
+                        content.classList.remove("active");
+                    });
+
+                // Show overview
+                document.getElementById("overview").classList.add("active");
+            }
+
+            function showDataFlow() {
+                // Remove active class from all buttons
+                document.querySelectorAll(".control-btn").forEach((btn) => {
+                    btn.classList.remove("active");
+                });
+
+                // Add active class to clicked button
+                event.target.classList.add("active");
+
+                // Hide all info content
+                document
+                    .querySelectorAll(".info-content")
+                    .forEach((content) => {
+                        content.classList.remove("active");
+                    });
+
+                // Show data flow info
+                document.getElementById("dataflow").classList.add("active");
+
+                // Animate data flow
+                animateDataFlow();
+            }
+
+            function showFailureHandling() {
+                // Remove active class from all buttons
+                document.querySelectorAll(".control-btn").forEach((btn) => {
+                    btn.classList.remove("active");
+                });
+
+                // Add active class to clicked button
+                event.target.classList.add("active");
+
+                // Hide all info content
+                document
+                    .querySelectorAll(".info-content")
+                    .forEach((content) => {
+                        content.classList.remove("active");
+                    });
+
+                // Show failure handling info
+                document.getElementById("failure").classList.add("active");
+            }
+
+            function showPerformance() {
+                // Remove active class from all buttons
+                document.querySelectorAll(".control-btn").forEach((btn) => {
+                    btn.classList.remove("active");
+                });
+
+                // Add active class to clicked button
+                event.target.classList.add("active");
+
+                // Hide all info content
+                document
+                    .querySelectorAll(".info-content")
+                    .forEach((content) => {
+                        content.classList.remove("active");
+                    });
+
+                // Show performance info
+                document.getElementById("performance").classList.add("active");
+            }
+
+            function animateDataFlow() {
+                const blocks = document.querySelectorAll(".block");
+                const replicas = document.querySelectorAll(".replica-block");
+
+                // Reset all animations
+                blocks.forEach((block) => {
+                    block.style.background = "#3498db";
+                    block.style.transform = "scale(1)";
+                });
+
+                replicas.forEach((replica) => {
+                    replica.style.background = "#3498db";
+                    replica.style.transform = "scale(1)";
+                });
+
+                // Animate blocks sequentially
+                let delay = 0;
+                blocks.forEach((block, index) => {
+                    setTimeout(() => {
+                        block.style.background = "#e74c3c";
+                        block.style.transform = "scale(1.2)";
+
+                        setTimeout(() => {
+                            block.style.background = "#27ae60";
+                            block.style.transform = "scale(1)";
+                        }, 500);
+                    }, delay);
+                    delay += 200;
+                });
+
+                // Animate replicas
+                setTimeout(() => {
+                    replicas.forEach((replica, index) => {
+                        setTimeout(() => {
+                            replica.style.background = "#e74c3c";
+                            replica.style.transform = "scale(1.1)";
+
+                            setTimeout(() => {
+                                replica.style.background = "#27ae60";
+                                replica.style.transform = "scale(1)";
+                            }, 800);
+                        }, index * 300);
+                    });
+                }, 1000);
+            }
+
+            // Initialize with overview
+            document.addEventListener("DOMContentLoaded", function () {
+                document.getElementById("overview").classList.add("active");
+            });
+
+            // Auto-demo feature
+            let autoDemoInterval;
+
+            function startAutoDemo() {
+                const components = [
+                    "namenode",
+                    "metadata",
+                    "fsimage",
+                    "heartbeat",
+                ];
+                let currentIndex = 0;
+
+                autoDemoInterval = setInterval(() => {
+                    // Simulate click on component
+                    const componentBoxes =
+                        document.querySelectorAll(".component-box");
+                    if (componentBoxes[currentIndex]) {
+                        componentBoxes[currentIndex].click();
+                    }
+
+                    currentIndex = (currentIndex + 1) % components.length;
+                }, 3000);
+            }
+
+            function stopAutoDemo() {
+                if (autoDemoInterval) {
+                    clearInterval(autoDemoInterval);
+                }
+            }
+
+            // Add auto-demo toggle
+            const controlsDiv = document.querySelector(".controls");
+            const autoDemoBtn = document.createElement("button");
+            autoDemoBtn.className = "control-btn";
+            autoDemoBtn.textContent = "Auto Demo";
+            autoDemoBtn.onclick = function () {
+                if (this.classList.contains("active")) {
+                    stopAutoDemo();
+                    this.classList.remove("active");
+                    this.textContent = "Auto Demo";
+                } else {
+                    startAutoDemo();
+                    this.classList.add("active");
+                    this.textContent = "Stop Demo";
+                }
+            };
+            controlsDiv.appendChild(autoDemoBtn);
+
+            // Add pulse animation to blocks
+            function pulseBlocks() {
+                const blocks = document.querySelectorAll(".block");
+                blocks.forEach((block, index) => {
+                    setTimeout(() => {
+                        block.style.animation = "pulse 1s ease-in-out";
+                        setTimeout(() => {
+                            block.style.animation = "";
+                        }, 1000);
+                    }, index * 100);
+                });
+            }
+
+            // Pulse blocks every 10 seconds
+            setInterval(pulseBlocks, 10000);
+
+            // Add CSS for pulse animation
+            const style = document.createElement("style");
+            style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.2); background-color: #e74c3c; }
+                100% { transform: scale(1); }
+            }
+        `;
+            document.head.appendChild(style);
+        </script>
+    </body>
+</html>
