@@ -1,0 +1,2322 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Apache Hive: Behind the Scenes of Big Data Warehousing</title>
+        <style>
+            body {
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                background: linear-gradient(135deg, #f8fafc 0%, #e8eaf6 100%);
+                color: #222;
+                margin: 0;
+                padding: 0;
+            }
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 32px 16px 64px 16px;
+            }
+            .content-section {
+                background: white;
+                border-radius: 12px;
+                box-shadow: 0 4px 16px rgba(40, 53, 147, 0.07);
+                padding: 30px;
+                margin-bottom: 30px;
+            }
+            .content-section h2 {
+                color: #283593;
+                border-left: 4px solid #ffb300;
+                padding-left: 15px;
+                margin-top: 0;
+            }
+            .content-section h3 {
+                color: #444;
+                margin-top: 25px;
+            }
+            .code-block {
+                background: #2d3748;
+                color: #e2e8f0;
+                padding: 15px;
+                border-radius: 8px;
+                overflow-x: auto;
+                margin: 15px 0;
+                font-family: 'Courier New', monospace;
+            }
+            .highlight-box {
+                background: #fff3cd;
+                border: 1px solid #ffeaa7;
+                border-radius: 8px;
+                padding: 15px;
+                margin: 15px 0;
+            }
+            .comparison-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 20px 0;
+            }
+            .comparison-table th, .comparison-table td {
+                border: 1px solid #ddd;
+                padding: 12px;
+                text-align: left;
+            }
+            .comparison-table th {
+                background-color: #283593;
+                color: white;
+            }
+            .comparison-table tr:nth-child(even) {
+                background-color: #f8f9fa;
+            }
+            .architecture-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 20px;
+                margin: 20px 0;
+            }
+            .component-card {
+                background: #f8f9fa;
+                border: 2px solid #e9ecef;
+                border-radius: 10px;
+                padding: 20px;
+                text-align: center;
+            }
+            .component-card h4 {
+                color: #283593;
+                margin-top: 0;
+            }
+
+            /* Responsive design for interactive section */
+            @media (max-width: 1024px) {
+                #main-interactive-container {
+                    display: block !important;
+                    grid-template-columns: none !important;
+                }
+
+                #main-interactive-container > div:last-child {
+                    position: static !important;
+                    margin-top: 30px;
+                }
+
+                .stepper {
+                    flex-direction: column;
+                    gap: 15px;
+                }
+
+                .step-block {
+                    min-width: 200px;
+                    margin: 0 auto;
+                }
+
+                .step-arrow {
+                    transform: rotate(90deg);
+                    margin: 5px 0;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .stepper {
+                    padding: 20px 10px;
+                }
+
+                .step-block {
+                    min-width: 150px;
+                    padding: 15px 12px;
+                    min-height: 70px;
+                }
+
+                .step-number {
+                    font-size: 1.2em;
+                }
+
+                .step-title {
+                    font-size: 0.8em;
+                }
+            }
+            .header {
+                text-align: center;
+                margin-bottom: 36px;
+            }
+            .header h1 {
+                font-size: 2.5em;
+                color: #283593;
+                margin-bottom: 8px;
+            }
+            .header p {
+                font-size: 1.2em;
+                color: #444;
+                opacity: 0.85;
+            }
+            .stepper {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 8px;
+                margin: 40px 0;
+                flex-wrap: wrap;
+                background: linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 100%);
+                padding: 30px 20px;
+                border-radius: 20px;
+                box-shadow: 0 8px 32px rgba(40, 53, 147, 0.1);
+            }
+            .step-block {
+                background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+                border-radius: 16px;
+                box-shadow: 0 6px 20px rgba(40, 53, 147, 0.1);
+                padding: 20px 16px;
+                min-width: 160px;
+                min-height: 80px;
+                text-align: center;
+                font-weight: 600;
+                font-size: 0.95em;
+                color: #37474f;
+                border: 3px solid #e1f5fe;
+                cursor: pointer;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+            .step-block:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 12px 28px rgba(40, 53, 147, 0.15);
+                border-color: #81c784;
+            }
+            .step-block.active {
+                background: linear-gradient(135deg, #ffeb3b 0%, #ffc107 100%);
+                border: 3px solid #ff9800;
+                color: #bf360c;
+                transform: translateY(-8px) scale(1.05);
+                box-shadow: 0 16px 40px rgba(255, 152, 0, 0.3);
+                z-index: 10;
+            }
+            .step-block.active::before {
+                content: '';
+                position: absolute;
+                top: -5px;
+                left: -5px;
+                right: -5px;
+                bottom: -5px;
+                background: linear-gradient(45deg, #ff9800, #ffc107, #ffeb3b, #ff9800);
+                border-radius: 20px;
+                z-index: -1;
+                animation: glow 2s ease-in-out infinite alternate;
+            }
+            @keyframes glow {
+                from { opacity: 0.5; transform: scale(1); }
+                to { opacity: 0.8; transform: scale(1.02); }
+            }
+            .step-number {
+                font-size: 1.4em;
+                font-weight: 800;
+                margin-bottom: 4px;
+                color: #1976d2;
+            }
+            .step-block.active .step-number {
+                color: #bf360c;
+            }
+            .step-title {
+                font-size: 0.85em;
+                line-height: 1.2;
+                opacity: 0.9;
+            }
+            .step-arrow {
+                font-size: 1.8em;
+                color: #90a4ae;
+                align-self: center;
+                margin: 0 4px;
+                transition: all 0.3s ease;
+                animation: pulse 2s ease-in-out infinite;
+            }
+            @keyframes pulse {
+                0%, 100% { transform: scale(1); opacity: 0.7; }
+                50% { transform: scale(1.1); opacity: 1; }
+            }
+            .step-arrow.active-arrow {
+                color: #ff9800;
+                transform: scale(1.2);
+            }
+            .info-panel {
+                background: linear-gradient(135deg, #fffde7 0%, #fff8e1 100%);
+                border-radius: 20px;
+                box-shadow: 0 8px 32px rgba(255, 193, 7, 0.15);
+                border: 2px solid #ffcc02;
+                padding: 30px;
+                margin: 30px 0;
+                min-height: 250px;
+                position: relative;
+                overflow: hidden;
+                transition: all 0.3s ease;
+            }
+            .info-panel::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(90deg, #ff9800, #ffc107, #ffeb3b, #ff9800);
+                animation: shimmer 3s ease-in-out infinite;
+            }
+            @keyframes shimmer {
+                0%, 100% { opacity: 0.6; }
+                50% { opacity: 1; }
+            }
+            .info-panel h2 {
+                color: #e65100;
+                margin-top: 0;
+                margin-bottom: 20px;
+                font-size: 1.6em;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            .info-panel h2::before {
+                content: '🔍';
+                font-size: 1.2em;
+            }
+            .info-panel p {
+                color: #4e342e;
+                line-height: 1.7;
+                margin-bottom: 15px;
+                font-size: 1.05em;
+            }
+            .info-panel ul,
+            .info-panel ol {
+                margin-left: 20px;
+                color: #4e342e;
+                line-height: 1.6;
+            }
+            .info-panel li {
+                margin-bottom: 8px;
+                position: relative;
+                padding-left: 20px;
+            }
+            .info-panel li::before {
+                content: '▶';
+                position: absolute;
+                left: 0;
+                color: #ff9800;
+                font-size: 0.8em;
+            }
+            .diagram-section {
+                margin: 32px 0 0 0;
+                text-align: center;
+            }
+            .diagram-svg {
+                max-width: 100%;
+                margin: 0 auto;
+                display: block;
+            }
+            .legend {
+                margin-top: 18px;
+                text-align: center;
+                font-size: 0.98em;
+                color: #555;
+            }
+            @media (max-width: 900px) {
+                .stepper {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+                .step-arrow {
+                    display: none;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>🐝 Apache Hive: Behind the Scenes of Big Data Warehousing</h1>
+                <p>
+                    Comprehensive guide to Apache Hive architecture, components, and query processing workflow.<br />
+                    Understanding how Hive transforms SQL queries into distributed MapReduce/Tez/Spark jobs.
+                </p>
+            </div>
+
+            <!-- Introduction Section -->
+            <div class="content-section">
+                <h2>1. Introduction to Apache Hive</h2>
+                <p>Apache Hive is a data warehouse software built on top of Apache Hadoop that facilitates reading, writing, and managing large datasets in distributed storage using SQL-like queries. Hive provides a SQL-like interface called HiveQL (HQL) that gets translated into MapReduce, Tez, or Spark jobs.</p>
+
+                <div class="highlight-box">
+                    <strong>Key Innovation:</strong> Hive bridges the gap between traditional SQL databases and big data processing by providing familiar SQL syntax for Hadoop ecosystem.
+                </div>
+
+                <h3>1.1 Why Hive?</h3>
+                <ul>
+                    <li><strong>SQL Familiarity:</strong> Enables SQL developers to work with big data</li>
+                    <li><strong>Schema on Read:</strong> Flexible schema definition at query time</li>
+                    <li><strong>Scalability:</strong> Handles petabytes of data across thousands of nodes</li>
+                    <li><strong>Extensibility:</strong> Custom functions and data formats</li>
+                    <li><strong>Integration:</strong> Works with various Hadoop ecosystem tools</li>
+                </ul>
+            </div>
+
+            <!-- Architecture Overview -->
+            <div class="content-section">
+                <h2>2. Hive Architecture Components</h2>
+
+                <div class="architecture-grid">
+                    <div class="component-card">
+                        <h4>🖥️ Hive Client</h4>
+                        <p>CLI, Beeline, JDBC/ODBC drivers, Web UI for submitting queries</p>
+                    </div>
+                    <div class="component-card">
+                        <h4>🚗 Hive Driver</h4>
+                        <p>Receives queries, manages sessions, coordinates compilation and execution</p>
+                    </div>
+                    <div class="component-card">
+                        <h4>🔧 Compiler</h4>
+                        <p>Parses HiveQL, performs semantic analysis, generates execution plan</p>
+                    </div>
+                    <div class="component-card">
+                        <h4>⚡ Optimizer</h4>
+                        <p>Optimizes logical plans using predicate pushdown, join reordering</p>
+                    </div>
+                    <div class="component-card">
+                        <h4>🎯 Execution Engine</h4>
+                        <p>Converts plans to MapReduce/Tez/Spark jobs and submits to YARN</p>
+                    </div>
+                    <div class="component-card">
+                        <h4>🗄️ Metastore</h4>
+                        <p>Stores metadata about tables, partitions, schemas, and locations</p>
+                    </div>
+                </div>
+
+                <h3>2.1 Metastore Deep Dive</h3>
+                <p>The Hive Metastore is a critical component that stores:</p>
+                <ul>
+                    <li><strong>Table Definitions:</strong> Schema, column types, table properties</li>
+                    <li><strong>Partition Information:</strong> Partition keys, locations, statistics</li>
+                    <li><strong>Storage Details:</strong> File formats, SerDe information, compression</li>
+                    <li><strong>Security Metadata:</strong> Access permissions and ownership</li>
+                </ul>
+
+                <div class="code-block">
+-- Example: Creating a partitioned table
+CREATE TABLE sales_data (
+    transaction_id STRING,
+    customer_id STRING,
+    product_id STRING,
+    amount DECIMAL(10,2),
+    transaction_time TIMESTAMP
+)
+PARTITIONED BY (year INT, month INT)
+STORED AS PARQUET
+LOCATION '/warehouse/sales_data';
+                </div>
+            </div>
+
+            <!-- HiveQL and Data Types -->
+            <div class="content-section">
+                <h2>3. HiveQL (Hive Query Language)</h2>
+
+                <h3>3.1 Data Types</h3>
+                <table class="comparison-table">
+                    <tr>
+                        <th>Category</th>
+                        <th>Data Types</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>Primitive</td>
+                        <td>TINYINT, SMALLINT, INT, BIGINT</td>
+                        <td>Integer types of various sizes</td>
+                    </tr>
+                    <tr>
+                        <td>Primitive</td>
+                        <td>FLOAT, DOUBLE, DECIMAL</td>
+                        <td>Floating point and decimal numbers</td>
+                    </tr>
+                    <tr>
+                        <td>Primitive</td>
+                        <td>STRING, VARCHAR, CHAR</td>
+                        <td>Text data types</td>
+                    </tr>
+                    <tr>
+                        <td>Primitive</td>
+                        <td>BOOLEAN, TIMESTAMP, DATE</td>
+                        <td>Boolean and temporal types</td>
+                    </tr>
+                    <tr>
+                        <td>Complex</td>
+                        <td>ARRAY, MAP, STRUCT</td>
+                        <td>Collections and structured data</td>
+                    </tr>
+                </table>
+
+                <h3>3.2 HiveQL Features</h3>
+                <div class="code-block">
+-- Complex data type example
+CREATE TABLE user_activity (
+    user_id STRING,
+    actions ARRAY&lt;STRING&gt;,
+    preferences MAP&lt;STRING, STRING&gt;,
+    profile STRUCT&lt;name:STRING, age:INT, location:STRING&gt;
+);
+
+-- Query with complex types
+SELECT
+    user_id,
+    actions[0] as first_action,
+    preferences['theme'] as theme_preference,
+    profile.name as user_name
+FROM user_activity
+WHERE size(actions) > 5;
+                </div>
+            </div>
+
+            <!-- Storage Formats and SerDe -->
+            <div class="content-section">
+                <h2>4. Storage Formats and SerDe</h2>
+
+                <h3>4.1 File Formats</h3>
+                <table class="comparison-table">
+                    <tr>
+                        <th>Format</th>
+                        <th>Type</th>
+                        <th>Compression</th>
+                        <th>Schema Evolution</th>
+                        <th>Use Case</th>
+                    </tr>
+                    <tr>
+                        <td>TextFile</td>
+                        <td>Row-based</td>
+                        <td>Good</td>
+                        <td>Limited</td>
+                        <td>Human-readable, debugging</td>
+                    </tr>
+                    <tr>
+                        <td>SequenceFile</td>
+                        <td>Row-based</td>
+                        <td>Good</td>
+                        <td>Limited</td>
+                        <td>Binary format, splittable</td>
+                    </tr>
+                    <tr>
+                        <td>RCFile</td>
+                        <td>Columnar</td>
+                        <td>Excellent</td>
+                        <td>Limited</td>
+                        <td>Legacy columnar format</td>
+                    </tr>
+                    <tr>
+                        <td>ORC</td>
+                        <td>Columnar</td>
+                        <td>Excellent</td>
+                        <td>Good</td>
+                        <td>Optimized for Hive, analytics</td>
+                    </tr>
+                    <tr>
+                        <td>Parquet</td>
+                        <td>Columnar</td>
+                        <td>Excellent</td>
+                        <td>Excellent</td>
+                        <td>Cross-platform, analytics</td>
+                    </tr>
+                </table>
+
+                <h3>4.2 SerDe (Serializer/Deserializer)</h3>
+                <p>SerDe determines how Hive reads and writes data:</p>
+                <ul>
+                    <li><strong>LazySimpleSerDe:</strong> Default for TextFile format</li>
+                    <li><strong>JsonSerDe:</strong> For JSON data processing</li>
+                    <li><strong>RegexSerDe:</strong> For parsing log files with regex patterns</li>
+                    <li><strong>AvroSerDe:</strong> For Avro format data</li>
+                    <li><strong>ParquetHiveSerDe:</strong> For Parquet format</li>
+                </ul>
+
+                <div class="code-block">
+-- Custom SerDe example for JSON data
+CREATE TABLE json_table (
+    id STRING,
+    name STRING,
+    details MAP&lt;STRING, STRING&gt;
+)
+ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
+STORED AS TEXTFILE;
+                </div>
+            </div>
+
+            <!-- Partitioning and Bucketing -->
+            <div class="content-section">
+                <h2>5. Partitioning and Bucketing</h2>
+
+                <h3>5.1 Partitioning</h3>
+                <p>Partitioning divides tables into smaller, manageable pieces based on column values:</p>
+                <ul>
+                    <li><strong>Static Partitioning:</strong> Partition values specified at insert time</li>
+                    <li><strong>Dynamic Partitioning:</strong> Partition values determined from data</li>
+                    <li><strong>Benefits:</strong> Query pruning, parallel processing, faster queries</li>
+                </ul>
+
+                <div class="code-block">
+-- Dynamic partitioning example
+SET hive.exec.dynamic.partition = true;
+SET hive.exec.dynamic.partition.mode = nonstrict;
+
+INSERT INTO TABLE sales_partitioned
+PARTITION (year, month)
+SELECT transaction_id, customer_id, amount, year, month
+FROM sales_raw;
+                </div>
+
+                <h3>5.2 Bucketing</h3>
+                <p>Bucketing distributes data into fixed number of files based on hash function:</p>
+                <ul>
+                    <li><strong>Even Distribution:</strong> Ensures uniform data distribution</li>
+                    <li><strong>Join Optimization:</strong> Enables map-side joins</li>
+                    <li><strong>Sampling:</strong> Efficient data sampling for analysis</li>
+                </ul>
+
+                <div class="code-block">
+-- Bucketed table example
+CREATE TABLE user_bucketed (
+    user_id STRING,
+    name STRING,
+    email STRING
+)
+CLUSTERED BY (user_id) INTO 32 BUCKETS
+STORED AS ORC;
+                </div>
+            </div>
+
+            <!-- Query Optimization -->
+            <div class="content-section">
+                <h2>6. Query Optimization Techniques</h2>
+
+                <h3>6.1 Cost-Based Optimizer (CBO)</h3>
+                <p>Hive's CBO uses statistics to generate optimal execution plans:</p>
+                <ul>
+                    <li><strong>Table Statistics:</strong> Row count, file size, partition info</li>
+                    <li><strong>Column Statistics:</strong> Distinct values, null count, min/max values</li>
+                    <li><strong>Join Optimization:</strong> Optimal join order and algorithms</li>
+                </ul>
+
+                <div class="code-block">
+-- Generating statistics for CBO
+ANALYZE TABLE sales_data COMPUTE STATISTICS;
+ANALYZE TABLE sales_data COMPUTE STATISTICS FOR COLUMNS;
+
+-- Check statistics
+DESCRIBE FORMATTED sales_data;
+                </div>
+
+                <h3>6.2 Optimization Techniques</h3>
+                <ul>
+                    <li><strong>Predicate Pushdown:</strong> Push filters to storage layer</li>
+                    <li><strong>Projection Pushdown:</strong> Read only required columns</li>
+                    <li><strong>Partition Pruning:</strong> Skip irrelevant partitions</li>
+                    <li><strong>Join Optimization:</strong> Map-side joins, bucket joins</li>
+                    <li><strong>Vectorization:</strong> Process data in batches for better CPU utilization</li>
+                </ul>
+
+                <div class="code-block">
+-- Vectorization settings
+SET hive.vectorized.execution.enabled = true;
+SET hive.vectorized.execution.reduce.enabled = true;
+
+-- Map-side join optimization
+SET hive.auto.convert.join = true;
+SET hive.mapjoin.smalltable.filesize = 25000000;
+                </div>
+            </div>
+
+            <!-- Execution Engines -->
+            <div class="content-section">
+                <h2>7. Execution Engines</h2>
+
+                <table class="comparison-table">
+                    <tr>
+                        <th>Engine</th>
+                        <th>Processing Model</th>
+                        <th>Performance</th>
+                        <th>Memory Usage</th>
+                        <th>Best For</th>
+                    </tr>
+                    <tr>
+                        <td>MapReduce</td>
+                        <td>Batch, disk-based</td>
+                        <td>Slow</td>
+                        <td>Low</td>
+                        <td>Large batch jobs, fault tolerance</td>
+                    </tr>
+                    <tr>
+                        <td>Tez</td>
+                        <td>DAG, in-memory</td>
+                        <td>Fast</td>
+                        <td>Medium</td>
+                        <td>Interactive queries, complex workflows</td>
+                    </tr>
+                    <tr>
+                        <td>Spark</td>
+                        <td>In-memory, iterative</td>
+                        <td>Very Fast</td>
+                        <td>High</td>
+                        <td>Machine learning, iterative algorithms</td>
+                    </tr>
+                </table>
+
+                <div class="code-block">
+-- Setting execution engine
+SET hive.execution.engine = tez;  -- or mapreduce, spark
+
+-- Tez-specific optimizations
+SET hive.tez.container.size = 4096;
+SET hive.tez.java.opts = -Xmx3276m;
+                </div>
+            </div>
+
+            <!-- Performance Tuning -->
+            <div class="content-section">
+                <h2>8. Performance Tuning Best Practices</h2>
+
+                <h3>8.1 Configuration Tuning</h3>
+                <div class="code-block">
+-- Memory and parallelism settings
+SET mapreduce.map.memory.mb = 4096;
+SET mapreduce.reduce.memory.mb = 8192;
+SET mapreduce.job.reduces = 200;
+
+-- Compression settings
+SET hive.exec.compress.output = true;
+SET mapreduce.output.fileoutputformat.compress.codec = org.apache.hadoop.io.compress.SnappyCodec;
+
+-- Optimization settings
+SET hive.optimize.ppd = true;  -- Predicate pushdown
+SET hive.optimize.cp = true;   -- Column pruning
+SET hive.cbo.enable = true;    -- Cost-based optimizer
+                </div>
+
+                <h3>8.2 Query Design Best Practices</h3>
+                <ul>
+                    <li><strong>Use appropriate file formats:</strong> ORC/Parquet for analytics</li>
+                    <li><strong>Partition wisely:</strong> Avoid too many small partitions</li>
+                    <li><strong>Use bucketing:</strong> For large tables with frequent joins</li>
+                    <li><strong>Optimize joins:</strong> Put smaller tables on the right side</li>
+                    <li><strong>Use LIMIT:</strong> For exploratory queries</li>
+                    <li><strong>Avoid SELECT *:</strong> Specify only needed columns</li>
+                </ul>
+            </div>
+
+            <!-- Security and Governance -->
+            <div class="content-section">
+                <h2>9. Security and Governance</h2>
+
+                <h3>9.1 Authentication and Authorization</h3>
+                <ul>
+                    <li><strong>Kerberos:</strong> Strong authentication for secure clusters</li>
+                    <li><strong>LDAP/AD Integration:</strong> Enterprise user management</li>
+                    <li><strong>Apache Ranger:</strong> Fine-grained access control</li>
+                    <li><strong>Apache Sentry:</strong> Role-based authorization (deprecated)</li>
+                </ul>
+
+                <h3>9.2 Data Governance</h3>
+                <ul>
+                    <li><strong>Apache Atlas:</strong> Data lineage and metadata management</li>
+                    <li><strong>Data Classification:</strong> Sensitive data identification</li>
+                    <li><strong>Audit Logging:</strong> Track data access and modifications</li>
+                    <li><strong>Data Masking:</strong> Protect sensitive information</li>
+                </ul>
+            </div>
+
+            <!-- Hive vs Other Technologies -->
+            <div class="content-section">
+                <h2>10. Hive vs Other Big Data Technologies</h2>
+
+                <table class="comparison-table">
+                    <tr>
+                        <th>Aspect</th>
+                        <th>Hive</th>
+                        <th>Spark SQL</th>
+                        <th>Presto/Trino</th>
+                        <th>Impala</th>
+                    </tr>
+                    <tr>
+                        <td>Query Language</td>
+                        <td>HiveQL (SQL-like)</td>
+                        <td>ANSI SQL</td>
+                        <td>ANSI SQL</td>
+                        <td>SQL</td>
+                    </tr>
+                    <tr>
+                        <td>Processing Model</td>
+                        <td>Batch (MR/Tez/Spark)</td>
+                        <td>In-memory, batch/streaming</td>
+                        <td>MPP, in-memory</td>
+                        <td>MPP, in-memory</td>
+                    </tr>
+                    <tr>
+                        <td>Latency</td>
+                        <td>High (minutes)</td>
+                        <td>Medium (seconds)</td>
+                        <td>Low (sub-second)</td>
+                        <td>Low (sub-second)</td>
+                    </tr>
+                    <tr>
+                        <td>Fault Tolerance</td>
+                        <td>Excellent</td>
+                        <td>Good</td>
+                        <td>Limited</td>
+                        <td>Limited</td>
+                    </tr>
+                    <tr>
+                        <td>Best Use Case</td>
+                        <td>ETL, batch analytics</td>
+                        <td>Unified analytics</td>
+                        <td>Interactive analytics</td>
+                        <td>Real-time analytics</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Interactive Workflow Section -->
+            <div class="content-section">
+                <h2>11. Interactive Query Processing Workflow</h2>
+                <p>Now let's explore the step-by-step process of how Hive processes queries through its architecture components:</p>
+
+                <div style="background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%); border: 2px solid #2196f3; border-radius: 15px; padding: 20px; margin: 20px 0; text-align: center;">
+                    <h4 style="margin-top: 0; color: #1976d2;">🎯 Navigation Guide</h4>
+                    <p style="margin-bottom: 10px; color: #424242;">
+                        <strong>Click</strong> any step below • <strong>Use arrow keys</strong> ← → • <strong>Press numbers</strong> 1-6 • <strong>Use navigation buttons</strong>
+                    </p>
+                    <div style="font-size: 0.9em; color: #666;">
+                        Each step includes detailed explanations and interactive sub-visualizations
+                    </div>
+                </div>
+            </div>
+            <!-- Stepper Navigation -->
+            <div class="stepper" id="hive-stepper">
+                <div class="step-block active" onclick="showStep(0)">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Query Submission</div>
+                </div>
+                <span class="step-arrow">→</span>
+                <div class="step-block" onclick="showStep(1)">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Compilation</div>
+                </div>
+                <span class="step-arrow">→</span>
+                <div class="step-block" onclick="showStep(2)">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Optimization</div>
+                </div>
+                <span class="step-arrow">→</span>
+                <div class="step-block" onclick="showStep(3)">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Execution</div>
+                </div>
+                <span class="step-arrow">→</span>
+                <div class="step-block" onclick="showStep(4)">
+                    <div class="step-number">5</div>
+                    <div class="step-title">Job Processing</div>
+                </div>
+                <span class="step-arrow">→</span>
+                <div class="step-block" onclick="showStep(5)">
+                    <div class="step-number">6</div>
+                    <div class="step-title">Result Fetching</div>
+                </div>
+            </div>
+            <!-- Progress Indicator -->
+            <div style="text-align: center; margin: 20px 0;">
+                <div style="background: #e0e0e0; height: 6px; border-radius: 3px; max-width: 600px; margin: 0 auto; position: relative;">
+                    <div id="progress-bar" style="background: linear-gradient(90deg, #ff9800, #ffc107); height: 100%; border-radius: 3px; width: 16.67%; transition: width 0.3s ease;"></div>
+                </div>
+                <div style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                    Step <span id="current-step">1</span> of 6
+                </div>
+            </div>
+
+            <!-- Main Interactive Container -->
+            <div style="display: grid; grid-template-columns: 1fr 400px; gap: 30px; margin: 30px 0; min-height: 600px;" id="main-interactive-container">
+
+                <!-- Left Side: Stepper and Controls -->
+                <div>
+                    <!-- Navigation Buttons -->
+                    <div style="text-align: center; margin: 20px 0;">
+                        <button id="prev-btn" onclick="navigateStep(-1)" style="background: #2196f3; color: white; border: none; padding: 12px 24px; border-radius: 25px; margin: 0 10px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;" disabled>
+                            ← Previous
+                        </button>
+                        <button id="next-btn" onclick="navigateStep(1)" style="background: #4caf50; color: white; border: none; padding: 12px 24px; border-radius: 25px; margin: 0 10px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;">
+                            Next →
+                        </button>
+                    </div>
+
+                    <!-- Visual Diagrams Area -->
+                    <div id="visual-diagrams-area" style="margin-top: 30px;">
+                        <!-- Interactive Sub-Steps Visualizations will appear here -->
+                    </div>
+                </div>
+
+                <!-- Right Side: Fixed Info Panel -->
+                <div style="position: sticky; top: 20px; height: fit-content;">
+                    <div class="info-panel" id="info-panel" style="margin: 0; position: relative;">
+                        <!-- Dynamic content will be injected here -->
+                    </div>
+
+
+                </div>
+            </div>
+
+            <!-- Mobile-friendly fallback for smaller screens -->
+            <div id="mobile-layout" style="display: none;">
+                <!-- Info Panel for mobile -->
+                <div class="info-panel" id="mobile-info-panel">
+                    <!-- Dynamic content will be injected here -->
+                </div>
+            </div>
+
+
+
+        </div>
+        <script>
+            // Step-by-step explanations for each phase
+            const hiveSteps = [
+                {
+                    title: "Query Submission",
+                    html: `
+                    <h2>1. Query Submission</h2>
+                    <p>
+                        The user submits a HiveQL query using the Hive CLI, Beeline, JDBC/ODBC, Web UI, or a custom application.<br>
+                        <b>Client</b> sends the query to the <b>Hive Driver</b> for processing.
+                    </p>
+                    <ol>
+                        <li>User writes HiveQL query in CLI, Beeline, JDBC, or Web UI.</li>
+                        <li>Client establishes a session (authentication, authorization).</li>
+                        <li>Query is sent to HiveServer2 (or HiveServer).</li>
+                        <li>HiveServer2 forwards the query to the Driver.</li>
+                    </ol>
+                    <ul>
+                        <li><b>Interfaces:</b> CLI, Beeline, JDBC, Web UI, etc.</li>
+                        <li><b>Query format:</b> SQL-like HiveQL.</li>
+                    </ul>
+
+                `,
+                },
+                {
+                    title: "Compilation",
+                    html: `
+                    <h2>2. Compilation</h2>
+                    <p>
+                        The <b>Driver</b> forwards the query to the <b>Compiler</b>.<br>
+                        The Compiler parses the HiveQL, checks syntax and semantics, and creates an execution plan (DAG of stages).
+                    </p>
+                    <ol>
+                        <li>Driver receives the query from the client.</li>
+                        <li>Parser checks HiveQL syntax and builds an Abstract Syntax Tree (AST).</li>
+                        <li>Semantic analyzer validates tables, columns, and types using the Metastore.</li>
+                        <li>Logical plan (DAG) is generated from the AST.</li>
+                    </ol>
+                    <ul>
+                        <li>Consults the <b>Metastore</b> for table and column metadata.</li>
+                        <li>Generates a logical plan for execution.</li>
+                    </ul>
+                `,
+                },
+                {
+                    title: "Optimization",
+                    html: `
+                    <h2>3. Optimization</h2>
+                    <p>
+                        The <b>Optimizer</b> improves the logical plan for efficiency.<br>
+                        This may include predicate pushdown, join reordering, and partition pruning.
+                    </p>
+                    <ol>
+                        <li>Logical plan is analyzed for optimization opportunities.</li>
+                        <li>Predicate pushdown: Filters are applied as early as possible.</li>
+                        <li>Partition pruning: Only relevant partitions are scanned.</li>
+                        <li>Column pruning: Only necessary columns are read.</li>
+                        <li>Join reordering: Joins are rearranged for efficiency.</li>
+                        <li>Optimized logical plan is converted to a physical plan.</li>
+                    </ol>
+                `,
+                },
+                {
+                    title: "Execution",
+                    html: `
+                    <h2>4. Execution</h2>
+                    <p>
+                        The <b>Execution Engine</b> converts the optimized plan into physical jobs.<br>
+                        These jobs can run on MapReduce, Tez, or Spark, and are submitted to Hadoop YARN for resource management.
+                    </p>
+                    <ol>
+                        <li>Physical plan is translated into one or more execution stages (MapReduce, Tez, or Spark jobs).</li>
+                        <li>Execution engine builds a DAG of tasks.</li>
+                        <li>Jobs are submitted to YARN for resource allocation and scheduling.</li>
+                        <li>Each stage may depend on the output of previous stages.</li>
+                    </ol>
+                `,
+                },
+                {
+                    title: "Job Processing",
+                    html: `
+                    <h2>5. Job Processing</h2>
+                    <p>
+                        The jobs are executed on the Hadoop cluster.<br>
+                        Data is read from <b>HDFS</b>, processed in parallel by Map and Reduce tasks (or Tez/Spark DAGs), and intermediate results may be written back to HDFS.
+                    </p>
+                    <ol>
+                        <li>YARN allocates containers for each job stage.</li>
+                        <li>Map tasks read data splits from HDFS.</li>
+                        <li>Shuffle and sort phase (if needed) organizes intermediate data.</li>
+                        <li>Reduce tasks aggregate and process results.</li>
+                        <li>Intermediate results may be written to HDFS between stages.</li>
+                        <li>Final output is written to HDFS or a temporary location.</li>
+                    </ol>
+                `,
+                },
+                {
+                    title: "Result Fetching",
+                    html: `
+                    <h2>6. Result Fetching</h2>
+                    <p>
+                        The final result is collected by the <b>Driver</b> and returned to the user.<br>
+                        Results can be displayed in the CLI, written to a file, or sent to an application.
+                    </p>
+                    <ol>
+                        <li>Driver fetches the final output from HDFS or temporary storage.</li>
+                        <li>Results are formatted for the client (table, CSV, etc.).</li>
+                        <li>User receives the query result in the CLI, file, or API response.</li>
+                        <li>Session may be closed or kept alive for further queries.</li>
+                    </ol>
+
+               `,
+                },
+            ];
+
+            function showStep(idx) {
+                // Highlight the selected step
+                const blocks = document.querySelectorAll(".step-block");
+                const arrows = document.querySelectorAll(".step-arrow");
+
+                blocks.forEach((block, i) => {
+                    if (i === idx) {
+                        block.classList.add("active");
+                    } else {
+                        block.classList.remove("active");
+                    }
+                });
+
+                // Highlight arrows leading to active step
+                arrows.forEach((arrow, i) => {
+                    if (i < idx) {
+                        arrow.classList.add("active-arrow");
+                    } else {
+                        arrow.classList.remove("active-arrow");
+                    }
+                });
+
+
+
+                // Update info panel with smooth transition
+                const infoPanel = document.getElementById("info-panel");
+                const mobileInfoPanel = document.getElementById("mobile-info-panel");
+
+                infoPanel.style.opacity = "0.5";
+                infoPanel.style.transform = "translateY(10px)";
+
+                setTimeout(() => {
+                    infoPanel.innerHTML = hiveSteps[idx].html;
+                    if (mobileInfoPanel) {
+                        mobileInfoPanel.innerHTML = hiveSteps[idx].html;
+                    }
+                    infoPanel.style.opacity = "1";
+                    infoPanel.style.transform = "translateY(0)";
+                }, 150);
+
+                // Update progress indicator
+                updateProgressIndicator(idx);
+
+                // Show sub-steps automatically for the current step
+                const visualArea = document.getElementById("visual-diagrams-area");
+                if (visualArea) {
+                    showSubStepsForStep(idx, visualArea);
+                }
+            }
+
+            let currentStepIndex = 0;
+
+            function updateProgressIndicator(stepIndex) {
+                currentStepIndex = stepIndex;
+                const progressBar = document.getElementById("progress-bar");
+                const currentStepSpan = document.getElementById("current-step");
+                const prevBtn = document.getElementById("prev-btn");
+                const nextBtn = document.getElementById("next-btn");
+
+                // Update progress bar width
+                const progressWidth = ((stepIndex + 1) / 6) * 100;
+                progressBar.style.width = progressWidth + "%";
+
+                // Update step counter
+                currentStepSpan.textContent = stepIndex + 1;
+
+                // Update button states
+                prevBtn.disabled = stepIndex === 0;
+                nextBtn.disabled = stepIndex === 5;
+
+                // Update button styles based on state
+                if (prevBtn.disabled) {
+                    prevBtn.style.opacity = "0.5";
+                    prevBtn.style.cursor = "not-allowed";
+                } else {
+                    prevBtn.style.opacity = "1";
+                    prevBtn.style.cursor = "pointer";
+                }
+
+                if (nextBtn.disabled) {
+                    nextBtn.style.opacity = "0.5";
+                    nextBtn.style.cursor = "not-allowed";
+                } else {
+                    nextBtn.style.opacity = "1";
+                    nextBtn.style.cursor = "pointer";
+                }
+            }
+
+            function navigateStep(direction) {
+                const newIndex = currentStepIndex + direction;
+                if (newIndex >= 0 && newIndex < 6) {
+                    showStep(newIndex);
+                }
+            }
+
+            function showSubStepsForStep(stepIndex, visualArea) {
+                // Create container for sub-steps
+                let subStepsContainer = document.getElementById("current-substeps");
+                if (!subStepsContainer) {
+                    subStepsContainer = document.createElement("div");
+                    subStepsContainer.id = "current-substeps";
+                    subStepsContainer.style.cssText = `
+                        background: linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 100%);
+                        border-radius: 15px;
+                        padding: 20px;
+                        margin: 20px 0;
+                        border: 2px solid #2196f3;
+                    `;
+                    visualArea.appendChild(subStepsContainer);
+                } else {
+                    // Clear existing content
+                    subStepsContainer.innerHTML = "";
+                }
+
+                // Show appropriate sub-steps based on current step
+                switch(stepIndex) {
+                    case 0:
+                        showQSVisualInline(subStepsContainer);
+                        break;
+                    case 1:
+                        showCompVisualInline(subStepsContainer);
+                        break;
+                    case 2:
+                        showOptVisualInline(subStepsContainer);
+                        break;
+                    case 3:
+                        showExecVisualInline(subStepsContainer);
+                        break;
+                    case 4:
+                        showJobVisualInline(subStepsContainer);
+                        break;
+                    case 5:
+                        showResVisualInline(subStepsContainer);
+                        break;
+                }
+
+                // Scroll to sub-steps with a slight delay to ensure content is rendered
+                setTimeout(() => {
+                    subStepsContainer.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center"
+                    });
+                }, 100);
+            }
+
+            // Responsive design handling
+            function handleResponsiveLayout() {
+                const mainContainer = document.getElementById("main-interactive-container");
+                const mobileLayout = document.getElementById("mobile-layout");
+
+                if (window.innerWidth < 1024) {
+                    // Switch to mobile layout
+                    mainContainer.style.display = "none";
+                    mobileLayout.style.display = "block";
+
+                    // Update mobile info panel with current step
+                    const mobileInfoPanel = document.getElementById("mobile-info-panel");
+                    const infoPanel = document.getElementById("info-panel");
+                    if (mobileInfoPanel && infoPanel) {
+                        mobileInfoPanel.innerHTML = infoPanel.innerHTML;
+                    }
+                } else {
+                    // Switch to desktop layout
+                    mainContainer.style.display = "grid";
+                    mobileLayout.style.display = "none";
+                }
+            }
+
+            // Inline sub-step visualization functions
+            function showQSVisualInline(container) {
+                container.innerHTML = `
+                    <h4 style="color: #1976d2; margin-top: 0;">🔍 Query Submission Sub-Steps</h4>
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                        <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; flex: 1; min-width: 200px; text-align: center;">
+                            <div style="font-size: 2em;">👤</div>
+                            <div><strong>User Input</strong></div>
+                            <div style="font-size: 0.9em; color: #666;">HiveQL query via CLI/UI</div>
+                        </div>
+                        <div style="font-size: 1.5em; color: #2196f3;">→</div>
+                        <div style="background: #e8f5e8; padding: 15px; border-radius: 10px; flex: 1; min-width: 200px; text-align: center;">
+                            <div style="font-size: 2em;">🔐</div>
+                            <div><strong>Authentication</strong></div>
+                            <div style="font-size: 0.9em; color: #666;">Session establishment</div>
+                        </div>
+                        <div style="font-size: 1.5em; color: #2196f3;">→</div>
+                        <div style="background: #fff3e0; padding: 15px; border-radius: 10px; flex: 1; min-width: 200px; text-align: center;">
+                            <div style="font-size: 2em;">📡</div>
+                            <div><strong>HiveServer2</strong></div>
+                            <div style="font-size: 0.9em; color: #666;">Query reception</div>
+                        </div>
+                        <div style="font-size: 1.5em; color: #2196f3;">→</div>
+                        <div style="background: #f3e5f5; padding: 15px; border-radius: 10px; flex: 1; min-width: 200px; text-align: center;">
+                            <div style="font-size: 2em;">🚗</div>
+                            <div><strong>Driver</strong></div>
+                            <div style="font-size: 0.9em; color: #666;">Query forwarding</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function showCompVisualInline(container) {
+                container.innerHTML = `
+                    <h4 style="color: #8e24aa; margin-top: 0;">🔍 Compilation Sub-Steps</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <div style="background: #f3e5f5; padding: 15px; border-radius: 10px; text-align: center;">
+                            <div style="font-size: 2em;">📨</div>
+                            <div><strong>Query Reception</strong></div>
+                            <div style="font-size: 0.9em; color: #666;">Driver receives HiveQL</div>
+                        </div>
+                        <div style="background: #e8f5e8; padding: 15px; border-radius: 10px; text-align: center;">
+                            <div style="font-size: 2em;">🛠️</div>
+                            <div><strong>Parsing</strong></div>
+                            <div style="font-size: 0.9em; color: #666;">Syntax check & AST creation</div>
+                        </div>
+                        <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; text-align: center;">
+                            <div style="font-size: 2em;">🗂️</div>
+                            <div><strong>Semantic Analysis</strong></div>
+                            <div style="font-size: 0.9em; color: #666;">Metastore validation</div>
+                        </div>
+                        <div style="background: #fff3e0; padding: 15px; border-radius: 10px; text-align: center;">
+                            <div style="font-size: 2em;">🧩</div>
+                            <div><strong>Logical Plan</strong></div>
+                            <div style="font-size: 0.9em; color: #666;">DAG generation</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function showOptVisualInline(container) {
+                container.innerHTML = `
+                    <h4 style="color: #388e3c; margin-top: 0;">🔍 Optimization Sub-Steps</h4>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; background: #e8f5e8; padding: 15px; border-radius: 10px;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 2em;">📊</div>
+                                <div><strong>Statistics Analysis</strong></div>
+                            </div>
+                            <div style="font-size: 1.5em; color: #4caf50;">→</div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 2em;">🔄</div>
+                                <div><strong>Rule-based Optimization</strong></div>
+                            </div>
+                            <div style="font-size: 1.5em; color: #4caf50;">→</div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 2em;">💰</div>
+                                <div><strong>Cost-based Optimization</strong></div>
+                            </div>
+                        </div>
+                        <div style="background: #f3e5f5; padding: 15px; border-radius: 10px;">
+                            <strong>Optimization Techniques:</strong>
+                            <ul style="margin: 10px 0; padding-left: 20px;">
+                                <li>Predicate pushdown</li>
+                                <li>Join reordering</li>
+                                <li>Column pruning</li>
+                                <li>Partition pruning</li>
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function showExecVisualInline(container) {
+                container.innerHTML = `
+                    <h4 style="color: #0288d1; margin-top: 0;">🔍 Execution Planning Sub-Steps</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <div style="background: #e3f2fd; padding: 15px; border-radius: 10px;">
+                            <div style="font-size: 2em; text-align: center;">🗺️</div>
+                            <div><strong>Physical Plan Generation</strong></div>
+                            <div style="font-size: 0.9em; color: #666;">Convert logical to physical plan</div>
+                        </div>
+                        <div style="background: #e8f5e8; padding: 15px; border-radius: 10px;">
+                            <div style="font-size: 2em; text-align: center;">⚙️</div>
+                            <div><strong>Engine Selection</strong></div>
+                            <div style="font-size: 0.9em; color: #666;">MapReduce/Tez/Spark</div>
+                        </div>
+                        <div style="background: #fff3e0; padding: 15px; border-radius: 10px;">
+                            <div style="font-size: 2em; text-align: center;">📋</div>
+                            <div><strong>Job Configuration</strong></div>
+                            <div style="font-size: 0.9em; color: #666;">Resource allocation settings</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function showJobVisualInline(container) {
+                container.innerHTML = `
+                    <h4 style="color: #c2185b; margin-top: 0;">🔍 Job Processing Sub-Steps</h4>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; background: #fce4ec; padding: 15px; border-radius: 10px; flex-wrap: wrap;">
+                            <div style="text-align: center; margin: 5px;">
+                                <div style="font-size: 2em;">🏗️</div>
+                                <div><strong>YARN Allocation</strong></div>
+                            </div>
+                            <div style="font-size: 1.5em; color: #e91e63;">→</div>
+                            <div style="text-align: center; margin: 5px;">
+                                <div style="font-size: 2em;">📖</div>
+                                <div><strong>Map Tasks</strong></div>
+                            </div>
+                            <div style="font-size: 1.5em; color: #e91e63;">→</div>
+                            <div style="text-align: center; margin: 5px;">
+                                <div style="font-size: 2em;">🔄</div>
+                                <div><strong>Shuffle & Sort</strong></div>
+                            </div>
+                            <div style="font-size: 1.5em; color: #e91e63;">→</div>
+                            <div style="text-align: center; margin: 5px;">
+                                <div style="font-size: 2em;">📊</div>
+                                <div><strong>Reduce Tasks</strong></div>
+                            </div>
+                        </div>
+                        <div style="background: #e8f5e8; padding: 15px; border-radius: 10px;">
+                            <strong>Processing Details:</strong>
+                            <ul style="margin: 10px 0; padding-left: 20px;">
+                                <li>Data splits processed in parallel</li>
+                                <li>Intermediate results stored in HDFS</li>
+                                <li>Multiple stages for complex queries</li>
+                                <li>Fault tolerance through task retry</li>
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function showResVisualInline(container) {
+                container.innerHTML = `
+                    <h4 style="color: #5e35b1; margin-top: 0;">🔍 Result Processing Sub-Steps</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <div style="background: #ede7f6; padding: 15px; border-radius: 10px; text-align: center;">
+                            <div style="font-size: 2em;">📥</div>
+                            <div><strong>Result Fetching</strong></div>
+                            <div style="font-size: 0.9em; color: #666;">From HDFS/temp storage</div>
+                        </div>
+                        <div style="background: #e8f5e8; padding: 15px; border-radius: 10px; text-align: center;">
+                            <div style="font-size: 2em;">📝</div>
+                            <div><strong>Formatting</strong></div>
+                            <div style="font-size: 0.9em; color: #666;">Table/CSV/JSON format</div>
+                        </div>
+                        <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; text-align: center;">
+                            <div style="font-size: 2em;">📤</div>
+                            <div><strong>Client Delivery</strong></div>
+                            <div style="font-size: 0.9em; color: #666;">CLI/UI/API response</div>
+                        </div>
+                        <div style="background: #fff3e0; padding: 15px; border-radius: 10px; text-align: center;">
+                            <div style="font-size: 2em;">🔚</div>
+                            <div><strong>Session Management</strong></div>
+                            <div style="font-size: 0.9em; color: #666;">Close or keep alive</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+
+            // --- Interactive Sub-Steps Data ---
+            const compStepData = [
+                { icon: "📨", label: "Driver receives query from client." },
+                {
+                    icon: "🛠️",
+                    label: "Parser checks HiveQL syntax, builds AST.",
+                },
+                {
+                    icon: "🗂️",
+                    label: "Semantic analyzer validates tables/columns via Metastore.",
+                },
+                { icon: "🧩", label: "Logical plan (DAG) is generated." },
+            ];
+            const compStepDesc = [
+                "Driver receives the query from the client.",
+                "Parser checks HiveQL syntax and builds an Abstract Syntax Tree (AST).",
+                "Semantic analyzer validates tables, columns, and types using the Metastore.",
+                "Logical plan (DAG) is generated from the AST.",
+            ];
+
+            const optStepData = [
+                {
+                    icon: "🔍",
+                    label: "Analyze logical plan for optimizations.",
+                },
+                {
+                    icon: "🏷️",
+                    label: "Predicate pushdown (apply filters early).",
+                },
+                {
+                    icon: "🗃️",
+                    label: "Partition pruning (scan only relevant partitions).",
+                },
+                {
+                    icon: "📉",
+                    label: "Column pruning (read only needed columns).",
+                },
+                { icon: "🔄", label: "Join reordering for efficiency." },
+                {
+                    icon: "🏗️",
+                    label: "Convert optimized logical plan to physical plan.",
+                },
+            ];
+            const optStepDesc = [
+                "Logical plan is analyzed for optimization opportunities.",
+                "Predicate pushdown: Filters are applied as early as possible.",
+                "Partition pruning: Only relevant partitions are scanned.",
+                "Column pruning: Only necessary columns are read.",
+                "Join reordering: Joins are rearranged for efficiency.",
+                "Optimized logical plan is converted to a physical plan.",
+            ];
+
+            const execStepData = [
+                {
+                    icon: "🏗️",
+                    label: "Physical plan is split into execution stages.",
+                },
+                {
+                    icon: "⚙️",
+                    label: "Choose execution engine (MapReduce, Tez, Spark).",
+                },
+                { icon: "🗺️", label: "Build DAG of jobs/tasks." },
+                {
+                    icon: "📤",
+                    label: "Submit jobs to YARN for resource allocation.",
+                },
+            ];
+            const execStepDesc = [
+                "Physical plan is translated into one or more execution stages (MapReduce, Tez, or Spark jobs).",
+                "Execution engine builds a DAG of tasks.",
+                "Jobs are submitted to YARN for resource allocation and scheduling.",
+                "Each stage may depend on the output of previous stages.",
+            ];
+
+            const jobStepData = [
+                { icon: "🗃️", label: "YARN allocates containers for jobs." },
+                { icon: "📖", label: "Map tasks read data splits from HDFS." },
+                { icon: "🔀", label: "Shuffle and sort intermediate data." },
+                {
+                    icon: "🧮",
+                    label: "Reduce tasks aggregate/process results.",
+                },
+                {
+                    icon: "💾",
+                    label: "Write intermediate/final results to HDFS.",
+                },
+            ];
+            const jobStepDesc = [
+                "YARN allocates containers for each job stage.",
+                "Map tasks read data splits from HDFS.",
+                "Shuffle and sort phase (if needed) organizes intermediate data.",
+                "Reduce tasks aggregate and process results.",
+                "Intermediate results may be written to HDFS between stages. Final output is written to HDFS or a temporary location.",
+            ];
+
+            const resStepData = [
+                {
+                    icon: "📥",
+                    label: "Driver fetches final output from HDFS/temp storage.",
+                },
+                {
+                    icon: "📝",
+                    label: "Format results for client (table, CSV, etc.).",
+                },
+                {
+                    icon: "📤",
+                    label: "Return results to user (CLI, file, API).",
+                },
+                { icon: "🔚", label: "Session may close or remain open." },
+            ];
+            const resStepDesc = [
+                "Driver fetches the final output from HDFS or temporary storage.",
+                "Results are formatted for the client (table, CSV, etc.).",
+                "User receives the query result in the CLI, file, or API response.",
+                "Session may be closed or kept alive for further queries.",
+            ];
+
+
+
+            // Initialize with first step
+            document.addEventListener("DOMContentLoaded", function () {
+                showStep(0);
+                handleResponsiveLayout();
+
+                // Add keyboard navigation
+                document.addEventListener("keydown", function(event) {
+                    if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+                        event.preventDefault();
+                        navigateStep(-1);
+                    } else if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+                        event.preventDefault();
+                        navigateStep(1);
+                    } else if (event.key >= "1" && event.key <= "6") {
+                        event.preventDefault();
+                        showStep(parseInt(event.key) - 1);
+                    }
+                });
+
+                // Handle window resize
+                window.addEventListener("resize", handleResponsiveLayout);
+            });
+        </script>
+
+        <!-- Integrated Architecture & Infrastructure Mapping -->
+        <div class="content-section">
+            <h2>12. Interactive Architecture & Infrastructure Mapping</h2>
+            <p>Explore Apache Hive's logical architecture and see how components map to physical hardware infrastructure:</p>
+
+            <div style="background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border: 2px solid #4caf50; border-radius: 15px; padding: 20px; margin: 20px 0; text-align: center;">
+                <h4 style="margin-top: 0; color: #2e7d32;">🏗️ Unified Architecture & Infrastructure View</h4>
+                <p style="margin-bottom: 10px; color: #424242;">
+                    <strong>Toggle Views</strong> • <strong>Click Components</strong> • <strong>Watch Data Flow</strong> • <strong>Explore Hardware Details</strong>
+                </p>
+                <div style="font-size: 0.9em; color: #666;">
+                    Understanding both logical components and physical infrastructure
+                </div>
+            </div>
+
+            <!-- View Toggle Controls -->
+            <div style="text-align: center; margin: 20px 0;">
+                <button id="logical-view-btn" onclick="showLogicalView()" style="background: #2196f3; color: white; border: none; padding: 12px 24px; border-radius: 25px; margin: 0 10px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;">
+                    🔧 Logical Architecture
+                </button>
+                <button id="physical-view-btn" onclick="showPhysicalView()" style="background: #ff9800; color: white; border: none; padding: 12px 24px; border-radius: 25px; margin: 0 10px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;">
+                    🏗️ Physical Infrastructure
+                </button>
+                <button id="integrated-view-btn" onclick="showIntegratedView()" style="background: #4caf50; color: white; border: none; padding: 12px 24px; border-radius: 25px; margin: 0 10px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;">
+                    🔄 Integrated View
+                </button>
+            </div>
+
+            <!-- Main Visualization Container -->
+            <div id="architecture-container" style="background: linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 100%); border-radius: 20px; padding: 30px; margin: 20px 0; border: 2px solid #2196f3; position: relative; overflow: hidden; min-height: 600px;">
+
+                <!-- Logical Architecture View -->
+                <div id="logical-view" style="display: block;">
+                    <h3 style="text-align: center; color: #1976d2; margin-bottom: 30px;">🔧 Hive Logical Architecture</h3>
+
+                    <!-- SVG Architecture Diagram -->
+                    <div class="diagram-section" style="text-align: center;">
+                        <svg class="diagram-svg" width="1100" height="400" viewBox="0 0 1100 400" style="max-width: 100%; height: auto;">
+                            <!-- Step 1: Client -->
+                            <rect class="arch-component" id="arch-client" x="40" y="170" width="150" height="80" rx="18" fill="#e3f2fd" stroke="#1976d2" stroke-width="3" onclick="showArchDetails('client')" style="cursor: pointer;"/>
+                            <text x="115" y="200" text-anchor="middle" alignment-baseline="middle" font-size="20" fill="#1976d2" font-weight="bold">1. Client</text>
+                            <text x="115" y="225" text-anchor="middle" alignment-baseline="middle" font-size="15" fill="#1976d2">(Query Submission)</text>
+
+                            <!-- Step 2: Driver -->
+                            <rect class="arch-component" id="arch-driver" x="230" y="170" width="170" height="80" rx="18" fill="#fffde7" stroke="#ffb300" stroke-width="3" onclick="showArchDetails('driver')" style="cursor: pointer;"/>
+                            <text x="315" y="200" text-anchor="middle" alignment-baseline="middle" font-size="20" fill="#ffb300" font-weight="bold">2. Driver</text>
+                            <text x="315" y="225" text-anchor="middle" alignment-baseline="middle" font-size="15" fill="#ffb300">(Receives Query)</text>
+
+                            <!-- Step 3: Compiler -->
+                            <rect class="arch-component" id="arch-compiler" x="440" y="80" width="170" height="80" rx="18" fill="#f3e5f5" stroke="#8e24aa" stroke-width="3" onclick="showArchDetails('compiler')" style="cursor: pointer;"/>
+                            <text x="525" y="110" text-anchor="middle" alignment-baseline="middle" font-size="20" fill="#8e24aa" font-weight="bold">3. Compiler</text>
+                            <text x="525" y="135" text-anchor="middle" alignment-baseline="middle" font-size="15" fill="#8e24aa">(Compilation)</text>
+
+                            <!-- Step 4: Optimizer -->
+                            <rect class="arch-component" id="arch-optimizer" x="440" y="270" width="170" height="80" rx="18" fill="#e8f5e9" stroke="#388e3c" stroke-width="3" onclick="showArchDetails('optimizer')" style="cursor: pointer;"/>
+                            <text x="525" y="300" text-anchor="middle" alignment-baseline="middle" font-size="20" fill="#388e3c" font-weight="bold">4. Optimizer</text>
+                            <text x="525" y="325" text-anchor="middle" alignment-baseline="middle" font-size="15" fill="#388e3c">(Optimization)</text>
+
+                            <!-- Step 5: Execution Engine -->
+                            <rect class="arch-component" id="arch-execution" x="670" y="170" width="180" height="80" rx="18" fill="#e1f5fe" stroke="#0288d1" stroke-width="3" onclick="showArchDetails('execution')" style="cursor: pointer;"/>
+                            <text x="760" y="200" text-anchor="middle" alignment-baseline="middle" font-size="20" fill="#0288d1" font-weight="bold">5. Execution Engine</text>
+                            <text x="760" y="225" text-anchor="middle" alignment-baseline="middle" font-size="15" fill="#0288d1">(Job Creation)</text>
+
+                            <!-- Step 6: YARN/MapReduce/Tez/Spark -->
+                            <rect class="arch-component" id="arch-yarn" x="890" y="170" width="180" height="80" rx="18" fill="#fce4ec" stroke="#c2185b" stroke-width="3" onclick="showArchDetails('yarn')" style="cursor: pointer;"/>
+                            <text x="980" y="200" text-anchor="middle" alignment-baseline="middle" font-size="20" fill="#c2185b" font-weight="bold">6. YARN/Tez/Spark/MR</text>
+                            <text x="980" y="225" text-anchor="middle" alignment-baseline="middle" font-size="15" fill="#c2185b">(Job Processing)</text>
+
+                            <!-- HDFS -->
+                            <rect class="arch-component" id="arch-hdfs" x="980" y="320" width="80" height="50" rx="12" fill="#ede7f6" stroke="#5e35b1" stroke-width="2" onclick="showArchDetails('hdfs')" style="cursor: pointer;"/>
+                            <text x="1020" y="350" text-anchor="middle" alignment-baseline="middle" font-size="15" fill="#5e35b1" font-weight="bold">HDFS</text>
+
+                            <!-- Metastore -->
+                            <rect class="arch-component" id="arch-metastore" x="670" y="40" width="120" height="50" rx="12" fill="#fff3e0" stroke="#f57c00" stroke-width="2" onclick="showArchDetails('metastore')" style="cursor: pointer;"/>
+                            <text x="730" y="70" text-anchor="middle" alignment-baseline="middle" font-size="15" fill="#f57c00" font-weight="bold">Metastore</text>
+
+                            <!-- Arrows -->
+                            <line x1="190" y1="210" x2="230" y2="210" stroke="#888" stroke-width="2.5" marker-end="url(#arrowhead)"/>
+                            <line x1="400" y1="210" x2="440" y2="120" stroke="#888" stroke-width="2.5" marker-end="url(#arrowhead)"/>
+                            <line x1="400" y1="210" x2="440" y2="310" stroke="#888" stroke-width="2.5" marker-end="url(#arrowhead)"/>
+                            <line x1="610" y1="120" x2="670" y2="210" stroke="#888" stroke-width="2.5" marker-end="url(#arrowhead)"/>
+                            <line x1="610" y1="310" x2="670" y2="210" stroke="#888" stroke-width="2.5" marker-end="url(#arrowhead)"/>
+                            <line x1="850" y1="210" x2="890" y2="210" stroke="#888" stroke-width="2.5" marker-end="url(#arrowhead)"/>
+                            <line x1="1070" y1="250" x2="1020" y2="320" stroke="#888" stroke-width="2.5" marker-end="url(#arrowhead)"/>
+                            <line x1="730" y1="90" x2="525" y2="80" stroke="#f57c00" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrowhead)"/>
+
+                            <!-- SVG Arrowhead -->
+                            <defs>
+                                <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto" markerUnits="strokeWidth">
+                                    <polygon points="0 0, 8 4, 0 8" fill="#888"/>
+                                </marker>
+                            </defs>
+                        </svg>
+
+                        <div class="legend" style="margin-top: 20px; text-align: center; font-size: 0.9em;">
+                            <b>Components:</b>
+                            <span style="color: #1976d2">Client</span> •
+                            <span style="color: #ffb300">Driver</span> •
+                            <span style="color: #8e24aa">Compiler</span> •
+                            <span style="color: #388e3c">Optimizer</span> •
+                            <span style="color: #0288d1">Execution Engine</span> •
+                            <span style="color: #c2185b">YARN/Tez/Spark/MR</span> •
+                            <span style="color: #f57c00">Metastore</span> •
+                            <span style="color: #5e35b1">HDFS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Physical Infrastructure View -->
+                <div id="physical-view" style="display: none;">
+                    <h3 style="text-align: center; color: #ff9800; margin-bottom: 30px;">🏗️ Physical Infrastructure</h3>
+
+                    <!-- Data Flow Animation Controls -->
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <button id="start-flow-btn" onclick="startDataFlow()" style="background: #4caf50; color: white; border: none; padding: 12px 24px; border-radius: 25px; margin: 0 10px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;">
+                            ▶️ Start Data Flow
+                        </button>
+                        <button id="stop-flow-btn" onclick="stopDataFlow()" style="background: #f44336; color: white; border: none; padding: 12px 24px; border-radius: 25px; margin: 0 10px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;" disabled>
+                            ⏸️ Stop Flow
+                        </button>
+                        <button onclick="resetHardwareView()" style="background: #607d8b; color: white; border: none; padding: 12px 24px; border-radius: 25px; margin: 0 10px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;">
+                            🔄 Reset
+                        </button>
+                    </div>
+
+                    <!-- Hardware Infrastructure Grid -->
+                    <div id="hardware-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin: 20px 0;">
+
+                        <!-- Client Tier -->
+                        <div class="hardware-component" id="client-hardware" onclick="showHardwareDetails('client')" style="grid-column: 1; background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border: 3px solid #2196f3; border-radius: 15px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; position: relative;">
+                            <div style="font-size: 3em; margin-bottom: 10px;">💻</div>
+                            <h4 style="margin: 10px 0; color: #1976d2;">Client Machines</h4>
+                            <div style="font-size: 0.9em; color: #666;">
+                                • Developer Workstations<br>
+                                • Application Servers<br>
+                                • BI Tools
+                            </div>
+                            <div class="data-flow-indicator" style="position: absolute; top: 50%; right: -10px; width: 20px; height: 20px; background: #ff9800; border-radius: 50%; opacity: 0; transform: translateY(-50%);"></div>
+                        </div>
+
+                        <!-- Gateway/Edge Tier -->
+                        <div class="hardware-component" id="gateway-hardware" onclick="showHardwareDetails('gateway')" style="grid-column: 2; background: linear-gradient(135deg, #fff3e0 0%, #ffcc02 100%); border: 3px solid #ff9800; border-radius: 15px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; position: relative;">
+                            <div style="font-size: 3em; margin-bottom: 10px;">🌐</div>
+                            <h4 style="margin: 10px 0; color: #f57c00;">Gateway Nodes</h4>
+                            <div style="font-size: 0.9em; color: #666;">
+                                • HiveServer2<br>
+                                • Load Balancers<br>
+                                • Security Gateway
+                            </div>
+                            <div class="data-flow-indicator" style="position: absolute; top: 50%; right: -10px; width: 20px; height: 20px; background: #ff9800; border-radius: 50%; opacity: 0; transform: translateY(-50%);"></div>
+                        </div>
+
+                        <!-- Master Nodes -->
+                        <div class="hardware-component" id="master-hardware" onclick="showHardwareDetails('master')" style="grid-column: 3; background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%); border: 3px solid #9c27b0; border-radius: 15px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; position: relative;">
+                            <div style="font-size: 3em; margin-bottom: 10px;">🧠</div>
+                            <h4 style="margin: 10px 0; color: #7b1fa2;">Master Nodes</h4>
+                            <div style="font-size: 0.9em; color: #666;">
+                                • NameNode (HDFS)<br>
+                                • ResourceManager (YARN)<br>
+                                • Hive Metastore
+                            </div>
+                            <div class="data-flow-indicator" style="position: absolute; top: 50%; right: -10px; width: 20px; height: 20px; background: #ff9800; border-radius: 50%; opacity: 0; transform: translateY(-50%);"></div>
+                        </div>
+
+                        <!-- Worker Nodes -->
+                        <div class="hardware-component" id="worker-hardware" onclick="showHardwareDetails('worker')" style="grid-column: 4; background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border: 3px solid #4caf50; border-radius: 15px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; position: relative;">
+                            <div style="font-size: 3em; margin-bottom: 10px;">⚙️</div>
+                            <h4 style="margin: 10px 0; color: #388e3c;">Worker Nodes</h4>
+                            <div style="font-size: 0.9em; color: #666;">
+                                • DataNodes (HDFS)<br>
+                                • NodeManagers (YARN)<br>
+                                • Task Executors
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Storage Layer -->
+                    <div style="margin-top: 30px;">
+                        <div class="hardware-component" id="storage-hardware" onclick="showHardwareDetails('storage')" style="background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%); border: 3px solid #e91e63; border-radius: 15px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; position: relative;">
+                            <div style="font-size: 3em; margin-bottom: 10px;">💾</div>
+                            <h4 style="margin: 10px 0; color: #c2185b;">Distributed Storage</h4>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                                <div style="background: rgba(255,255,255,0.7); padding: 10px; border-radius: 8px;">
+                                    <strong>HDFS Cluster</strong><br>
+                                    <span style="font-size: 0.9em; color: #666;">Distributed file system</span>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.7); padding: 10px; border-radius: 8px;">
+                                    <strong>Object Storage</strong><br>
+                                    <span style="font-size: 0.9em; color: #666;">S3, Azure Blob, GCS</span>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.7); padding: 10px; border-radius: 8px;">
+                                    <strong>Database</strong><br>
+                                    <span style="font-size: 0.9em; color: #666;">Metastore DB</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Processing Flow Visualization -->
+                    <div id="processing-flow" style="margin-top: 30px; padding: 20px; background: rgba(255,255,255,0.8); border-radius: 15px; border: 2px dashed #2196f3;">
+                        <h4 style="text-align: center; color: #1976d2; margin-top: 0;">🔄 Query Processing Flow</h4>
+                        <div id="flow-steps" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+
+                            <div class="flow-step" id="flow-step-1" style="background: #e3f2fd; padding: 15px; border-radius: 10px; text-align: center; flex: 1; min-width: 120px; opacity: 0.3; transition: all 0.5s ease;">
+                                <div style="font-size: 2em;">📝</div>
+                                <div><strong>Query Submit</strong></div>
+                                <div style="font-size: 0.8em; color: #666;">Client → Gateway</div>
+                            </div>
+
+                            <div style="font-size: 1.5em; color: #2196f3;">→</div>
+
+                            <div class="flow-step" id="flow-step-2" style="background: #fff3e0; padding: 15px; border-radius: 10px; text-align: center; flex: 1; min-width: 120px; opacity: 0.3; transition: all 0.5s ease;">
+                                <div style="font-size: 2em;">🔍</div>
+                                <div><strong>Parse & Plan</strong></div>
+                                <div style="font-size: 0.8em; color: #666;">Master Nodes</div>
+                            </div>
+
+                            <div style="font-size: 1.5em; color: #2196f3;">→</div>
+
+                            <div class="flow-step" id="flow-step-3" style="background: #f3e5f5; padding: 15px; border-radius: 10px; text-align: center; flex: 1; min-width: 120px; opacity: 0.3; transition: all 0.5s ease;">
+                                <div style="font-size: 2em;">⚡</div>
+                                <div><strong>Optimize</strong></div>
+                                <div style="font-size: 0.8em; color: #666;">CBO & RBO</div>
+                            </div>
+
+                            <div style="font-size: 1.5em; color: #2196f3;">→</div>
+
+                            <div class="flow-step" id="flow-step-4" style="background: #e8f5e9; padding: 15px; border-radius: 10px; text-align: center; flex: 1; min-width: 120px; opacity: 0.3; transition: all 0.5s ease;">
+                                <div style="font-size: 2em;">🚀</div>
+                                <div><strong>Execute</strong></div>
+                                <div style="font-size: 0.8em; color: #666;">Worker Nodes</div>
+                            </div>
+
+                            <div style="font-size: 1.5em; color: #2196f3;">→</div>
+
+                            <div class="flow-step" id="flow-step-5" style="background: #fce4ec; padding: 15px; border-radius: 10px; text-align: center; flex: 1; min-width: 120px; opacity: 0.3; transition: all 0.5s ease;">
+                                <div style="font-size: 2em;">📊</div>
+                                <div><strong>Results</strong></div>
+                                <div style="font-size: 0.8em; color: #666;">Back to Client</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Integrated View -->
+                <div id="integrated-view" style="display: none;">
+                    <h3 style="text-align: center; color: #4caf50; margin-bottom: 30px;">🔄 Integrated Architecture & Infrastructure</h3>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: start;">
+                        <!-- Logical Components Column -->
+                        <div style="background: rgba(33, 150, 243, 0.1); padding: 20px; border-radius: 15px; border: 2px solid #2196f3;">
+                            <h4 style="text-align: center; color: #1976d2; margin-top: 0;">🔧 Logical Components</h4>
+                            <div id="logical-components" style="display: flex; flex-direction: column; gap: 15px;">
+                                <div class="logical-component" data-maps-to="client-hardware" onclick="highlightMapping('client')" style="background: #e3f2fd; padding: 15px; border-radius: 10px; border: 2px solid #2196f3; cursor: pointer; transition: all 0.3s ease;">
+                                    <strong style="color: #1976d2;">Client Applications</strong><br>
+                                    <span style="font-size: 0.9em; color: #666;">Query submission interface</span>
+                                </div>
+                                <div class="logical-component" data-maps-to="gateway-hardware" onclick="highlightMapping('gateway')" style="background: #fffde7; padding: 15px; border-radius: 10px; border: 2px solid #ffb300; cursor: pointer; transition: all 0.3s ease;">
+                                    <strong style="color: #ffb300;">Driver & HiveServer2</strong><br>
+                                    <span style="font-size: 0.9em; color: #666;">Query coordination & session management</span>
+                                </div>
+                                <div class="logical-component" data-maps-to="master-hardware" onclick="highlightMapping('master')" style="background: #f3e5f5; padding: 15px; border-radius: 10px; border: 2px solid #8e24aa; cursor: pointer; transition: all 0.3s ease;">
+                                    <strong style="color: #8e24aa;">Compiler & Optimizer</strong><br>
+                                    <span style="font-size: 0.9em; color: #666;">Query parsing, planning & optimization</span>
+                                </div>
+                                <div class="logical-component" data-maps-to="worker-hardware" onclick="highlightMapping('worker')" style="background: #e1f5fe; padding: 15px; border-radius: 10px; border: 2px solid #0288d1; cursor: pointer; transition: all 0.3s ease;">
+                                    <strong style="color: #0288d1;">Execution Engine</strong><br>
+                                    <span style="font-size: 0.9em; color: #666;">Task execution & data processing</span>
+                                </div>
+                                <div class="logical-component" data-maps-to="storage-hardware" onclick="highlightMapping('storage')" style="background: #fce4ec; padding: 15px; border-radius: 10px; border: 2px solid #c2185b; cursor: pointer; transition: all 0.3s ease;">
+                                    <strong style="color: #c2185b;">Storage Systems</strong><br>
+                                    <span style="font-size: 0.9em; color: #666;">HDFS, Metastore, Object Storage</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Physical Infrastructure Column -->
+                        <div style="background: rgba(255, 152, 0, 0.1); padding: 20px; border-radius: 15px; border: 2px solid #ff9800;">
+                            <h4 style="text-align: center; color: #f57c00; margin-top: 0;">🏗️ Physical Infrastructure</h4>
+                            <div id="physical-components" style="display: flex; flex-direction: column; gap: 15px;">
+                                <div class="physical-component" id="mapped-client" onclick="showHardwareDetails('client')" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); padding: 15px; border-radius: 10px; border: 2px solid #2196f3; cursor: pointer; transition: all 0.3s ease;">
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <span style="font-size: 2em;">💻</span>
+                                        <div>
+                                            <strong style="color: #1976d2;">Client Machines</strong><br>
+                                            <span style="font-size: 0.9em; color: #666;">Workstations, App Servers, BI Tools</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="physical-component" id="mapped-gateway" onclick="showHardwareDetails('gateway')" style="background: linear-gradient(135deg, #fff3e0 0%, #ffcc02 100%); padding: 15px; border-radius: 10px; border: 2px solid #ff9800; cursor: pointer; transition: all 0.3s ease;">
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <span style="font-size: 2em;">🌐</span>
+                                        <div>
+                                            <strong style="color: #f57c00;">Gateway Nodes</strong><br>
+                                            <span style="font-size: 0.9em; color: #666;">HiveServer2, Load Balancers</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="physical-component" id="mapped-master" onclick="showHardwareDetails('master')" style="background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%); padding: 15px; border-radius: 10px; border: 2px solid #9c27b0; cursor: pointer; transition: all 0.3s ease;">
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <span style="font-size: 2em;">🧠</span>
+                                        <div>
+                                            <strong style="color: #7b1fa2;">Master Nodes</strong><br>
+                                            <span style="font-size: 0.9em; color: #666;">NameNode, ResourceManager, Metastore</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="physical-component" id="mapped-worker" onclick="showHardwareDetails('worker')" style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 15px; border-radius: 10px; border: 2px solid #4caf50; cursor: pointer; transition: all 0.3s ease;">
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <span style="font-size: 2em;">⚙️</span>
+                                        <div>
+                                            <strong style="color: #388e3c;">Worker Nodes</strong><br>
+                                            <span style="font-size: 0.9em; color: #666;">DataNodes, NodeManagers, Executors</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="physical-component" id="mapped-storage" onclick="showHardwareDetails('storage')" style="background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%); padding: 15px; border-radius: 10px; border: 2px solid #e91e63; cursor: pointer; transition: all 0.3s ease;">
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <span style="font-size: 2em;">💾</span>
+                                        <div>
+                                            <strong style="color: #c2185b;">Distributed Storage</strong><br>
+                                            <span style="font-size: 0.9em; color: #666;">HDFS, Object Storage, Databases</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mapping Visualization -->
+                    <div style="margin-top: 30px; text-align: center;">
+                        <div style="background: rgba(76, 175, 80, 0.1); padding: 20px; border-radius: 15px; border: 2px dashed #4caf50;">
+                            <h4 style="color: #388e3c; margin-top: 0;">💡 Component Mapping Guide</h4>
+                            <p style="color: #666; margin-bottom: 15px;">Click any logical component to see its physical infrastructure mapping</p>
+                            <div style="display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap;">
+                                <span style="color: #2196f3;">🔧 Logical</span>
+                                <span style="font-size: 1.5em; color: #4caf50;">⟷</span>
+                                <span style="color: #ff9800;">🏗️ Physical</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Details Panel -->
+            <div id="details-panel" style="background: linear-gradient(135deg, #fffde7 0%, #fff8e1 100%); border-radius: 15px; padding: 25px; margin: 20px 0; border: 2px solid #ffcc02; display: none; transition: all 0.3s ease;">
+                <div id="details-content">
+                    <!-- Dynamic content will be injected here -->
+                </div>
+            </div>
+        </div>
+
+        <style>
+            .hardware-component:hover {
+                transform: translateY(-5px) scale(1.02);
+                box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            }
+
+            .hardware-component.active {
+                transform: translateY(-8px) scale(1.05);
+                box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+                border-width: 4px;
+            }
+
+            .flow-step.active {
+                opacity: 1 !important;
+                transform: scale(1.1);
+                box-shadow: 0 5px 15px rgba(33, 150, 243, 0.3);
+            }
+
+            .data-flow-indicator.active {
+                opacity: 1;
+                animation: pulse-flow 1s ease-in-out infinite;
+            }
+
+            @keyframes pulse-flow {
+                0%, 100% { transform: translateY(-50%) scale(1); opacity: 0.8; }
+                50% { transform: translateY(-50%) scale(1.2); opacity: 1; }
+            }
+
+            @media (max-width: 768px) {
+                #hardware-grid {
+                    grid-template-columns: 1fr 1fr;
+                    gap: 15px;
+                }
+
+                #flow-steps {
+                    flex-direction: column;
+                }
+
+                #flow-steps > div:nth-child(even) {
+                    transform: rotate(90deg);
+                    margin: 10px 0;
+                }
+            }
+        </style>
+
+        <script>
+            // Combined architecture and hardware details
+            const componentDetails = {
+                // Hardware details
+                client: {
+                    title: "💻 Client Machines",
+                    description: "End-user interfaces and application servers that submit queries to Hive",
+                    components: [
+                        { name: "Developer Workstations", desc: "IDEs, SQL clients, data exploration tools" },
+                        { name: "Application Servers", desc: "Web applications, microservices, ETL tools" },
+                        { name: "BI Tools", desc: "Tableau, Power BI, Looker connecting via JDBC/ODBC" },
+                        { name: "Command Line", desc: "Hive CLI, Beeline for direct query execution" }
+                    ],
+                    specs: "Typical: 8-32GB RAM, 4-16 CPU cores, SSD storage",
+                    type: "hardware"
+                },
+                gateway: {
+                    title: "🌐 Gateway Nodes",
+                    description: "Entry points that handle client connections and provide security/load balancing",
+                    components: [
+                        { name: "HiveServer2", desc: "Main service accepting JDBC/ODBC connections" },
+                        { name: "Load Balancers", desc: "Distribute client requests across multiple HiveServer2 instances" },
+                        { name: "Security Gateway", desc: "Authentication, authorization, SSL termination" },
+                        { name: "Web UI", desc: "Hue, Ambari, or custom web interfaces" }
+                    ],
+                    specs: "Typical: 32-64GB RAM, 8-16 CPU cores, high network bandwidth",
+                    type: "hardware"
+                },
+                master: {
+                    title: "🧠 Master Nodes",
+                    description: "Control plane services that manage metadata, resources, and coordination",
+                    components: [
+                        { name: "NameNode (HDFS)", desc: "Manages file system namespace and metadata" },
+                        { name: "ResourceManager (YARN)", desc: "Cluster resource allocation and job scheduling" },
+                        { name: "Hive Metastore", desc: "Stores table schemas, partitions, and statistics" },
+                        { name: "History Server", desc: "Job history and monitoring information" }
+                    ],
+                    specs: "Typical: 64-128GB RAM, 16-32 CPU cores, fast SSD, redundant setup",
+                    type: "hardware"
+                },
+                worker: {
+                    title: "⚙️ Worker Nodes",
+                    description: "Compute and storage nodes that execute actual data processing tasks",
+                    components: [
+                        { name: "DataNodes (HDFS)", desc: "Store actual data blocks with replication" },
+                        { name: "NodeManagers (YARN)", desc: "Manage containers and local resources" },
+                        { name: "Task Executors", desc: "Run Map/Reduce, Tez, or Spark tasks" },
+                        { name: "Local Storage", desc: "Temporary data, spill files, caching" }
+                    ],
+                    specs: "Typical: 64-256GB RAM, 16-48 CPU cores, multiple HDDs/SSDs",
+                    type: "hardware"
+                },
+                storage: {
+                    title: "💾 Distributed Storage",
+                    description: "Persistent storage layer for data and metadata",
+                    components: [
+                        { name: "HDFS Cluster", desc: "Distributed file system with fault tolerance" },
+                        { name: "Object Storage", desc: "Cloud storage (S3, Azure Blob, Google Cloud)" },
+                        { name: "Metastore Database", desc: "MySQL, PostgreSQL for metadata storage" },
+                        { name: "Backup Systems", desc: "Data replication and disaster recovery" }
+                    ],
+                    specs: "Petabyte scale, 3x replication, mixed HDD/SSD tiers",
+                    type: "hardware"
+                },
+                // Architecture component details
+                driver: {
+                    title: "🚗 Hive Driver",
+                    description: "Central coordinator that manages the entire query lifecycle",
+                    components: [
+                        { name: "Session Management", desc: "Handles client connections and maintains session state" },
+                        { name: "Query Coordinator", desc: "Orchestrates the compilation and execution process" },
+                        { name: "Result Handler", desc: "Manages query results and client communication" },
+                        { name: "Error Management", desc: "Handles exceptions and error reporting" }
+                    ],
+                    specs: "Runs on Gateway Nodes with HiveServer2",
+                    type: "logical"
+                },
+                compiler: {
+                    title: "🔧 Hive Compiler",
+                    description: "Transforms HiveQL queries into executable plans",
+                    components: [
+                        { name: "Lexical Analyzer", desc: "Tokenizes the input query string" },
+                        { name: "Parser", desc: "Creates Abstract Syntax Tree (AST)" },
+                        { name: "Semantic Analyzer", desc: "Validates schema and generates logical plan" },
+                        { name: "Plan Generator", desc: "Creates initial execution plan" }
+                    ],
+                    specs: "CPU-intensive process running on Master Nodes",
+                    type: "logical"
+                },
+                optimizer: {
+                    title: "⚡ Query Optimizer",
+                    description: "Optimizes query execution plans for better performance",
+                    components: [
+                        { name: "Cost-Based Optimizer", desc: "Uses statistics for optimal plan selection" },
+                        { name: "Rule-Based Optimizer", desc: "Applies predefined optimization rules" },
+                        { name: "Predicate Pushdown", desc: "Moves filters closer to data source" },
+                        { name: "Join Reordering", desc: "Optimizes join sequence and methods" }
+                    ],
+                    specs: "Memory-intensive process requiring table statistics",
+                    type: "logical"
+                },
+                execution: {
+                    title: "🚀 Execution Engine",
+                    description: "Converts optimized plans into executable jobs",
+                    components: [
+                        { name: "Physical Plan Generator", desc: "Creates engine-specific execution plans" },
+                        { name: "Task Scheduler", desc: "Schedules tasks across cluster nodes" },
+                        { name: "Resource Manager", desc: "Manages compute and memory resources" },
+                        { name: "Progress Monitor", desc: "Tracks job execution and provides status" }
+                    ],
+                    specs: "Coordinates with YARN ResourceManager for job submission",
+                    type: "logical"
+                },
+                yarn: {
+                    title: "🔄 YARN/Execution Engines",
+                    description: "Distributed processing frameworks that execute Hive jobs",
+                    components: [
+                        { name: "MapReduce", desc: "Traditional batch processing framework" },
+                        { name: "Apache Tez", desc: "DAG-based execution engine for better performance" },
+                        { name: "Apache Spark", desc: "In-memory processing for faster analytics" },
+                        { name: "LLAP", desc: "Live Long and Process for interactive queries" }
+                    ],
+                    specs: "Runs on Worker Nodes managed by YARN NodeManagers",
+                    type: "logical"
+                },
+                hdfs: {
+                    title: "💽 HDFS Storage",
+                    description: "Distributed file system for storing large datasets",
+                    components: [
+                        { name: "NameNode", desc: "Manages file system metadata and namespace" },
+                        { name: "DataNodes", desc: "Store actual data blocks across cluster" },
+                        { name: "Block Management", desc: "Handles data replication and recovery" },
+                        { name: "File Operations", desc: "Provides file system interface for applications" }
+                    ],
+                    specs: "Distributed across Worker Nodes with 3x replication",
+                    type: "logical"
+                },
+                metastore: {
+                    title: "📊 Hive Metastore",
+                    description: "Central repository for Hive metadata and schema information",
+                    components: [
+                        { name: "Schema Storage", desc: "Stores table and column definitions" },
+                        { name: "Partition Management", desc: "Manages table partitioning information" },
+                        { name: "Statistics Storage", desc: "Stores table and column statistics for CBO" },
+                        { name: "Security Metadata", desc: "Manages access control and permissions" }
+                    ],
+                    specs: "Typically MySQL/PostgreSQL database on Master Nodes",
+                    type: "logical"
+                }
+            };
+
+            let flowInterval;
+            let currentFlowStep = 0;
+            let currentView = 'logical';
+
+            // View switching functions
+            function showLogicalView() {
+                currentView = 'logical';
+                document.getElementById('logical-view').style.display = 'block';
+                document.getElementById('physical-view').style.display = 'none';
+                document.getElementById('integrated-view').style.display = 'none';
+
+                // Update button states
+                updateViewButtons('logical-view-btn');
+                hideDetailsPanel();
+            }
+
+            function showPhysicalView() {
+                currentView = 'physical';
+                document.getElementById('logical-view').style.display = 'none';
+                document.getElementById('physical-view').style.display = 'block';
+                document.getElementById('integrated-view').style.display = 'none';
+
+                // Update button states
+                updateViewButtons('physical-view-btn');
+                hideDetailsPanel();
+            }
+
+            function showIntegratedView() {
+                currentView = 'integrated';
+                document.getElementById('logical-view').style.display = 'none';
+                document.getElementById('physical-view').style.display = 'none';
+                document.getElementById('integrated-view').style.display = 'block';
+
+                // Update button states
+                updateViewButtons('integrated-view-btn');
+                hideDetailsPanel();
+            }
+
+            function updateViewButtons(activeId) {
+                const buttons = ['logical-view-btn', 'physical-view-btn', 'integrated-view-btn'];
+                buttons.forEach(id => {
+                    const btn = document.getElementById(id);
+                    if (id === activeId) {
+                        btn.style.background = btn.style.background.replace('0.8', '1');
+                        btn.style.transform = 'scale(1.05)';
+                    } else {
+                        btn.style.transform = 'scale(1)';
+                        btn.style.opacity = '0.8';
+                    }
+                });
+            }
+
+            function hideDetailsPanel() {
+                document.getElementById('details-panel').style.display = 'none';
+            }
+
+            // Component detail functions
+            function showHardwareDetails(componentType) {
+                showComponentDetails(componentType, 'hardware');
+            }
+
+            function showArchDetails(componentType) {
+                showComponentDetails(componentType, 'logical');
+            }
+
+            function showComponentDetails(componentType, detailType) {
+                const details = componentDetails[componentType];
+                if (!details) return;
+
+                const panel = document.getElementById('details-panel');
+                const content = document.getElementById('details-content');
+
+                // Remove active class from all components
+                document.querySelectorAll('.hardware-component, .arch-component').forEach(comp => {
+                    comp.classList.remove('active');
+                });
+
+                // Add active class to clicked component
+                const targetElement = detailType === 'hardware'
+                    ? document.getElementById(componentType + '-hardware')
+                    : document.getElementById('arch-' + componentType);
+
+                if (targetElement) {
+                    targetElement.classList.add('active');
+                }
+
+                content.innerHTML = `
+                    <h3 style="color: #e65100; margin-top: 0;">${details.title}</h3>
+                    <p style="font-size: 1.1em; color: #4e342e; margin-bottom: 20px;">${details.description}</p>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+                        ${details.components.map(comp => `
+                            <div style="background: rgba(255,255,255,0.8); padding: 15px; border-radius: 10px; border-left: 4px solid #ff9800;">
+                                <strong style="color: #e65100;">${comp.name}</strong><br>
+                                <span style="font-size: 0.9em; color: #666;">${comp.desc}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div style="background: rgba(255, 193, 7, 0.1); padding: 15px; border-radius: 10px; margin-top: 20px;">
+                        <strong style="color: #f57c00;">${details.type === 'hardware' ? 'Hardware Specifications:' : 'Implementation Details:'}</strong><br>
+                        <span style="color: #4e342e;">${details.specs}</span>
+                    </div>
+                `;
+
+                panel.style.display = 'block';
+                panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            // Integrated view mapping functions
+            function highlightMapping(componentType) {
+                // Remove previous highlights
+                document.querySelectorAll('.logical-component, .physical-component').forEach(comp => {
+                    comp.style.transform = 'scale(1)';
+                    comp.style.boxShadow = 'none';
+                });
+
+                // Highlight the mapping
+                const logicalComp = document.querySelector(`[data-maps-to="${componentType}-hardware"]`);
+                const physicalComp = document.getElementById(`mapped-${componentType}`);
+
+                if (logicalComp) {
+                    logicalComp.style.transform = 'scale(1.05)';
+                    logicalComp.style.boxShadow = '0 8px 25px rgba(33, 150, 243, 0.3)';
+                }
+
+                if (physicalComp) {
+                    physicalComp.style.transform = 'scale(1.05)';
+                    physicalComp.style.boxShadow = '0 8px 25px rgba(255, 152, 0, 0.3)';
+                }
+
+                // Show details
+                showHardwareDetails(componentType);
+            }
+
+            // Data flow animation functions
+            function startDataFlow() {
+                const startBtn = document.getElementById('start-flow-btn');
+                const stopBtn = document.getElementById('stop-flow-btn');
+
+                if (!startBtn || !stopBtn) return;
+
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+
+                currentFlowStep = 0;
+
+                // Reset all steps
+                document.querySelectorAll('.flow-step').forEach(step => {
+                    step.classList.remove('active');
+                });
+
+                // Start the flow animation
+                flowInterval = setInterval(() => {
+                    // Remove active from previous step
+                    if (currentFlowStep > 0) {
+                        const prevStep = document.getElementById(`flow-step-${currentFlowStep}`);
+                        if (prevStep) prevStep.classList.remove('active');
+                    }
+
+                    currentFlowStep++;
+
+                    if (currentFlowStep <= 5) {
+                        // Activate current step
+                        const currentStepEl = document.getElementById(`flow-step-${currentFlowStep}`);
+                        if (currentStepEl) currentStepEl.classList.add('active');
+
+                        // Activate data flow indicators
+                        if (currentFlowStep <= 4) {
+                            const indicators = document.querySelectorAll('.data-flow-indicator');
+                            if (indicators[currentFlowStep - 1]) {
+                                indicators[currentFlowStep - 1].classList.add('active');
+                            }
+                        }
+                    } else {
+                        // Reset and restart
+                        currentFlowStep = 0;
+                        document.querySelectorAll('.flow-step').forEach(step => {
+                            step.classList.remove('active');
+                        });
+                        document.querySelectorAll('.data-flow-indicator').forEach(indicator => {
+                            indicator.classList.remove('active');
+                        });
+                    }
+                }, 1500);
+            }
+
+            function stopDataFlow() {
+                const startBtn = document.getElementById('start-flow-btn');
+                const stopBtn = document.getElementById('stop-flow-btn');
+
+                if (!startBtn || !stopBtn) return;
+
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+
+                if (flowInterval) {
+                    clearInterval(flowInterval);
+                    flowInterval = null;
+                }
+
+                // Keep current state but stop animation
+                document.querySelectorAll('.data-flow-indicator').forEach(indicator => {
+                    indicator.classList.remove('active');
+                });
+            }
+
+            function resetHardwareView() {
+                // Stop any running animation
+                stopDataFlow();
+
+                // Reset all visual states
+                document.querySelectorAll('.hardware-component, .arch-component, .logical-component, .physical-component').forEach(comp => {
+                    comp.classList.remove('active');
+                    comp.style.transform = 'scale(1)';
+                    comp.style.boxShadow = 'none';
+                });
+
+                document.querySelectorAll('.flow-step').forEach(step => {
+                    step.classList.remove('active');
+                });
+
+                document.querySelectorAll('.data-flow-indicator').forEach(indicator => {
+                    indicator.classList.remove('active');
+                });
+
+                // Hide details panel
+                hideDetailsPanel();
+
+                currentFlowStep = 0;
+            }
+
+            // Initialize the view
+            document.addEventListener('DOMContentLoaded', function() {
+                showLogicalView(); // Start with logical view
+            });
+        </script>
+
+        <!-- Conclusion Section -->
+        <div class="content-section">
+            <h2>13. Conclusion</h2>
+            <p>Apache Hive has revolutionized big data analytics by providing a familiar SQL interface to the Hadoop ecosystem. Key takeaways:</p>
+
+            <div class="highlight-box">
+                <h3>Key Advantages:</h3>
+                <ul>
+                    <li><strong>SQL Familiarity:</strong> Enables traditional database developers to work with big data</li>
+                    <li><strong>Schema Flexibility:</strong> Schema-on-read approach for diverse data formats</li>
+                    <li><strong>Scalability:</strong> Handles petabyte-scale data across distributed clusters</li>
+                    <li><strong>Ecosystem Integration:</strong> Works seamlessly with Hadoop ecosystem tools</li>
+                    <li><strong>Multiple Execution Engines:</strong> Support for MapReduce, Tez, and Spark</li>
+                    <li><strong>Rich Data Types:</strong> Support for complex nested data structures</li>
+                </ul>
+            </div>
+
+            <h3>13.1 When to Use Hive</h3>
+            <ul>
+                <li>Large-scale ETL operations and data warehousing</li>
+                <li>Batch processing of structured and semi-structured data</li>
+                <li>Data analysis requiring SQL-like interface</li>
+                <li>Integration with existing Hadoop infrastructure</li>
+                <li>Long-running analytical queries on historical data</li>
+                <li>Data transformation and aggregation workflows</li>
+            </ul>
+
+            <h3>13.2 Limitations and Considerations</h3>
+            <ul>
+                <li><strong>High Latency:</strong> Not suitable for real-time or interactive queries</li>
+                <li><strong>Limited ACID Support:</strong> Basic transactional capabilities</li>
+                <li><strong>Schema Evolution:</strong> Can be challenging with some file formats</li>
+                <li><strong>Small File Problem:</strong> Performance issues with many small files</li>
+                <li><strong>Memory Requirements:</strong> Can be memory-intensive for complex queries</li>
+            </ul>
+
+            <h3>13.3 Future of Hive</h3>
+            <p>Hive continues to evolve with:</p>
+            <ul>
+                <li><strong>LLAP (Live Long and Process):</strong> Interactive query processing</li>
+                <li><strong>ACID Transactions:</strong> Improved transactional support</li>
+                <li><strong>Materialized Views:</strong> Query performance optimization</li>
+                <li><strong>Cloud Integration:</strong> Better support for cloud storage systems</li>
+                <li><strong>Streaming Support:</strong> Real-time data processing capabilities</li>
+            </ul>
+
+            <div class="highlight-box">
+                <strong>Final Thought:</strong> Apache Hive remains a cornerstone of the big data ecosystem, providing a bridge between traditional SQL-based analytics and distributed big data processing. Its ability to handle massive datasets with familiar SQL syntax makes it an essential tool for data warehousing and ETL operations in the Hadoop ecosystem.
+            </div>
+        </div>
+    </body>
+</html>
