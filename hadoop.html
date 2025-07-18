@@ -436,187 +436,460 @@
             <div class="header">
                 <h1>🔧 Hadoop HDFS Architecture</h1>
                 <p>
-                    Interactive visualization of the core components and data
-                    flow
+                    Interactive visualization of the core components and data flow
                 </p>
-            </div>
-
-            <!-- HDFS Job Execution & Resource Allocation Visualization -->
-            <div
-                class="job-execution-visualization"
-                style="margin-bottom: 40px"
-            >
-                <div class="section-title">
-                    HDFS Job Execution & Resource Allocation
-                </div>
-                <div
-                    class="cluster-nodes"
-                    style="
-                        display: flex;
-                        gap: 30px;
-                        justify-content: center;
-                        margin-bottom: 20px;
-                    "
-                >
-                    <div
-                        class="node"
-                        id="node-1"
-                        style="
-                            background: #fff;
-                            border-radius: 10px;
-                            padding: 20px;
-                            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-                            min-width: 180px;
-                        "
-                    >
-                        <div
-                            class="node-title"
-                            style="font-weight: bold; margin-bottom: 8px"
-                        >
-                            Node 1
-                        </div>
-                        <div class="resources">
-                            <span class="cpu"
-                                >CPU: <span id="cpu-1">8</span>/8</span
-                            >
-                            <span class="mem"
-                                >Mem: <span id="mem-1">16</span>GB/16GB</span
-                            >
-                        </div>
-                        <div
-                            class="containers"
-                            id="containers-1"
-                            style="margin-top: 10px"
-                        ></div>
-                    </div>
-                    <div
-                        class="node"
-                        id="node-2"
-                        style="
-                            background: #fff;
-                            border-radius: 10px;
-                            padding: 20px;
-                            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-                            min-width: 180px;
-                        "
-                    >
-                        <div
-                            class="node-title"
-                            style="font-weight: bold; margin-bottom: 8px"
-                        >
-                            Node 2
-                        </div>
-                        <div class="resources">
-                            <span class="cpu"
-                                >CPU: <span id="cpu-2">8</span>/8</span
-                            >
-                            <span class="mem"
-                                >Mem: <span id="mem-2">16</span>GB/16GB</span
-                            >
-                        </div>
-                        <div
-                            class="containers"
-                            id="containers-2"
-                            style="margin-top: 10px"
-                        ></div>
-                    </div>
-                    <div
-                        class="node"
-                        id="node-3"
-                        style="
-                            background: #fff;
-                            border-radius: 10px;
-                            padding: 20px;
-                            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-                            min-width: 180px;
-                        "
-                    >
-                        <div
-                            class="node-title"
-                            style="font-weight: bold; margin-bottom: 8px"
-                        >
-                            Node 3
-                        </div>
-                        <div class="resources">
-                            <span class="cpu"
-                                >CPU: <span id="cpu-3">8</span>/8</span
-                            >
-                            <span class="mem"
-                                >Mem: <span id="mem-3">16</span>GB/16GB</span
-                            >
-                        </div>
-                        <div
-                            class="containers"
-                            id="containers-3"
-                            style="margin-top: 10px"
-                        ></div>
-                    </div>
-                </div>
-                <div
-                    class="job-steps"
-                    style="text-align: center; margin-bottom: 15px"
-                >
-                    <button class="control-btn" onclick="showPreviousJobStep()">
-                        Previous
+                <div style="margin-top: 20px;">
+                    <button onclick="startDataFlowSimulation()" style="background: #ff6b35; color: white; border: none; padding: 12px 24px; border-radius: 25px; font-weight: bold; cursor: pointer; margin: 5px;">
+                        🚀 Start Data Flow Simulation
                     </button>
-                    <span
-                        id="job-step-counter"
-                        style="font-size: 1em; margin-right: 10px; color: white"
-                    ></span>
-                    <span
-                        id="job-step-title"
-                        style="
-                            font-size: 1.1em;
-                            font-weight: bold;
-                            margin: 0 18px;
-                            color: white;
-                        "
-                    ></span>
-                    <button class="control-btn" onclick="showNextJobStep()">
-                        Next
+                    <button onclick="simulateFileWrite()" style="background: #27ae60; color: white; border: none; padding: 12px 24px; border-radius: 25px; font-weight: bold; cursor: pointer; margin: 5px;">
+                        📝 Simulate File Write
+                    </button>
+                    <button onclick="simulateFileRead()" style="background: #3498db; color: white; border: none; padding: 12px 24px; border-radius: 25px; font-weight: bold; cursor: pointer; margin: 5px;">
+                        📖 Simulate File Read
+                    </button>
+                    <button onclick="simulateNodeFailure()" style="background: #e74c3c; color: white; border: none; padding: 12px 24px; border-radius: 25px; font-weight: bold; cursor: pointer; margin: 5px;">
+                        ⚠️ Simulate Node Failure
                     </button>
                 </div>
-                <div
-                    class="info-panel"
-                    id="job-info-panel"
-                    style="
-                        background: #e3f2fd;
-                        color: #333;
-                        border-radius: 10px;
-                        padding: 15px;
-                        text-align: left;
-                        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-                    "
-                ></div>
             </div>
 
+            <!-- Real-time Process Monitor -->
+            <div class="architecture-diagram">
+                <div class="section-title">🔄 Real-time HDFS Process Monitor</div>
+
+                <!-- Monitor Control Panel -->
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <button onclick="resetProcessMonitor()" style="background: #e74c3c; color: white; border: none; padding: 12px 25px; border-radius: 25px; cursor: pointer; font-weight: bold; font-size: 0.9em; transition: all 0.3s ease;">
+                        🔄 Reset Monitor
+                    </button>
+                </div>
+
+                <div id="process-monitor" style="background: #1a1a1a; color: #00ff00; padding: 20px; border-radius: 10px; font-family: 'Courier New', monospace; height: 200px; overflow-y: auto; margin-bottom: 20px;">
+                    <div id="log-output">HDFS System Ready - Click any simulation button to see real-time processes...</div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                    <div style="background: #ecf0f1; padding: 10px; border-radius: 5px; flex: 1; margin: 0 5px; text-align: center;">
+                        <strong>Active DataNodes:</strong> <span id="active-nodes">3</span>
+                    </div>
+                    <div style="background: #ecf0f1; padding: 10px; border-radius: 5px; flex: 1; margin: 0 5px; text-align: center;">
+                        <strong>Total Blocks:</strong> <span id="total-blocks">0</span>
+                    </div>
+                    <div style="background: #ecf0f1; padding: 10px; border-radius: 5px; flex: 1; margin: 0 5px; text-align: center;">
+                        <strong>Replication Factor:</strong> <span id="replication-factor">3</span>
+                    </div>
+                    <div style="background: #ecf0f1; padding: 10px; border-radius: 5px; flex: 1; margin: 0 5px; text-align: center;">
+                        <strong>System Health:</strong> <span id="system-health" style="color: #27ae60;">HEALTHY</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Data Flow Visualization -->
+            <div class="architecture-diagram">
+                <div class="section-title">📊 Interactive Data Flow Visualization</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div style="background: #3498db; color: white; padding: 15px; border-radius: 10px; text-align: center; flex: 1; margin: 0 10px; cursor: pointer;" onclick="showClientInteraction()">
+                        <div style="font-size: 2em;">👤</div>
+                        <div><strong>Client</strong></div>
+                        <div style="font-size: 0.9em;">Initiates Requests</div>
+                    </div>
+                    <div style="font-size: 2em; color: #e74c3c;">→</div>
+                    <div style="background: #e74c3c; color: white; padding: 15px; border-radius: 10px; text-align: center; flex: 1; margin: 0 10px; cursor: pointer;" onclick="showNameNodeDetails()">
+                        <div style="font-size: 2em;">🧠</div>
+                        <div><strong>NameNode</strong></div>
+                        <div style="font-size: 0.9em;">Metadata Manager</div>
+                    </div>
+                    <div style="font-size: 2em; color: #e74c3c;">→</div>
+                    <div style="background: #27ae60; color: white; padding: 15px; border-radius: 10px; text-align: center; flex: 1; margin: 0 10px; cursor: pointer;" onclick="showDataNodeCluster()">
+                        <div style="font-size: 2em;">💾</div>
+                        <div><strong>DataNodes</strong></div>
+                        <div style="font-size: 0.9em;">Data Storage</div>
+                    </div>
+                </div>
+
+                <!-- Dynamic Information Panel -->
+                <div id="flow-info-panel" style="background: #f8f9fa; border: 2px solid #ddd; border-radius: 10px; padding: 20px; min-height: 150px;">
+                    <h4>💡 Click on any component above to see detailed interaction flow</h4>
+                    <p>This visualization shows how data flows through the HDFS architecture during read/write operations.</p>
+                </div>
+            </div>
+
+            <!-- Step-by-Step Process Simulator -->
+            <div class="architecture-diagram">
+                <div class="section-title">🎯 Step-by-Step Process Simulator</div>
+                <div style="margin-bottom: 20px;">
+                    <button onclick="simulateWriteProcess()" style="background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 5px; margin: 5px; cursor: pointer;">
+                        📝 Write Process
+                    </button>
+                    <button onclick="simulateReadProcess()" style="background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; margin: 5px; cursor: pointer;">
+                        📖 Read Process
+                    </button>
+                    <button onclick="simulateReplicationProcess()" style="background: #f39c12; color: white; border: none; padding: 10px 20px; border-radius: 5px; margin: 5px; cursor: pointer;">
+                        🔄 Replication Process
+                    </button>
+                    <button onclick="simulateFailureRecovery()" style="background: #e74c3c; color: white; border: none; padding: 10px 20px; border-radius: 5px; margin: 5px; cursor: pointer;">
+                        🚨 Failure Recovery
+                    </button>
+                </div>
+
+                <!-- Process Steps Visualization -->
+                <div id="process-steps" style="display: flex; justify-content: space-between; margin: 20px 0; flex-wrap: wrap;">
+                    <div class="process-step" id="step-1" style="background: #ecf0f1; padding: 15px; border-radius: 10px; margin: 5px; flex: 1; min-width: 150px; text-align: center; transition: all 0.3s ease;">
+                        <div style="font-size: 1.5em; margin-bottom: 10px;">1️⃣</div>
+                        <div><strong>Initialize</strong></div>
+                        <div style="font-size: 0.9em; color: #666;">Ready to start</div>
+                    </div>
+                    <div class="process-step" id="step-2" style="background: #ecf0f1; padding: 15px; border-radius: 10px; margin: 5px; flex: 1; min-width: 150px; text-align: center; transition: all 0.3s ease;">
+                        <div style="font-size: 1.5em; margin-bottom: 10px;">2️⃣</div>
+                        <div><strong>Contact NameNode</strong></div>
+                        <div style="font-size: 0.9em; color: #666;">Metadata lookup</div>
+                    </div>
+                    <div class="process-step" id="step-3" style="background: #ecf0f1; padding: 15px; border-radius: 10px; margin: 5px; flex: 1; min-width: 150px; text-align: center; transition: all 0.3s ease;">
+                        <div style="font-size: 1.5em; margin-bottom: 10px;">3️⃣</div>
+                        <div><strong>Locate DataNodes</strong></div>
+                        <div style="font-size: 0.9em; color: #666;">Find target nodes</div>
+                    </div>
+                    <div class="process-step" id="step-4" style="background: #ecf0f1; padding: 15px; border-radius: 10px; margin: 5px; flex: 1; min-width: 150px; text-align: center; transition: all 0.3s ease;">
+                        <div style="font-size: 1.5em; margin-bottom: 10px;">4️⃣</div>
+                        <div><strong>Execute Operation</strong></div>
+                        <div style="font-size: 0.9em; color: #666;">Read/Write data</div>
+                    </div>
+                    <div class="process-step" id="step-5" style="background: #ecf0f1; padding: 15px; border-radius: 10px; margin: 5px; flex: 1; min-width: 150px; text-align: center; transition: all 0.3s ease;">
+                        <div style="font-size: 1.5em; margin-bottom: 10px;">5️⃣</div>
+                        <div><strong>Complete</strong></div>
+                        <div style="font-size: 0.9em; color: #666;">Operation finished</div>
+                    </div>
+                </div>
+
+                <!-- Detailed Step Information -->
+                <div id="step-details" style="background: #1a1a1a; color: #00ff00; padding: 20px; border-radius: 10px; font-family: 'Courier New', monospace; min-height: 100px;">
+                    <div>Select a process above to see step-by-step execution details...</div>
+                </div>
+            </div>
+
+            <!-- Enhanced HDFS Job Execution & Resource Allocation Visualization -->
+            <div class="architecture-diagram">
+                <div class="section-title">🚀 HDFS Job Execution & Resource Allocation Workflow</div>
+
+                <!-- Interactive Job Control Panel -->
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; text-align: center;">
+                    <h3 style="margin-bottom: 15px;">🎮 Interactive Job Execution Simulator</h3>
+                    <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 15px;">
+                        <button onclick="startJobExecution()" style="background: #27ae60; color: white; border: none; padding: 12px 20px; border-radius: 25px; cursor: pointer; font-weight: bold;">
+                            ▶️ Start Job Execution
+                        </button>
+                        <button onclick="pauseJobExecution()" style="background: #f39c12; color: white; border: none; padding: 12px 20px; border-radius: 25px; cursor: pointer; font-weight: bold;">
+                            ⏸️ Pause Execution
+                        </button>
+                        <button onclick="resetJobExecution()" style="background: #e74c3c; color: white; border: none; padding: 12px 20px; border-radius: 25px; cursor: pointer; font-weight: bold;">
+                            🔄 Reset Workflow
+                        </button>
+                        <button onclick="showResourceAllocation()" style="background: #9b59b6; color: white; border: none; padding: 12px 20px; border-radius: 25px; cursor: pointer; font-weight: bold;">
+                            📊 Resource Monitor
+                        </button>
+                    </div>
+                    <div style="font-size: 0.9em; opacity: 0.9;">
+                        Watch how HDFS processes jobs step-by-step with real-time resource allocation
+                    </div>
+                </div>
+
+                <!-- Step-by-Step Job Execution Workflow -->
+                <div style="background: #f8f9fa; border-radius: 15px; padding: 25px; margin-bottom: 20px;">
+                    <h4 style="text-align: center; margin-bottom: 20px; color: #2c3e50;">📋 Job Execution Steps</h4>
+
+                    <!-- Progress Bar -->
+                    <div style="background: #ecf0f1; height: 8px; border-radius: 4px; margin-bottom: 20px; overflow: hidden;">
+                        <div id="job-progress-bar" style="background: linear-gradient(90deg, #27ae60, #2ecc71); height: 100%; width: 0%; transition: width 0.5s ease; border-radius: 4px;"></div>
+                    </div>
+
+                    <!-- Interactive Step Buttons -->
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                        <button class="job-step-btn" id="step-btn-1" onclick="showJobStep(1)" style="background: #3498db; color: white; border: none; padding: 10px 15px; border-radius: 20px; cursor: pointer; font-size: 0.9em; transition: all 0.3s ease; flex: 1; min-width: 120px;">
+                            1️⃣ Job Submission
+                        </button>
+                        <button class="job-step-btn" id="step-btn-2" onclick="showJobStep(2)" style="background: #95a5a6; color: white; border: none; padding: 10px 15px; border-radius: 20px; cursor: pointer; font-size: 0.9em; transition: all 0.3s ease; flex: 1; min-width: 120px;">
+                            2️⃣ Resource Request
+                        </button>
+                        <button class="job-step-btn" id="step-btn-3" onclick="showJobStep(3)" style="background: #95a5a6; color: white; border: none; padding: 10px 15px; border-radius: 20px; cursor: pointer; font-size: 0.9em; transition: all 0.3s ease; flex: 1; min-width: 120px;">
+                            3️⃣ Task Allocation
+                        </button>
+                        <button class="job-step-btn" id="step-btn-4" onclick="showJobStep(4)" style="background: #95a5a6; color: white; border: none; padding: 10px 15px; border-radius: 20px; cursor: pointer; font-size: 0.9em; transition: all 0.3s ease; flex: 1; min-width: 120px;">
+                            4️⃣ Data Processing
+                        </button>
+                        <button class="job-step-btn" id="step-btn-5" onclick="showJobStep(5)" style="background: #95a5a6; color: white; border: none; padding: 10px 15px; border-radius: 20px; cursor: pointer; font-size: 0.9em; transition: all 0.3s ease; flex: 1; min-width: 120px;">
+                            5️⃣ Result Collection
+                        </button>
+                    </div>
+
+                    <!-- Step Details Panel -->
+                    <div id="job-step-details" style="background: white; border-radius: 10px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); min-height: 150px;">
+                        <div style="text-align: center; color: #666;">
+                            <h4>🎯 Click on any step above to see detailed execution process</h4>
+                            <p>Each step shows real-time resource allocation and data flow visualization</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Real-time Resource Allocation Monitor -->
+                <div style="background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); border-radius: 15px; padding: 25px; margin-bottom: 20px;">
+                    <h4 style="text-align: center; margin-bottom: 20px; color: #2c3e50;">📊 Real-time Resource Allocation</h4>
+
+                    <!-- Cluster Nodes with Resource Visualization -->
+                    <div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap;">
+                        <div class="resource-node" id="resource-node-1" style="background: white; border-radius: 15px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); min-width: 200px; text-align: center; transition: all 0.3s ease;">
+                            <div style="font-size: 2em; margin-bottom: 10px;">🖥️</div>
+                            <h5 style="margin-bottom: 15px; color: #2c3e50;">Node 1 (Master)</h5>
+
+                            <!-- CPU Usage -->
+                            <div style="margin-bottom: 10px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 0.8em; margin-bottom: 5px;">
+                                    <span>CPU Usage</span>
+                                    <span id="cpu-usage-1">25%</span>
+                                </div>
+                                <div style="background: #ecf0f1; height: 6px; border-radius: 3px; overflow: hidden;">
+                                    <div id="cpu-bar-1" style="background: #3498db; height: 100%; width: 25%; transition: width 0.5s ease; border-radius: 3px;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Memory Usage -->
+                            <div style="margin-bottom: 10px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 0.8em; margin-bottom: 5px;">
+                                    <span>Memory</span>
+                                    <span id="memory-usage-1">4GB/16GB</span>
+                                </div>
+                                <div style="background: #ecf0f1; height: 6px; border-radius: 3px; overflow: hidden;">
+                                    <div id="memory-bar-1" style="background: #27ae60; height: 100%; width: 25%; transition: width 0.5s ease; border-radius: 3px;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Active Tasks -->
+                            <div style="font-size: 0.8em; color: #666;">
+                                Active Tasks: <span id="active-tasks-1" style="font-weight: bold; color: #2c3e50;">2</span>
+                            </div>
+                        </div>
+
+                        <div class="resource-node" id="resource-node-2" style="background: white; border-radius: 15px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); min-width: 200px; text-align: center; transition: all 0.3s ease;">
+                            <div style="font-size: 2em; margin-bottom: 10px;">💾</div>
+                            <h5 style="margin-bottom: 15px; color: #2c3e50;">Node 2 (Worker)</h5>
+
+                            <div style="margin-bottom: 10px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 0.8em; margin-bottom: 5px;">
+                                    <span>CPU Usage</span>
+                                    <span id="cpu-usage-2">60%</span>
+                                </div>
+                                <div style="background: #ecf0f1; height: 6px; border-radius: 3px; overflow: hidden;">
+                                    <div id="cpu-bar-2" style="background: #f39c12; height: 100%; width: 60%; transition: width 0.5s ease; border-radius: 3px;"></div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 10px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 0.8em; margin-bottom: 5px;">
+                                    <span>Memory</span>
+                                    <span id="memory-usage-2">10GB/16GB</span>
+                                </div>
+                                <div style="background: #ecf0f1; height: 6px; border-radius: 3px; overflow: hidden;">
+                                    <div id="memory-bar-2" style="background: #e67e22; height: 100%; width: 62%; transition: width 0.5s ease; border-radius: 3px;"></div>
+                                </div>
+                            </div>
+
+                            <div style="font-size: 0.8em; color: #666;">
+                                Active Tasks: <span id="active-tasks-2" style="font-weight: bold; color: #2c3e50;">5</span>
+                            </div>
+                        </div>
+
+                        <div class="resource-node" id="resource-node-3" style="background: white; border-radius: 15px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); min-width: 200px; text-align: center; transition: all 0.3s ease;">
+                            <div style="font-size: 2em; margin-bottom: 10px;">💾</div>
+                            <h5 style="margin-bottom: 15px; color: #2c3e50;">Node 3 (Worker)</h5>
+
+                            <div style="margin-bottom: 10px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 0.8em; margin-bottom: 5px;">
+                                    <span>CPU Usage</span>
+                                    <span id="cpu-usage-3">45%</span>
+                                </div>
+                                <div style="background: #ecf0f1; height: 6px; border-radius: 3px; overflow: hidden;">
+                                    <div id="cpu-bar-3" style="background: #27ae60; height: 100%; width: 45%; transition: width 0.5s ease; border-radius: 3px;"></div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 10px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 0.8em; margin-bottom: 5px;">
+                                    <span>Memory</span>
+                                    <span id="memory-usage-3">7GB/16GB</span>
+                                </div>
+                                <div style="background: #ecf0f1; height: 6px; border-radius: 3px; overflow: hidden;">
+                                    <div id="memory-bar-3" style="background: #2ecc71; height: 100%; width: 44%; transition: width 0.5s ease; border-radius: 3px;"></div>
+                                </div>
+                            </div>
+
+                            <div style="font-size: 0.8em; color: #666;">
+                                Active Tasks: <span id="active-tasks-3" style="font-weight: bold; color: #2c3e50;">3</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cluster Statistics -->
+                    <div style="background: rgba(255,255,255,0.9); border-radius: 10px; padding: 15px; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 15px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.5em; font-weight: bold; color: #3498db;" id="total-cpu-usage">43%</div>
+                            <div style="font-size: 0.8em; color: #666;">Cluster CPU</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.5em; font-weight: bold; color: #27ae60;" id="total-memory-usage">21GB</div>
+                            <div style="font-size: 0.8em; color: #666;">Memory Used</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.5em; font-weight: bold; color: #f39c12;" id="total-active-tasks">10</div>
+                            <div style="font-size: 0.8em; color: #666;">Active Tasks</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.5em; font-weight: bold; color: #e74c3c;" id="job-completion">0%</div>
+                            <div style="font-size: 0.8em; color: #666;">Job Progress</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enhanced Master-Slave Architecture Visualization -->
             <div class="architecture-diagram">
                 <div class="cluster-section">
-                    <div class="section-title">Master-Slave Architecture</div>
-                    <div
-                        class="info-panel"
-                        style="
-                            background: #222;
-                            color: #fff;
-                            margin-top: 10px;
-                            border-radius: 8px;
-                            padding: 12px;
-                        "
-                    >
-                        <strong>Storage Details:</strong>
-                        <ul style="margin-left: 18px">
-                            <li>
-                                <strong>NameNode:</strong> Metadata and
-                                namespace in RAM; persistent FsImage/EditLog on
-                                disk.
-                            </li>
-                            <li>
-                                <strong>DataNodes:</strong> Data blocks on local
-                                disk (HDD/SSD); communication info in RAM.
-                            </li>
-                        </ul>
+                    <div class="section-title">🏗️ Master-Slave Architecture</div>
+
+                    <!-- Interactive Control Panel -->
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; text-align: center;">
+                        <h3 style="margin-bottom: 15px;">🎮 Interactive Architecture Explorer</h3>
+                        <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                            <button onclick="animateDataFlow()" style="background: #27ae60; color: white; border: none; padding: 12px 20px; border-radius: 25px; cursor: pointer; font-weight: bold;">
+                                🌊 Animate Data Flow
+                            </button>
+                            <button onclick="simulateHeartbeat()" style="background: #e74c3c; color: white; border: none; padding: 12px 20px; border-radius: 25px; cursor: pointer; font-weight: bold;">
+                                💓 Simulate Heartbeat
+                            </button>
+                            <button onclick="showReplicationDemo()" style="background: #f39c12; color: white; border: none; padding: 12px 20px; border-radius: 25px; cursor: pointer; font-weight: bold;">
+                                🔄 Replication Demo
+                            </button>
+                            <button onclick="toggleArchitectureView()" style="background: #9b59b6; color: white; border: none; padding: 12px 20px; border-radius: 25px; cursor: pointer; font-weight: bold;">
+                                🔍 Toggle 3D View
+                            </button>
+                        </div>
                     </div>
-                    <div class="master-slave-container">
+
+                    <!-- Enhanced Architecture Visualization -->
+                    <div id="architecture-container" style="position: relative; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 20px; padding: 30px; min-height: 600px; overflow: hidden;">
+
+                        <!-- Animated Background Grid -->
+                        <div id="grid-background" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.1; background-image: radial-gradient(circle, #667eea 1px, transparent 1px); background-size: 30px 30px; animation: gridMove 20s linear infinite;"></div>
+
+                        <!-- Master Node (NameNode) -->
+                        <div id="master-node" style="position: absolute; top: 50px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%); border-radius: 20px; padding: 25px; color: white; text-align: center; box-shadow: 0 15px 35px rgba(255, 107, 107, 0.3); cursor: pointer; transition: all 0.3s ease; min-width: 280px;" onclick="showMasterDetails()">
+                            <div style="font-size: 3em; margin-bottom: 10px; animation: pulse 2s infinite;">🧠</div>
+                            <h3 style="margin-bottom: 10px; font-size: 1.4em;">NameNode (Master)</h3>
+                            <div style="font-size: 0.9em; opacity: 0.9;">Metadata & Namespace Manager</div>
+                            <div id="master-status" style="margin-top: 10px; padding: 8px; background: rgba(255,255,255,0.2); border-radius: 10px; font-size: 0.8em;">
+                                Status: Active | Uptime: 99.9%
+                            </div>
+                        </div>
+
+                        <!-- Data Flow Connections -->
+                        <svg id="connection-lines" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;">
+                            <defs>
+                                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                    <polygon points="0 0, 10 3.5, 0 7" fill="#667eea" />
+                                </marker>
+                                <filter id="glow">
+                                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                    <feMerge>
+                                        <feMergeNode in="coloredBlur"/>
+                                        <feMergeNode in="SourceGraphic"/>
+                                    </feMerge>
+                                </filter>
+                            </defs>
+                            <!-- Dynamic connection lines will be drawn here -->
+                        </svg>
+
+                        <!-- Slave Nodes (DataNodes) -->
+                        <div id="slave-nodes-container" style="position: absolute; bottom: 80px; left: 0; right: 0; display: flex; justify-content: space-around; z-index: 2;">
+
+                            <div class="datanode-enhanced" id="datanode-1" style="background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%); border-radius: 15px; padding: 20px; color: white; text-align: center; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 10px 25px rgba(78, 205, 196, 0.3); min-width: 180px;" onclick="showDataNodeDetails(1)">
+                                <div style="font-size: 2.5em; margin-bottom: 10px;">💾</div>
+                                <h4 style="margin-bottom: 8px;">DataNode 1</h4>
+                                <div style="font-size: 0.8em; opacity: 0.9; margin-bottom: 10px;">Rack: /rack1</div>
+                                <div class="storage-indicator" style="background: rgba(255,255,255,0.2); border-radius: 8px; padding: 8px; margin-bottom: 8px;">
+                                    <div style="font-size: 0.7em;">Storage: <span id="storage-1">75%</span></div>
+                                    <div style="background: rgba(255,255,255,0.3); height: 4px; border-radius: 2px; margin-top: 4px;">
+                                        <div id="storage-bar-1" style="background: #27ae60; height: 100%; width: 75%; border-radius: 2px; transition: width 0.3s ease;"></div>
+                                    </div>
+                                </div>
+                                <div id="heartbeat-1" style="font-size: 0.7em; opacity: 0.8;">❤️ Healthy</div>
+                            </div>
+
+                            <div class="datanode-enhanced" id="datanode-2" style="background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%); border-radius: 15px; padding: 20px; color: white; text-align: center; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 10px 25px rgba(78, 205, 196, 0.3); min-width: 180px;" onclick="showDataNodeDetails(2)">
+                                <div style="font-size: 2.5em; margin-bottom: 10px;">💾</div>
+                                <h4 style="margin-bottom: 8px;">DataNode 2</h4>
+                                <div style="font-size: 0.8em; opacity: 0.9; margin-bottom: 10px;">Rack: /rack1</div>
+                                <div class="storage-indicator" style="background: rgba(255,255,255,0.2); border-radius: 8px; padding: 8px; margin-bottom: 8px;">
+                                    <div style="font-size: 0.7em;">Storage: <span id="storage-2">60%</span></div>
+                                    <div style="background: rgba(255,255,255,0.3); height: 4px; border-radius: 2px; margin-top: 4px;">
+                                        <div id="storage-bar-2" style="background: #27ae60; height: 100%; width: 60%; border-radius: 2px; transition: width 0.3s ease;"></div>
+                                    </div>
+                                </div>
+                                <div id="heartbeat-2" style="font-size: 0.7em; opacity: 0.8;">❤️ Healthy</div>
+                            </div>
+
+                            <div class="datanode-enhanced" id="datanode-3" style="background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%); border-radius: 15px; padding: 20px; color: white; text-align: center; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 10px 25px rgba(78, 205, 196, 0.3); min-width: 180px;" onclick="showDataNodeDetails(3)">
+                                <div style="font-size: 2.5em; margin-bottom: 10px;">💾</div>
+                                <h4 style="margin-bottom: 8px;">DataNode 3</h4>
+                                <div style="font-size: 0.8em; opacity: 0.9; margin-bottom: 10px;">Rack: /rack2</div>
+                                <div class="storage-indicator" style="background: rgba(255,255,255,0.2); border-radius: 8px; padding: 8px; margin-bottom: 8px;">
+                                    <div style="font-size: 0.7em;">Storage: <span id="storage-3">45%</span></div>
+                                    <div style="background: rgba(255,255,255,0.3); height: 4px; border-radius: 2px; margin-top: 4px;">
+                                        <div id="storage-bar-3" style="background: #27ae60; height: 100%; width: 45%; border-radius: 2px; transition: width 0.3s ease;"></div>
+                                    </div>
+                                </div>
+                                <div id="heartbeat-3" style="font-size: 0.7em; opacity: 0.8;">❤️ Healthy</div>
+                            </div>
+
+                            <div class="datanode-enhanced" id="datanode-4" style="background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%); border-radius: 15px; padding: 20px; color: white; text-align: center; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 10px 25px rgba(78, 205, 196, 0.3); min-width: 180px;" onclick="showDataNodeDetails(4)">
+                                <div style="font-size: 2.5em; margin-bottom: 10px;">💾</div>
+                                <h4 style="margin-bottom: 8px;">DataNode 4</h4>
+                                <div style="font-size: 0.8em; opacity: 0.9; margin-bottom: 10px;">Rack: /rack2</div>
+                                <div class="storage-indicator" style="background: rgba(255,255,255,0.2); border-radius: 8px; padding: 8px; margin-bottom: 8px;">
+                                    <div style="font-size: 0.7em;">Storage: <span id="storage-4">80%</span></div>
+                                    <div style="background: rgba(255,255,255,0.3); height: 4px; border-radius: 2px; margin-top: 4px;">
+                                        <div id="storage-bar-4" style="background: #27ae60; height: 100%; width: 80%; border-radius: 2px; transition: width 0.3s ease;"></div>
+                                    </div>
+                                </div>
+                                <div id="heartbeat-4" style="font-size: 0.7em; opacity: 0.8;">❤️ Healthy</div>
+                            </div>
+                        </div>
+
+                        <!-- Floating Data Packets -->
+                        <div id="data-packets" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3;">
+                            <!-- Animated data packets will be created here -->
+                        </div>
+
+                        <!-- Real-time Statistics Panel -->
+                        <div style="position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.95); border-radius: 15px; padding: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); min-width: 200px;">
+                            <h4 style="margin-bottom: 10px; color: #2c3e50;">📊 Cluster Stats</h4>
+                            <div style="font-size: 0.9em; color: #666; line-height: 1.6;">
+                                <div>Total Nodes: <strong id="total-nodes">4</strong></div>
+                                <div>Active Nodes: <strong id="active-nodes-display">4</strong></div>
+                                <div>Total Storage: <strong>2.4 PB</strong></div>
+                                <div>Used Storage: <strong id="used-storage">65%</strong></div>
+                                <div>Replication Factor: <strong>3</strong></div>
+                                <div>Avg Response Time: <strong id="response-time">12ms</strong></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Enhanced Information Panel -->
+                    <div id="enhanced-info-panel" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px; padding: 25px; margin-top: 20px; min-height: 150px; display: none;">
+                        <h3 id="info-title" style="margin-bottom: 15px;">Component Details</h3>
+                        <div id="info-content" style="line-height: 1.6;">
+                            Click on any component above to see detailed information about its role in the HDFS architecture.
+                        </div>
+                    </div>
+
+                    <!-- <div class="master-slave-container">
                         <div class="namenode-section">
                             <div class="component-title">
                                 🎯 NameNode (Master)
@@ -773,7 +1046,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
 
                 <div class="replication-demo">
@@ -831,97 +1104,309 @@
                     </div>
                 </div>
 
-                <div class="rack-visualization">
-                    <div class="rack-title">🏢 Rack-Aware Architecture</div>
-                    <div class="rack-container">
-                        <div class="rack">
-                            <div class="rack-name">Rack 1</div>
-                            <div class="rack-nodes">
-                                <div
-                                    class="rack-node"
-                                    onclick="showRackInfo('r1n1')"
-                                >
-                                    Node 1
+                <!-- Enhanced Rack-Aware Architecture Visualization -->
+                <div class="architecture-diagram">
+                    <div class="section-title">🏢 Interactive Rack-Aware Architecture</div>
+
+                    <!-- Rack Awareness Control Panel -->
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; text-align: center;">
+                        <h3 style="margin-bottom: 15px;">🎮 Rack Awareness Simulator</h3>
+                        <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 15px;">
+                            <button onclick="simulateBlockPlacement()" style="background: #27ae60; color: white; border: none; padding: 12px 20px; border-radius: 25px; cursor: pointer; font-weight: bold;">
+                                📦 Simulate Block Placement
+                            </button>
+                            <button onclick="showReplicationStrategy()" style="background: #f39c12; color: white; border: none; padding: 12px 20px; border-radius: 25px; cursor: pointer; font-weight: bold;">
+                                🔄 Replication Strategy
+                            </button>
+                            <button onclick="simulateRackFailure()" style="background: #e74c3c; color: white; border: none; padding: 12px 20px; border-radius: 25px; cursor: pointer; font-weight: bold;">
+                                ⚠️ Rack Failure Test
+                            </button>
+                            <button onclick="showNetworkTopology()" style="background: #9b59b6; color: white; border: none; padding: 12px 20px; border-radius: 25px; cursor: pointer; font-weight: bold;">
+                                🌐 Network Topology
+                            </button>
+                        </div>
+                        <div style="font-size: 0.9em; opacity: 0.9;">
+                            Explore how HDFS uses rack awareness for optimal data placement and fault tolerance
+                        </div>
+                    </div>
+
+                    <!-- Interactive Rack Visualization -->
+                    <div style="background: #f8f9fa; border-radius: 15px; padding: 25px; margin-bottom: 20px; position: relative; overflow: hidden;">
+
+                        <!-- Network Switch Representation -->
+                        <div style="text-align: center; margin-bottom: 30px;">
+                            <div style="background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%); color: white; padding: 15px; border-radius: 15px; display: inline-block; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                                <div style="font-size: 2em; margin-bottom: 10px;">🌐</div>
+                                <h4>Core Network Switch</h4>
+                                <div style="font-size: 0.8em; opacity: 0.9;">Manages inter-rack communication</div>
+                            </div>
+                        </div>
+
+                        <!-- Rack Containers -->
+                        <div style="display: flex; justify-content: space-around; gap: 20px; flex-wrap: wrap;">
+
+                            <!-- Rack 1 -->
+                            <div class="interactive-rack" id="rack-1" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); border-radius: 15px; padding: 20px; min-width: 250px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer;" onclick="selectRack(1)">
+                                <div style="text-align: center; margin-bottom: 15px;">
+                                    <div style="font-size: 1.5em; margin-bottom: 5px;">🏢</div>
+                                    <h4 style="color: #2c3e50;">Rack 1 (/rack1)</h4>
+                                    <div style="font-size: 0.8em; color: #666;">Data Center: DC1</div>
                                 </div>
-                                <div
-                                    class="rack-node"
-                                    onclick="showRackInfo('r1n2')"
-                                >
-                                    Node 2
+
+                                <!-- Rack Switch -->
+                                <div style="background: rgba(255,255,255,0.8); border-radius: 8px; padding: 10px; margin-bottom: 15px; text-align: center;">
+                                    <div style="font-size: 1.2em;">🔌</div>
+                                    <div style="font-size: 0.8em; color: #666;">Rack Switch</div>
                                 </div>
-                                <div
-                                    class="rack-node"
-                                    onclick="showRackInfo('r1n3')"
-                                >
-                                    Node 3
+
+                                <!-- DataNodes in Rack 1 -->
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                    <div class="rack-datanode" id="rack1-node1" style="background: white; border-radius: 8px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;" onclick="event.stopPropagation(); selectNode('rack1-node1')">
+                                        <div style="font-size: 1.2em; margin-bottom: 5px;">💾</div>
+                                        <div style="font-size: 0.8em; font-weight: bold;">Node 1</div>
+                                        <div style="font-size: 0.7em; color: #666;">IP: 192.168.1.10</div>
+                                        <div class="node-blocks" style="display: flex; gap: 3px; justify-content: center; margin-top: 8px;">
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #3498db; border-radius: 2px;"></div>
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #27ae60; border-radius: 2px;"></div>
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #f39c12; border-radius: 2px;"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="rack-datanode" id="rack1-node2" style="background: white; border-radius: 8px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;" onclick="event.stopPropagation(); selectNode('rack1-node2')">
+                                        <div style="font-size: 1.2em; margin-bottom: 5px;">💾</div>
+                                        <div style="font-size: 0.8em; font-weight: bold;">Node 2</div>
+                                        <div style="font-size: 0.7em; color: #666;">IP: 192.168.1.11</div>
+                                        <div class="node-blocks" style="display: flex; gap: 3px; justify-content: center; margin-top: 8px;">
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #e74c3c; border-radius: 2px;"></div>
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #9b59b6; border-radius: 2px;"></div>
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #3498db; border-radius: 2px;"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="rack-datanode" id="rack1-node3" style="background: white; border-radius: 8px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;" onclick="event.stopPropagation(); selectNode('rack1-node3')">
+                                        <div style="font-size: 1.2em; margin-bottom: 5px;">💾</div>
+                                        <div style="font-size: 0.8em; font-weight: bold;">Node 3</div>
+                                        <div style="font-size: 0.7em; color: #666;">IP: 192.168.1.12</div>
+                                        <div class="node-blocks" style="display: flex; gap: 3px; justify-content: center; margin-top: 8px;">
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #27ae60; border-radius: 2px;"></div>
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #f39c12; border-radius: 2px;"></div>
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #e74c3c; border-radius: 2px;"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="rack-datanode" id="rack1-node4" style="background: white; border-radius: 8px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;" onclick="event.stopPropagation(); selectNode('rack1-node4')">
+                                        <div style="font-size: 1.2em; margin-bottom: 5px;">💾</div>
+                                        <div style="font-size: 0.8em; font-weight: bold;">Node 4</div>
+                                        <div style="font-size: 0.7em; color: #666;">IP: 192.168.1.13</div>
+                                        <div class="node-blocks" style="display: flex; gap: 3px; justify-content: center; margin-top: 8px;">
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #9b59b6; border-radius: 2px;"></div>
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #3498db; border-radius: 2px;"></div>
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #27ae60; border-radius: 2px;"></div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div
-                                    class="rack-node"
-                                    onclick="showRackInfo('r1n4')"
-                                >
-                                    Node 4
+
+                                <!-- Rack Statistics -->
+                                <div style="background: rgba(255,255,255,0.8); border-radius: 8px; padding: 10px; margin-top: 15px; font-size: 0.8em;">
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <span>Nodes: <strong>4/4</strong></span>
+                                        <span>Load: <strong>75%</strong></span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                                        <span>Blocks: <strong>12</strong></span>
+                                        <span>Status: <strong style="color: #27ae60;">Healthy</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Rack 2 -->
+                            <div class="interactive-rack" id="rack-2" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); border-radius: 15px; padding: 20px; min-width: 250px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer;" onclick="selectRack(2)">
+                                <div style="text-align: center; margin-bottom: 15px;">
+                                    <div style="font-size: 1.5em; margin-bottom: 5px;">🏢</div>
+                                    <h4 style="color: #2c3e50;">Rack 2 (/rack2)</h4>
+                                    <div style="font-size: 0.8em; color: #666;">Data Center: DC1</div>
+                                </div>
+
+                                <div style="background: rgba(255,255,255,0.8); border-radius: 8px; padding: 10px; margin-bottom: 15px; text-align: center;">
+                                    <div style="font-size: 1.2em;">🔌</div>
+                                    <div style="font-size: 0.8em; color: #666;">Rack Switch</div>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                    <div class="rack-datanode" id="rack2-node1" style="background: white; border-radius: 8px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;" onclick="event.stopPropagation(); selectNode('rack2-node1')">
+                                        <div style="font-size: 1.2em; margin-bottom: 5px;">💾</div>
+                                        <div style="font-size: 0.8em; font-weight: bold;">Node 5</div>
+                                        <div style="font-size: 0.7em; color: #666;">IP: 192.168.2.10</div>
+                                        <div class="node-blocks" style="display: flex; gap: 3px; justify-content: center; margin-top: 8px;">
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #3498db; border-radius: 2px;"></div>
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #e74c3c; border-radius: 2px;"></div>
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #27ae60; border-radius: 2px;"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="rack-datanode" id="rack2-node2" style="background: white; border-radius: 8px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;" onclick="event.stopPropagation(); selectNode('rack2-node2')">
+                                        <div style="font-size: 1.2em; margin-bottom: 5px;">💾</div>
+                                        <div style="font-size: 0.8em; font-weight: bold;">Node 6</div>
+                                        <div style="font-size: 0.7em; color: #666;">IP: 192.168.2.11</div>
+                                        <div class="node-blocks" style="display: flex; gap: 3px; justify-content: center; margin-top: 8px;">
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #f39c12; border-radius: 2px;"></div>
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #9b59b6; border-radius: 2px;"></div>
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #3498db; border-radius: 2px;"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="rack-datanode" id="rack2-node3" style="background: white; border-radius: 8px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;" onclick="event.stopPropagation(); selectNode('rack2-node3')">
+                                        <div style="font-size: 1.2em; margin-bottom: 5px;">💾</div>
+                                        <div style="font-size: 0.8em; font-weight: bold;">Node 7</div>
+                                        <div style="font-size: 0.7em; color: #666;">IP: 192.168.2.12</div>
+                                        <div class="node-blocks" style="display: flex; gap: 3px; justify-content: center; margin-top: 8px;">
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #e74c3c; border-radius: 2px;"></div>
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #27ae60; border-radius: 2px;"></div>
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #f39c12; border-radius: 2px;"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="rack-datanode" id="rack2-node4" style="background: white; border-radius: 8px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;" onclick="event.stopPropagation(); selectNode('rack2-node4')">
+                                        <div style="font-size: 1.2em; margin-bottom: 5px;">💾</div>
+                                        <div style="font-size: 0.8em; font-weight: bold;">Node 8</div>
+                                        <div style="font-size: 0.7em; color: #666;">IP: 192.168.2.13</div>
+                                        <div class="node-blocks" style="display: flex; gap: 3px; justify-content: center; margin-top: 8px;">
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #9b59b6; border-radius: 2px;"></div>
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #3498db; border-radius: 2px;"></div>
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #e74c3c; border-radius: 2px;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="background: rgba(255,255,255,0.8); border-radius: 8px; padding: 10px; margin-top: 15px; font-size: 0.8em;">
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <span>Nodes: <strong>4/4</strong></span>
+                                        <span>Load: <strong>60%</strong></span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                                        <span>Blocks: <strong>12</strong></span>
+                                        <span>Status: <strong style="color: #27ae60;">Healthy</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Rack 3 -->
+                            <div class="interactive-rack" id="rack-3" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); border-radius: 15px; padding: 20px; min-width: 250px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer;" onclick="selectRack(3)">
+                                <div style="text-align: center; margin-bottom: 15px;">
+                                    <div style="font-size: 1.5em; margin-bottom: 5px;">🏢</div>
+                                    <h4 style="color: #2c3e50;">Rack 3 (/rack3)</h4>
+                                    <div style="font-size: 0.8em; color: #666;">Data Center: DC2</div>
+                                </div>
+
+                                <div style="background: rgba(255,255,255,0.8); border-radius: 8px; padding: 10px; margin-bottom: 15px; text-align: center;">
+                                    <div style="font-size: 1.2em;">🔌</div>
+                                    <div style="font-size: 0.8em; color: #666;">Rack Switch</div>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                    <div class="rack-datanode" id="rack3-node1" style="background: white; border-radius: 8px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;" onclick="event.stopPropagation(); selectNode('rack3-node1')">
+                                        <div style="font-size: 1.2em; margin-bottom: 5px;">💾</div>
+                                        <div style="font-size: 0.8em; font-weight: bold;">Node 9</div>
+                                        <div style="font-size: 0.7em; color: #666;">IP: 192.168.3.10</div>
+                                        <div class="node-blocks" style="display: flex; gap: 3px; justify-content: center; margin-top: 8px;">
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #27ae60; border-radius: 2px;"></div>
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #f39c12; border-radius: 2px;"></div>
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #9b59b6; border-radius: 2px;"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="rack-datanode" id="rack3-node2" style="background: white; border-radius: 8px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;" onclick="event.stopPropagation(); selectNode('rack3-node2')">
+                                        <div style="font-size: 1.2em; margin-bottom: 5px;">💾</div>
+                                        <div style="font-size: 0.8em; font-weight: bold;">Node 10</div>
+                                        <div style="font-size: 0.7em; color: #666;">IP: 192.168.3.11</div>
+                                        <div class="node-blocks" style="display: flex; gap: 3px; justify-content: center; margin-top: 8px;">
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #3498db; border-radius: 2px;"></div>
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #e74c3c; border-radius: 2px;"></div>
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #27ae60; border-radius: 2px;"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="rack-datanode" id="rack3-node3" style="background: white; border-radius: 8px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;" onclick="event.stopPropagation(); selectNode('rack3-node3')">
+                                        <div style="font-size: 1.2em; margin-bottom: 5px;">💾</div>
+                                        <div style="font-size: 0.8em; font-weight: bold;">Node 11</div>
+                                        <div style="font-size: 0.7em; color: #666;">IP: 192.168.3.12</div>
+                                        <div class="node-blocks" style="display: flex; gap: 3px; justify-content: center; margin-top: 8px;">
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #f39c12; border-radius: 2px;"></div>
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #9b59b6; border-radius: 2px;"></div>
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #3498db; border-radius: 2px;"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="rack-datanode" id="rack3-node4" style="background: white; border-radius: 8px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;" onclick="event.stopPropagation(); selectNode('rack3-node4')">
+                                        <div style="font-size: 1.2em; margin-bottom: 5px;">💾</div>
+                                        <div style="font-size: 0.8em; font-weight: bold;">Node 12</div>
+                                        <div style="font-size: 0.7em; color: #666;">IP: 192.168.3.13</div>
+                                        <div class="node-blocks" style="display: flex; gap: 3px; justify-content: center; margin-top: 8px;">
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #e74c3c; border-radius: 2px;"></div>
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #27ae60; border-radius: 2px;"></div>
+                                            <div class="mini-block" style="width: 8px; height: 8px; background: #f39c12; border-radius: 2px;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="background: rgba(255,255,255,0.8); border-radius: 8px; padding: 10px; margin-top: 15px; font-size: 0.8em;">
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <span>Nodes: <strong>4/4</strong></span>
+                                        <span>Load: <strong>45%</strong></span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                                        <span>Blocks: <strong>12</strong></span>
+                                        <span>Status: <strong style="color: #27ae60;">Healthy</strong></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="rack">
-                            <div class="rack-name">Rack 2</div>
-                            <div class="rack-nodes">
-                                <div
-                                    class="rack-node"
-                                    onclick="showRackInfo('r2n1')"
-                                >
-                                    Node 1
+
+                        <!-- Block Replication Strategy Visualization -->
+                        <div id="replication-strategy-panel" style="background: rgba(255,255,255,0.95); border-radius: 15px; padding: 20px; margin-top: 20px; display: none;">
+                            <h4 style="text-align: center; margin-bottom: 15px; color: #2c3e50;">🔄 Block Replication Strategy</h4>
+                            <div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 20px;">
+                                <div style="text-align: center;">
+                                    <div style="background: #3498db; color: white; padding: 15px; border-radius: 10px; margin-bottom: 10px;">
+                                        <div style="font-size: 1.5em;">📦</div>
+                                        <div>Original Block</div>
+                                    </div>
+                                    <div style="font-size: 0.8em; color: #666;">First replica on same rack</div>
                                 </div>
-                                <div
-                                    class="rack-node"
-                                    onclick="showRackInfo('r2n2')"
-                                >
-                                    Node 2
+                                <div style="font-size: 2em; color: #e74c3c;">→</div>
+                                <div style="text-align: center;">
+                                    <div style="background: #27ae60; color: white; padding: 15px; border-radius: 10px; margin-bottom: 10px;">
+                                        <div style="font-size: 1.5em;">📦</div>
+                                        <div>Replica 1</div>
+                                    </div>
+                                    <div style="font-size: 0.8em; color: #666;">Second replica on different rack</div>
                                 </div>
-                                <div
-                                    class="rack-node"
-                                    onclick="showRackInfo('r2n3')"
-                                >
-                                    Node 3
-                                </div>
-                                <div
-                                    class="rack-node"
-                                    onclick="showRackInfo('r2n4')"
-                                >
-                                    Node 4
+                                <div style="font-size: 2em; color: #e74c3c;">→</div>
+                                <div style="text-align: center;">
+                                    <div style="background: #f39c12; color: white; padding: 15px; border-radius: 10px; margin-bottom: 10px;">
+                                        <div style="font-size: 1.5em;">📦</div>
+                                        <div>Replica 2</div>
+                                    </div>
+                                    <div style="font-size: 0.8em; color: #666;">Third replica on different rack</div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="rack">
-                            <div class="rack-name">Rack 3</div>
-                            <div class="rack-nodes">
-                                <div
-                                    class="rack-node"
-                                    onclick="showRackInfo('r3n1')"
-                                >
-                                    Node 1
-                                </div>
-                                <div
-                                    class="rack-node"
-                                    onclick="showRackInfo('r3n2')"
-                                >
-                                    Node 2
-                                </div>
-                                <div
-                                    class="rack-node"
-                                    onclick="showRackInfo('r3n3')"
-                                >
-                                    Node 3
-                                </div>
-                                <div
-                                    class="rack-node"
-                                    onclick="showRackInfo('r3n4')"
-                                >
-                                    Node 4
-                                </div>
+                            <div style="background: #ecf0f1; border-radius: 10px; padding: 15px; margin-top: 15px; text-align: center;">
+                                <strong>Rack Awareness Benefits:</strong><br>
+                                • Fault tolerance across rack failures<br>
+                                • Optimized network bandwidth usage<br>
+                                • Improved read performance through locality
                             </div>
                         </div>
                     </div>
+
+                    <!-- Rack Information Panel -->
+                    <div id="rack-info-panel" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px; padding: 25px; margin-top: 20px; display: none;">
+                        <h3 id="rack-info-title" style="margin-bottom: 15px;">Rack Information</h3>
+                        <div id="rack-info-content" style="line-height: 1.6;">
+                            Click on any rack or node above to see detailed information about rack awareness and data placement strategies.
+                        </div>
+                    </div>
+                </div>
                     <div
                         class="info-panel"
                         style="
@@ -1787,6 +2272,1183 @@
             }
         `;
             document.head.appendChild(style);
+
+            // ===== NEW INTERACTIVE FEATURES =====
+
+            // Global variables for simulation
+            let simulationRunning = false;
+            let totalBlocks = 0;
+            let activeNodes = 3;
+
+            // Utility function to log to process monitor
+            function logToMonitor(message, type = 'info') {
+                const logOutput = document.getElementById('log-output');
+                const timestamp = new Date().toLocaleTimeString();
+                const colorClass = type === 'error' ? '#ff6b6b' : type === 'success' ? '#51cf66' : '#00ff00';
+
+                logOutput.innerHTML += `<div style="color: ${colorClass};">[${timestamp}] ${message}</div>`;
+                logOutput.scrollTop = logOutput.scrollHeight;
+            }
+
+            // Update system stats
+            function updateStats() {
+                document.getElementById('active-nodes').textContent = activeNodes;
+                document.getElementById('total-blocks').textContent = totalBlocks;
+                document.getElementById('system-health').textContent = activeNodes >= 2 ? 'HEALTHY' : 'DEGRADED';
+                document.getElementById('system-health').style.color = activeNodes >= 2 ? '#27ae60' : '#e74c3c';
+            }
+
+            // Start Data Flow Simulation
+            function startDataFlowSimulation() {
+                if (simulationRunning) return;
+                simulationRunning = true;
+
+                logToMonitor('🚀 Starting HDFS Data Flow Simulation...', 'info');
+                logToMonitor('📊 Initializing cluster with 3 DataNodes', 'info');
+                logToMonitor('🧠 NameNode started - Metadata service active', 'success');
+                logToMonitor('💾 DataNodes sending heartbeats every 3 seconds', 'info');
+
+                // Simulate heartbeats
+                let heartbeatCount = 0;
+                const heartbeatInterval = setInterval(() => {
+                    heartbeatCount++;
+                    logToMonitor(`💓 Heartbeat #${heartbeatCount} - All ${activeNodes} DataNodes healthy`, 'success');
+
+                    if (heartbeatCount >= 5) {
+                        clearInterval(heartbeatInterval);
+                        logToMonitor('✅ Data flow simulation completed', 'success');
+                        simulationRunning = false;
+                    }
+                }, 1500);
+            }
+
+            // Simulate File Write Operation
+            function simulateFileWrite() {
+                logToMonitor('📝 CLIENT: Initiating file write operation...', 'info');
+                logToMonitor('📁 FILE: /user/data/bigdata.txt (256MB)', 'info');
+
+                setTimeout(() => {
+                    logToMonitor('🧠 NAMENODE: Checking namespace and permissions', 'info');
+                }, 500);
+
+                setTimeout(() => {
+                    logToMonitor('🧠 NAMENODE: Allocating blocks (2 blocks of 128MB each)', 'info');
+                    logToMonitor('📍 NAMENODE: Block locations determined - DataNode1, DataNode2, DataNode3', 'info');
+                }, 1000);
+
+                setTimeout(() => {
+                    logToMonitor('💾 DATANODE1: Receiving block_001 (128MB)', 'info');
+                    logToMonitor('🔄 DATANODE1: Replicating to DataNode2', 'info');
+                }, 1500);
+
+                setTimeout(() => {
+                    logToMonitor('💾 DATANODE2: Received replica, replicating to DataNode3', 'info');
+                    logToMonitor('💾 DATANODE3: Block_001 replica stored successfully', 'success');
+                    totalBlocks += 2;
+                    updateStats();
+                }, 2000);
+
+                setTimeout(() => {
+                    logToMonitor('✅ WRITE COMPLETE: File written with 3x replication factor', 'success');
+                    logToMonitor('📊 STATS: 2 blocks created, 6 total replicas stored', 'success');
+                }, 2500);
+            }
+
+            // Simulate File Read Operation
+            function simulateFileRead() {
+                logToMonitor('📖 CLIENT: Initiating file read operation...', 'info');
+                logToMonitor('📁 FILE: /user/data/bigdata.txt', 'info');
+
+                setTimeout(() => {
+                    logToMonitor('🧠 NAMENODE: Looking up file metadata', 'info');
+                    logToMonitor('🧠 NAMENODE: File found - 2 blocks, 3 replicas each', 'info');
+                }, 500);
+
+                setTimeout(() => {
+                    logToMonitor('📍 NAMENODE: Returning block locations to client', 'info');
+                    logToMonitor('📍 Block_001: DataNode1 (primary), DataNode2, DataNode3', 'info');
+                    logToMonitor('📍 Block_002: DataNode2 (primary), DataNode1, DataNode3', 'info');
+                }, 1000);
+
+                setTimeout(() => {
+                    logToMonitor('📥 CLIENT: Reading Block_001 from DataNode1 (closest)', 'info');
+                    logToMonitor('📥 CLIENT: Reading Block_002 from DataNode2 (closest)', 'info');
+                }, 1500);
+
+                setTimeout(() => {
+                    logToMonitor('✅ READ COMPLETE: File read successfully (256MB)', 'success');
+                    logToMonitor('⚡ PERFORMANCE: Read completed in 1.2 seconds', 'success');
+                }, 2000);
+            }
+
+            // Simulate Node Failure
+            function simulateNodeFailure() {
+                if (activeNodes <= 1) {
+                    logToMonitor('⚠️ Cannot simulate failure - minimum nodes required', 'error');
+                    return;
+                }
+
+                logToMonitor('🚨 ALERT: DataNode3 has stopped responding!', 'error');
+                logToMonitor('💔 NAMENODE: Missing heartbeat from DataNode3', 'error');
+                activeNodes--;
+                updateStats();
+
+                setTimeout(() => {
+                    logToMonitor('🔍 NAMENODE: Scanning for under-replicated blocks', 'info');
+                    logToMonitor('⚠️ NAMENODE: Found 2 blocks with only 2 replicas', 'error');
+                }, 1000);
+
+                setTimeout(() => {
+                    logToMonitor('🔄 NAMENODE: Initiating re-replication process', 'info');
+                    logToMonitor('💾 DATANODE1: Creating additional replica of Block_001', 'info');
+                    logToMonitor('💾 DATANODE2: Creating additional replica of Block_002', 'info');
+                }, 2000);
+
+                setTimeout(() => {
+                    logToMonitor('✅ RECOVERY: All blocks restored to 3x replication', 'success');
+                    logToMonitor('🛡️ FAULT TOLERANCE: System operating normally with 2 nodes', 'success');
+                }, 3000);
+            }
+
+            // Interactive Data Flow Functions
+            function showClientInteraction() {
+                const panel = document.getElementById('flow-info-panel');
+                panel.innerHTML = `
+                    <h4>👤 Client Interaction Flow</h4>
+                    <div style="background: #e3f2fd; padding: 15px; border-radius: 5px; margin: 10px 0;">
+                        <strong>1. File Operation Request:</strong> Client initiates read/write operation
+                    </div>
+                    <div style="background: #f3e5f5; padding: 15px; border-radius: 5px; margin: 10px 0;">
+                        <strong>2. NameNode Contact:</strong> Client contacts NameNode for metadata
+                    </div>
+                    <div style="background: #e8f5e8; padding: 15px; border-radius: 5px; margin: 10px 0;">
+                        <strong>3. Direct DataNode Access:</strong> Client directly reads/writes to DataNodes
+                    </div>
+                    <p><strong>Key Point:</strong> Client never sends actual data through NameNode - only metadata flows through the master node!</p>
+                `;
+            }
+
+            function showNameNodeDetails() {
+                const panel = document.getElementById('flow-info-panel');
+                panel.innerHTML = `
+                    <h4>🧠 NameNode Operations</h4>
+                    <div style="background: #ffebee; padding: 15px; border-radius: 5px; margin: 10px 0;">
+                        <strong>Metadata Management:</strong> File system namespace, block locations, permissions
+                    </div>
+                    <div style="background: #fff3e0; padding: 15px; border-radius: 5px; margin: 10px 0;">
+                        <strong>Block Allocation:</strong> Determines where new blocks should be stored
+                    </div>
+                    <div style="background: #f1f8e9; padding: 15px; border-radius: 5px; margin: 10px 0;">
+                        <strong>Heartbeat Monitoring:</strong> Tracks DataNode health and availability
+                    </div>
+                    <div style="background: #e8eaf6; padding: 15px; border-radius: 5px; margin: 10px 0;">
+                        <strong>Replication Management:</strong> Ensures proper block replication across cluster
+                    </div>
+                `;
+            }
+
+            function showDataNodeCluster() {
+                const panel = document.getElementById('flow-info-panel');
+                panel.innerHTML = `
+                    <h4>💾 DataNode Cluster Operations</h4>
+                    <div style="background: #e0f2f1; padding: 15px; border-radius: 5px; margin: 10px 0;">
+                        <strong>Data Storage:</strong> Stores actual file blocks on local disk
+                    </div>
+                    <div style="background: #e1f5fe; padding: 15px; border-radius: 5px; margin: 10px 0;">
+                        <strong>Block Replication:</strong> Automatically replicates blocks to other DataNodes
+                    </div>
+                    <div style="background: #fce4ec; padding: 15px; border-radius: 5px; margin: 10px 0;">
+                        <strong>Heartbeat Reporting:</strong> Sends status updates to NameNode every 3 seconds
+                    </div>
+                    <div style="background: #fff8e1; padding: 15px; border-radius: 5px; margin: 10px 0;">
+                        <strong>Block Reports:</strong> Periodically reports all stored blocks to NameNode
+                    </div>
+                `;
+            }
+
+            // Step-by-Step Process Simulators
+            function simulateWriteProcess() {
+                resetProcessSteps();
+                const steps = [
+                    { id: 'step-1', title: 'Client Request', desc: 'Client initiates write operation', color: '#3498db' },
+                    { id: 'step-2', title: 'NameNode Contact', desc: 'Request metadata and block allocation', color: '#e74c3c' },
+                    { id: 'step-3', title: 'Block Allocation', desc: 'NameNode allocates blocks and locations', color: '#f39c12' },
+                    { id: 'step-4', title: 'Data Pipeline', desc: 'Client writes to DataNode pipeline', color: '#27ae60' },
+                    { id: 'step-5', title: 'Replication', desc: 'Blocks replicated across cluster', color: '#9b59b6' }
+                ];
+
+                executeStepsSequentially(steps, 'WRITE PROCESS');
+            }
+
+            function simulateReadProcess() {
+                resetProcessSteps();
+                const steps = [
+                    { id: 'step-1', title: 'Client Request', desc: 'Client requests file read', color: '#3498db' },
+                    { id: 'step-2', title: 'Metadata Lookup', desc: 'NameNode provides block locations', color: '#e74c3c' },
+                    { id: 'step-3', title: 'Location Selection', desc: 'Client selects closest DataNodes', color: '#f39c12' },
+                    { id: 'step-4', title: 'Parallel Read', desc: 'Read blocks in parallel from DataNodes', color: '#27ae60' },
+                    { id: 'step-5', title: 'Assembly', desc: 'Client assembles file from blocks', color: '#9b59b6' }
+                ];
+
+                executeStepsSequentially(steps, 'READ PROCESS');
+            }
+
+            function simulateReplicationProcess() {
+                resetProcessSteps();
+                const steps = [
+                    { id: 'step-1', title: 'Block Creation', desc: 'New block created on primary DataNode', color: '#3498db' },
+                    { id: 'step-2', title: 'Pipeline Setup', desc: 'Establish replication pipeline', color: '#e74c3c' },
+                    { id: 'step-3', title: 'First Replica', desc: 'Stream to second DataNode', color: '#f39c12' },
+                    { id: 'step-4', title: 'Second Replica', desc: 'Stream to third DataNode', color: '#27ae60' },
+                    { id: 'step-5', title: 'Acknowledgment', desc: 'Confirm all replicas stored', color: '#9b59b6' }
+                ];
+
+                executeStepsSequentially(steps, 'REPLICATION PROCESS');
+            }
+
+            function simulateFailureRecovery() {
+                resetProcessSteps();
+                const steps = [
+                    { id: 'step-1', title: 'Failure Detection', desc: 'NameNode detects missing heartbeat', color: '#e74c3c' },
+                    { id: 'step-2', title: 'Block Scanning', desc: 'Scan for under-replicated blocks', color: '#f39c12' },
+                    { id: 'step-3', title: 'Recovery Planning', desc: 'Plan re-replication strategy', color: '#3498db' },
+                    { id: 'step-4', title: 'Re-replication', desc: 'Create new replicas on healthy nodes', color: '#27ae60' },
+                    { id: 'step-5', title: 'System Recovery', desc: 'Restore full replication factor', color: '#9b59b6' }
+                ];
+
+                executeStepsSequentially(steps, 'FAILURE RECOVERY');
+            }
+
+            function resetProcessSteps() {
+                for (let i = 1; i <= 5; i++) {
+                    const step = document.getElementById(`step-${i}`);
+                    step.style.background = '#ecf0f1';
+                    step.style.transform = 'scale(1)';
+                }
+            }
+
+            function executeStepsSequentially(steps, processName) {
+                const detailsPanel = document.getElementById('step-details');
+                detailsPanel.innerHTML = `<div>🚀 Starting ${processName}...</div>`;
+
+                steps.forEach((step, index) => {
+                    setTimeout(() => {
+                        const stepElement = document.getElementById(step.id);
+                        stepElement.style.background = step.color;
+                        stepElement.style.transform = 'scale(1.1)';
+                        stepElement.style.color = 'white';
+
+                        detailsPanel.innerHTML += `<div style="color: ${step.color};">[Step ${index + 1}] ${step.title}: ${step.desc}</div>`;
+                        detailsPanel.scrollTop = detailsPanel.scrollHeight;
+
+                        if (index === steps.length - 1) {
+                            setTimeout(() => {
+                                detailsPanel.innerHTML += `<div style="color: #00ff00;">✅ ${processName} COMPLETED SUCCESSFULLY</div>`;
+                            }, 500);
+                        }
+                    }, index * 1000);
+                });
+            }
+
+            // Initialize the enhanced features
+            document.addEventListener('DOMContentLoaded', function() {
+                updateStats();
+                logToMonitor('🎯 Enhanced HDFS Interactive System Loaded', 'success');
+                logToMonitor('💡 Click any simulation button to explore HDFS operations', 'info');
+                initializeEnhancedArchitecture();
+            });
+
+            // ===== ENHANCED MASTER-SLAVE ARCHITECTURE FUNCTIONS =====
+
+            let is3DView = false;
+            let animationRunning = false;
+
+            function initializeEnhancedArchitecture() {
+                // Add CSS animations for the enhanced architecture
+                const enhancedStyle = document.createElement('style');
+                enhancedStyle.textContent = `
+                    @keyframes gridMove {
+                        0% { transform: translate(0, 0); }
+                        100% { transform: translate(30px, 30px); }
+                    }
+
+                    @keyframes pulse {
+                        0% { transform: scale(1); }
+                        50% { transform: scale(1.05); }
+                        100% { transform: scale(1); }
+                    }
+
+                    @keyframes dataPacketFlow {
+                        0% { transform: translateY(0) scale(0); opacity: 0; }
+                        10% { transform: translateY(-50px) scale(1); opacity: 1; }
+                        90% { transform: translateY(-400px) scale(1); opacity: 1; }
+                        100% { transform: translateY(-450px) scale(0); opacity: 0; }
+                    }
+
+                    @keyframes heartbeatPulse {
+                        0% { transform: scale(1); filter: brightness(1); }
+                        50% { transform: scale(1.1); filter: brightness(1.2); }
+                        100% { transform: scale(1); filter: brightness(1); }
+                    }
+
+                    .datanode-enhanced:hover {
+                        transform: translateY(-10px) scale(1.05);
+                        box-shadow: 0 20px 40px rgba(78, 205, 196, 0.4);
+                    }
+
+                    #master-node:hover {
+                        transform: translateX(-50%) translateY(-5px) scale(1.05);
+                        box-shadow: 0 20px 40px rgba(255, 107, 107, 0.4);
+                    }
+
+                    .data-packet {
+                        position: absolute;
+                        width: 20px;
+                        height: 20px;
+                        background: linear-gradient(45deg, #667eea, #764ba2);
+                        border-radius: 50%;
+                        animation: dataPacketFlow 3s ease-in-out;
+                        box-shadow: 0 0 10px rgba(102, 126, 234, 0.6);
+                    }
+
+                    .connection-line {
+                        stroke: #667eea;
+                        stroke-width: 3;
+                        fill: none;
+                        filter: url(#glow);
+                        opacity: 0.7;
+                        animation: connectionPulse 2s ease-in-out infinite;
+                    }
+
+                    @keyframes connectionPulse {
+                        0%, 100% { stroke-width: 3; opacity: 0.7; }
+                        50% { stroke-width: 5; opacity: 1; }
+                    }
+                `;
+                document.head.appendChild(enhancedStyle);
+
+                // Draw initial connection lines
+                drawConnectionLines();
+
+                // Start periodic updates
+                setInterval(updateClusterStats, 5000);
+            }
+
+            function drawConnectionLines() {
+                const svg = document.getElementById('connection-lines');
+                const masterNode = document.getElementById('master-node');
+                const dataNodes = document.querySelectorAll('.datanode-enhanced');
+
+                if (!svg || !masterNode || !dataNodes.length) return;
+
+                // Clear existing lines
+                svg.innerHTML = svg.innerHTML.split('<!-- Dynamic connection lines')[0] + '<!-- Dynamic connection lines will be drawn here -->';
+
+                const masterRect = masterNode.getBoundingClientRect();
+                const containerRect = document.getElementById('architecture-container').getBoundingClientRect();
+
+                const masterX = masterRect.left - containerRect.left + masterRect.width / 2;
+                const masterY = masterRect.top - containerRect.top + masterRect.height;
+
+                dataNodes.forEach((node, index) => {
+                    const nodeRect = node.getBoundingClientRect();
+                    const nodeX = nodeRect.left - containerRect.left + nodeRect.width / 2;
+                    const nodeY = nodeRect.top - containerRect.top;
+
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    const path = `M ${masterX} ${masterY} Q ${masterX + (nodeX - masterX) / 2} ${masterY + (nodeY - masterY) / 2} ${nodeX} ${nodeY}`;
+
+                    line.setAttribute('d', path);
+                    line.setAttribute('class', 'connection-line');
+                    line.setAttribute('marker-end', 'url(#arrowhead)');
+                    line.style.animationDelay = `${index * 0.5}s`;
+
+                    svg.appendChild(line);
+                });
+            }
+
+            function animateDataFlow() {
+                if (animationRunning) return;
+                animationRunning = true;
+
+                logToMonitor('🌊 Starting data flow animation...', 'info');
+
+                const dataPacketsContainer = document.getElementById('data-packets');
+                const dataNodes = document.querySelectorAll('.datanode-enhanced');
+
+                dataNodes.forEach((node, index) => {
+                    setTimeout(() => {
+                        createDataPacket(node, index);
+                    }, index * 500);
+                });
+
+                setTimeout(() => {
+                    animationRunning = false;
+                    logToMonitor('✅ Data flow animation completed', 'success');
+                }, 4000);
+            }
+
+            function createDataPacket(targetNode, index) {
+                const packet = document.createElement('div');
+                packet.className = 'data-packet';
+
+                const nodeRect = targetNode.getBoundingClientRect();
+                const containerRect = document.getElementById('architecture-container').getBoundingClientRect();
+
+                const startX = nodeRect.left - containerRect.left + nodeRect.width / 2 - 10;
+                const startY = nodeRect.top - containerRect.top + nodeRect.height / 2 - 10;
+
+                packet.style.left = startX + 'px';
+                packet.style.top = startY + 'px';
+
+                document.getElementById('data-packets').appendChild(packet);
+
+                // Remove packet after animation
+                setTimeout(() => {
+                    if (packet.parentNode) {
+                        packet.parentNode.removeChild(packet);
+                    }
+                }, 3000);
+            }
+
+            function simulateHeartbeat() {
+                logToMonitor('💓 Simulating heartbeat monitoring...', 'info');
+
+                const dataNodes = document.querySelectorAll('.datanode-enhanced');
+                const heartbeatElements = document.querySelectorAll('[id^="heartbeat-"]');
+
+                dataNodes.forEach((node, index) => {
+                    setTimeout(() => {
+                        node.style.animation = 'heartbeatPulse 0.6s ease-in-out';
+                        heartbeatElements[index].textContent = '💓 Sending...';
+
+                        setTimeout(() => {
+                            node.style.animation = '';
+                            heartbeatElements[index].textContent = '❤️ Healthy';
+                            logToMonitor(`💓 DataNode ${index + 1}: Heartbeat received`, 'success');
+                        }, 600);
+                    }, index * 200);
+                });
+
+                setTimeout(() => {
+                    logToMonitor('✅ All heartbeats received successfully', 'success');
+                }, 2000);
+            }
+
+            function showReplicationDemo() {
+                logToMonitor('🔄 Starting replication demonstration...', 'info');
+
+                const storageElements = document.querySelectorAll('[id^="storage-bar-"]');
+                const storageTexts = document.querySelectorAll('[id^="storage-"]');
+
+                // Simulate data being written and replicated
+                storageElements.forEach((bar, index) => {
+                    setTimeout(() => {
+                        const currentWidth = parseInt(bar.style.width);
+                        const newWidth = Math.min(currentWidth + 10, 90);
+
+                        bar.style.width = newWidth + '%';
+                        storageTexts[index].textContent = newWidth + '%';
+
+                        logToMonitor(`📦 Block replicated to DataNode ${index + 1}`, 'success');
+                    }, index * 800);
+                });
+
+                setTimeout(() => {
+                    logToMonitor('✅ Replication completed with 3x factor', 'success');
+                    updateClusterStats();
+                }, 3500);
+            }
+
+            function toggleArchitectureView() {
+                const container = document.getElementById('architecture-container');
+                const button = event.target;
+
+                is3DView = !is3DView;
+
+                if (is3DView) {
+                    container.style.transform = 'perspective(1000px) rotateX(10deg) rotateY(5deg)';
+                    container.style.transformStyle = 'preserve-3d';
+                    button.textContent = '🔍 Toggle 2D View';
+                    logToMonitor('🔍 Switched to 3D perspective view', 'info');
+                } else {
+                    container.style.transform = '';
+                    container.style.transformStyle = '';
+                    button.textContent = '🔍 Toggle 3D View';
+                    logToMonitor('🔍 Switched to 2D standard view', 'info');
+                }
+            }
+
+            function showMasterDetails() {
+                const panel = document.getElementById('enhanced-info-panel');
+                const title = document.getElementById('info-title');
+                const content = document.getElementById('info-content');
+
+                title.textContent = '🧠 NameNode (Master) - Detailed Information';
+                content.innerHTML = `
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 15px;">
+                        <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                            <h4 style="margin-bottom: 10px;">🗂️ Namespace Management</h4>
+                            <ul style="margin-left: 20px; line-height: 1.8;">
+                                <li>File system tree structure</li>
+                                <li>Directory and file metadata</li>
+                                <li>Access permissions and ownership</li>
+                                <li>Block location mapping</li>
+                            </ul>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                            <h4 style="margin-bottom: 10px;">💾 Persistence Layer</h4>
+                            <ul style="margin-left: 20px; line-height: 1.8;">
+                                <li>FsImage: Namespace snapshot</li>
+                                <li>EditLog: Transaction journal</li>
+                                <li>Checkpoint process</li>
+                                <li>Recovery mechanisms</li>
+                            </ul>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                            <h4 style="margin-bottom: 10px;">🔄 Block Management</h4>
+                            <ul style="margin-left: 20px; line-height: 1.8;">
+                                <li>Block allocation strategy</li>
+                                <li>Replication monitoring</li>
+                                <li>Under-replicated block detection</li>
+                                <li>Rack-aware placement</li>
+                            </ul>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                            <h4 style="margin-bottom: 10px;">💓 Health Monitoring</h4>
+                            <ul style="margin-left: 20px; line-height: 1.8;">
+                                <li>DataNode heartbeat tracking</li>
+                                <li>Block report processing</li>
+                                <li>Failure detection and recovery</li>
+                                <li>Load balancing decisions</li>
+                            </ul>
+                        </div>
+                    </div>
+                `;
+
+                panel.style.display = 'block';
+                logToMonitor('🧠 Displaying NameNode detailed information', 'info');
+            }
+
+            function showDataNodeDetails(nodeId) {
+                const panel = document.getElementById('enhanced-info-panel');
+                const title = document.getElementById('info-title');
+                const content = document.getElementById('info-content');
+
+                const nodeData = {
+                    1: { rack: '/rack1', storage: '75%', blocks: 1250, status: 'Healthy' },
+                    2: { rack: '/rack1', storage: '60%', blocks: 980, status: 'Healthy' },
+                    3: { rack: '/rack2', storage: '45%', blocks: 750, status: 'Healthy' },
+                    4: { rack: '/rack2', storage: '80%', blocks: 1400, status: 'Healthy' }
+                };
+
+                const data = nodeData[nodeId];
+
+                title.textContent = `💾 DataNode ${nodeId} - Detailed Information`;
+                content.innerHTML = `
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 15px;">
+                        <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                            <h4 style="margin-bottom: 10px;">📍 Location Info</h4>
+                            <div style="line-height: 1.8;">
+                                <div><strong>Rack:</strong> ${data.rack}</div>
+                                <div><strong>Node ID:</strong> DataNode-${nodeId}</div>
+                                <div><strong>Status:</strong> ${data.status}</div>
+                                <div><strong>Uptime:</strong> 99.${90 + nodeId}%</div>
+                            </div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                            <h4 style="margin-bottom: 10px;">💽 Storage Details</h4>
+                            <div style="line-height: 1.8;">
+                                <div><strong>Used:</strong> ${data.storage}</div>
+                                <div><strong>Total Blocks:</strong> ${data.blocks}</div>
+                                <div><strong>Capacity:</strong> 600 GB</div>
+                                <div><strong>Free Space:</strong> ${100 - parseInt(data.storage)}%</div>
+                            </div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                            <h4 style="margin-bottom: 10px;">🔄 Operations</h4>
+                            <div style="line-height: 1.8;">
+                                <div><strong>Read Ops/sec:</strong> ${150 + nodeId * 20}</div>
+                                <div><strong>Write Ops/sec:</strong> ${80 + nodeId * 15}</div>
+                                <div><strong>Replication:</strong> Active</div>
+                                <div><strong>Last Heartbeat:</strong> 2s ago</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                panel.style.display = 'block';
+                logToMonitor(`💾 Displaying DataNode ${nodeId} detailed information`, 'info');
+            }
+
+            function updateClusterStats() {
+                // Update storage usage
+                const storageElements = document.querySelectorAll('[id^="storage-"]');
+                let totalUsage = 0;
+
+                storageElements.forEach(element => {
+                    totalUsage += parseInt(element.textContent);
+                });
+
+                const avgUsage = Math.round(totalUsage / storageElements.length);
+                document.getElementById('used-storage').textContent = avgUsage + '%';
+
+                // Update response time
+                const responseTime = Math.round(10 + Math.random() * 10);
+                document.getElementById('response-time').textContent = responseTime + 'ms';
+
+                // Update active nodes display
+                document.getElementById('active-nodes-display').textContent = activeNodes;
+            }
+
+            // ===== NEW INTERACTIVE FEATURES =====
+
+            // Job Execution Workflow Functions
+            let jobExecutionInterval = null;
+            let jobExecutionRunning = false;
+
+            // Enhanced job steps with more detailed information
+            const enhancedJobSteps = [
+                {
+                    title: "Job Submission",
+                    description: "Client submits a job request to the ResourceManager with resource requirements and application details.",
+                    details: [
+                        "• Client application creates ApplicationMaster request",
+                        "• Resource requirements specified (CPU, memory, containers)",
+                        "• Job configuration and input data paths provided",
+                        "• Authentication and authorization checks performed"
+                    ]
+                },
+                {
+                    title: "Resource Request",
+                    description: "ResourceManager evaluates available cluster resources and schedules the ApplicationMaster.",
+                    details: [
+                        "• ResourceManager checks cluster capacity",
+                        "• Scheduler algorithm determines optimal placement",
+                        "• ApplicationMaster container allocated on suitable node",
+                        "• Security tokens and credentials distributed"
+                    ]
+                },
+                {
+                    title: "Task Allocation",
+                    description: "ApplicationMaster requests containers from ResourceManager for task execution.",
+                    details: [
+                        "• ApplicationMaster analyzes input data splits",
+                        "• Container requests sent to ResourceManager",
+                        "• NodeManagers receive container allocation requests",
+                        "• Data locality preferences considered for placement"
+                    ]
+                },
+                {
+                    title: "Data Processing",
+                    description: "Tasks execute on allocated containers across the cluster nodes.",
+                    details: [
+                        "• Map tasks process input data splits in parallel",
+                        "• Intermediate data written to local disk",
+                        "• Reduce tasks fetch and process intermediate data",
+                        "• Progress monitoring and heartbeat communication"
+                    ]
+                },
+                {
+                    title: "Result Collection",
+                    description: "Final results are collected and written to the output destination.",
+                    details: [
+                        "• Reduce tasks write final output to HDFS",
+                        "• ApplicationMaster coordinates completion",
+                        "• Resource cleanup and container deallocation",
+                        "• Job status reported back to client"
+                    ]
+                }
+            ];
+
+            function showJobStep(stepNumber) {
+                currentJobStep = stepNumber - 1;
+                updateJobStepDisplay();
+            }
+
+            function updateJobStepDisplay() {
+                const step = enhancedJobSteps[currentJobStep];
+                const detailsPanel = document.getElementById('job-step-details');
+
+                // Update step buttons
+                for (let i = 1; i <= 5; i++) {
+                    const btn = document.getElementById(`step-btn-${i}`);
+                    if (btn) {
+                        if (i === currentJobStep + 1) {
+                            btn.style.background = '#3498db';
+                        } else if (i < currentJobStep + 1) {
+                            btn.style.background = '#27ae60';
+                        } else {
+                            btn.style.background = '#95a5a6';
+                        }
+                    }
+                }
+
+                // Update progress bar
+                const progressBar = document.getElementById('job-progress-bar');
+                if (progressBar) {
+                    progressBar.style.width = `${((currentJobStep + 1) / 5) * 100}%`;
+                }
+
+                // Update details panel
+                if (detailsPanel && step) {
+                    detailsPanel.innerHTML = `
+                        <h4 style="color: #2c3e50; margin-bottom: 15px;">
+                            Step ${currentJobStep + 1}: ${step.title}
+                        </h4>
+                        <p style="margin-bottom: 15px; color: #666; line-height: 1.6;">
+                            ${step.description}
+                        </p>
+                        <div style="background: #f8f9fa; border-radius: 8px; padding: 15px;">
+                            <h5 style="color: #2c3e50; margin-bottom: 10px;">Technical Details:</h5>
+                            <ul style="margin: 0; padding-left: 20px; color: #555;">
+                                ${step.details.map(detail => `<li style="margin-bottom: 5px;">${detail}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+
+                // Update resource allocation display
+                updateResourceAllocation();
+            }
+
+            function startJobExecution() {
+                if (jobExecutionRunning) return;
+
+                jobExecutionRunning = true;
+                currentJobStep = 0;
+
+                logToMonitor('🚀 Starting job execution workflow...', 'info');
+
+                jobExecutionInterval = setInterval(() => {
+                    updateJobStepDisplay();
+
+                    if (currentJobStep < 4) {
+                        currentJobStep++;
+                    } else {
+                        clearInterval(jobExecutionInterval);
+                        jobExecutionRunning = false;
+                        logToMonitor('✅ Job execution completed successfully', 'success');
+                    }
+                }, 3000);
+            }
+
+            function pauseJobExecution() {
+                if (jobExecutionInterval) {
+                    clearInterval(jobExecutionInterval);
+                    jobExecutionRunning = false;
+                    logToMonitor('⏸️ Job execution paused', 'warning');
+                }
+            }
+
+            function resetJobExecution() {
+                if (jobExecutionInterval) {
+                    clearInterval(jobExecutionInterval);
+                }
+                jobExecutionRunning = false;
+                currentJobStep = 0;
+                updateJobStepDisplay();
+                logToMonitor('🔄 Job execution reset', 'info');
+            }
+
+            function updateResourceAllocation() {
+                const baseUsage = [25, 60, 45];
+                const stepMultiplier = (currentJobStep + 1) * 0.2;
+
+                for (let i = 1; i <= 3; i++) {
+                    const cpuUsage = Math.min(95, baseUsage[i-1] + (stepMultiplier * 30));
+                    const memoryUsage = Math.min(90, baseUsage[i-1] + (stepMultiplier * 25));
+                    const activeTasks = Math.floor(2 + (stepMultiplier * 3));
+
+                    // Update CPU
+                    const cpuElement = document.getElementById(`cpu-usage-${i}`);
+                    const cpuBar = document.getElementById(`cpu-bar-${i}`);
+                    if (cpuElement && cpuBar) {
+                        cpuElement.textContent = `${Math.round(cpuUsage)}%`;
+                        cpuBar.style.width = `${cpuUsage}%`;
+                        cpuBar.style.background = cpuUsage > 80 ? '#e74c3c' : cpuUsage > 60 ? '#f39c12' : '#3498db';
+                    }
+
+                    // Update Memory
+                    const memoryElement = document.getElementById(`memory-usage-${i}`);
+                    const memoryBar = document.getElementById(`memory-bar-${i}`);
+                    if (memoryElement && memoryBar) {
+                        const memoryGB = Math.round((memoryUsage / 100) * 16);
+                        memoryElement.textContent = `${memoryGB}GB/16GB`;
+                        memoryBar.style.width = `${memoryUsage}%`;
+                        memoryBar.style.background = memoryUsage > 80 ? '#e74c3c' : memoryUsage > 60 ? '#e67e22' : '#27ae60';
+                    }
+
+                    // Update Active Tasks
+                    const tasksElement = document.getElementById(`active-tasks-${i}`);
+                    if (tasksElement) {
+                        tasksElement.textContent = activeTasks;
+                    }
+                }
+
+                // Update cluster statistics
+                const totalCpu = document.getElementById('total-cpu-usage');
+                const totalMemory = document.getElementById('total-memory-usage');
+                const totalTasks = document.getElementById('total-active-tasks');
+                const jobCompletion = document.getElementById('job-completion');
+
+                if (totalCpu) totalCpu.textContent = `${Math.round(43 + (stepMultiplier * 25))}%`;
+                if (totalMemory) totalMemory.textContent = `${Math.round(21 + (stepMultiplier * 15))}GB`;
+                if (totalTasks) totalTasks.textContent = Math.floor(10 + (stepMultiplier * 8));
+                if (jobCompletion) jobCompletion.textContent = `${Math.round(((currentJobStep + 1) / 5) * 100)}%`;
+            }
+
+            function showResourceAllocation() {
+                const resourceNodes = document.querySelectorAll('.resource-node');
+                resourceNodes.forEach((node, index) => {
+                    node.style.transform = 'scale(1.05)';
+                    node.style.boxShadow = '0 15px 35px rgba(0,0,0,0.2)';
+
+                    setTimeout(() => {
+                        node.style.transform = 'scale(1)';
+                        node.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)';
+                    }, 1000);
+                });
+
+                logToMonitor('📊 Resource allocation highlighted', 'info');
+            }
+
+            // Rack Awareness Functions
+            let selectedRack = null;
+            let selectedNode = null;
+
+            function selectRack(rackNumber) {
+                // Reset previous selections
+                document.querySelectorAll('.interactive-rack').forEach(rack => {
+                    rack.style.transform = 'scale(1)';
+                    rack.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)';
+                });
+
+                // Highlight selected rack
+                const selectedRackElement = document.getElementById(`rack-${rackNumber}`);
+                if (selectedRackElement) {
+                    selectedRackElement.style.transform = 'scale(1.05)';
+                    selectedRackElement.style.boxShadow = '0 20px 40px rgba(0,0,0,0.2)';
+                }
+
+                selectedRack = rackNumber;
+                showRackInfo(rackNumber);
+                logToMonitor(`🏢 Selected Rack ${rackNumber}`, 'info');
+            }
+
+            function selectNode(nodeId) {
+                // Reset previous node selections
+                document.querySelectorAll('.rack-datanode').forEach(node => {
+                    node.style.borderColor = 'transparent';
+                    node.style.transform = 'scale(1)';
+                });
+
+                // Highlight selected node
+                const selectedNodeElement = document.getElementById(nodeId);
+                if (selectedNodeElement) {
+                    selectedNodeElement.style.borderColor = '#e74c3c';
+                    selectedNodeElement.style.transform = 'scale(1.1)';
+                }
+
+                selectedNode = nodeId;
+                showNodeInfo(nodeId);
+                logToMonitor(`💾 Selected ${nodeId}`, 'info');
+            }
+
+            function showRackInfo(rackNumber) {
+                const infoPanel = document.getElementById('rack-info-panel');
+                const infoTitle = document.getElementById('rack-info-title');
+                const infoContent = document.getElementById('rack-info-content');
+
+                if (infoPanel && infoTitle && infoContent) {
+                    infoPanel.style.display = 'block';
+                    infoTitle.textContent = `Rack ${rackNumber} Information`;
+
+                    const rackData = {
+                        1: {
+                            location: "Data Center: DC1",
+                            nodes: "4 DataNodes (192.168.1.10-13)",
+                            load: "75% capacity utilization",
+                            blocks: "12 data blocks stored",
+                            network: "1Gbps rack switch connectivity",
+                            features: [
+                                "Primary rack for new data placement",
+                                "High-performance SSD storage",
+                                "Redundant power supply",
+                                "24/7 monitoring and alerting"
+                            ]
+                        },
+                        2: {
+                            location: "Data Center: DC1",
+                            nodes: "4 DataNodes (192.168.2.10-13)",
+                            load: "60% capacity utilization",
+                            blocks: "12 data blocks stored",
+                            network: "1Gbps rack switch connectivity",
+                            features: [
+                                "Secondary rack for replica placement",
+                                "Mixed HDD/SSD storage configuration",
+                                "Standard power configuration",
+                                "Automated backup processes"
+                            ]
+                        },
+                        3: {
+                            location: "Data Center: DC2",
+                            nodes: "4 DataNodes (192.168.3.10-13)",
+                            load: "45% capacity utilization",
+                            blocks: "12 data blocks stored",
+                            network: "1Gbps rack switch connectivity",
+                            features: [
+                                "Disaster recovery rack",
+                                "Geographic separation for fault tolerance",
+                                "High-capacity HDD storage",
+                                "Cross-datacenter replication"
+                            ]
+                        }
+                    };
+
+                    const data = rackData[rackNumber];
+                    if (data) {
+                        infoContent.innerHTML = `
+                            <div style="margin-bottom: 15px;">
+                                <strong>📍 Location:</strong> ${data.location}<br>
+                                <strong>🖥️ Nodes:</strong> ${data.nodes}<br>
+                                <strong>📊 Load:</strong> ${data.load}<br>
+                                <strong>💾 Blocks:</strong> ${data.blocks}<br>
+                                <strong>🌐 Network:</strong> ${data.network}
+                            </div>
+                            <div>
+                                <strong>✨ Key Features:</strong>
+                                <ul style="margin: 10px 0 0 20px;">
+                                    ${data.features.map(feature => `<li>${feature}</li>`).join('')}
+                                </ul>
+                            </div>
+                        `;
+                    }
+                }
+            }
+
+            function showNodeInfo(nodeId) {
+                const infoPanel = document.getElementById('rack-info-panel');
+                const infoTitle = document.getElementById('rack-info-title');
+                const infoContent = document.getElementById('rack-info-content');
+
+                if (infoPanel && infoTitle && infoContent) {
+                    infoPanel.style.display = 'block';
+                    infoTitle.textContent = `${nodeId.toUpperCase()} Information`;
+
+                    // Extract rack and node info from ID
+                    const rackNum = nodeId.includes('rack1') ? 1 : nodeId.includes('rack2') ? 2 : 3;
+                    const nodeNum = nodeId.slice(-1);
+
+                    infoContent.innerHTML = `
+                        <div style="margin-bottom: 15px;">
+                            <strong>🏢 Rack:</strong> Rack ${rackNum}<br>
+                            <strong>🖥️ Node ID:</strong> ${nodeId}<br>
+                            <strong>📡 IP Address:</strong> 192.168.${rackNum}.1${nodeNum}<br>
+                            <strong>💾 Storage:</strong> 2TB SSD + 8TB HDD<br>
+                            <strong>🧠 Memory:</strong> 64GB RAM<br>
+                            <strong>⚡ CPU:</strong> 16 cores @ 2.4GHz
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <strong>📦 Current Blocks:</strong>
+                            <div style="display: flex; gap: 10px; margin-top: 8px;">
+                                <div style="background: #3498db; color: white; padding: 5px 10px; border-radius: 5px; font-size: 0.8em;">Block A</div>
+                                <div style="background: #27ae60; color: white; padding: 5px 10px; border-radius: 5px; font-size: 0.8em;">Block B</div>
+                                <div style="background: #f39c12; color: white; padding: 5px 10px; border-radius: 5px; font-size: 0.8em;">Block C</div>
+                            </div>
+                        </div>
+                        <div>
+                            <strong>📊 Performance Metrics:</strong><br>
+                            • Disk I/O: ${Math.floor(Math.random() * 500 + 200)} MB/s<br>
+                            • Network: ${Math.floor(Math.random() * 800 + 400)} Mbps<br>
+                            • CPU Usage: ${Math.floor(Math.random() * 40 + 30)}%<br>
+                            • Uptime: ${Math.floor(Math.random() * 100 + 200)} days
+                        </div>
+                    `;
+                }
+            }
+
+            function simulateBlockPlacement() {
+                logToMonitor('📦 Simulating block placement strategy...', 'info');
+
+                // Animate block placement across racks
+                const miniBlocks = document.querySelectorAll('.mini-block');
+                miniBlocks.forEach((block, index) => {
+                    setTimeout(() => {
+                        block.style.transform = 'scale(1.5)';
+                        block.style.boxShadow = '0 0 10px rgba(0,0,0,0.5)';
+
+                        setTimeout(() => {
+                            block.style.transform = 'scale(1)';
+                            block.style.boxShadow = 'none';
+                        }, 500);
+                    }, index * 100);
+                });
+
+                setTimeout(() => {
+                    logToMonitor('✅ Block placement simulation completed', 'success');
+                }, 3000);
+            }
+
+            function showReplicationStrategy() {
+                const panel = document.getElementById('replication-strategy-panel');
+                if (panel) {
+                    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+                    logToMonitor('🔄 Replication strategy panel toggled', 'info');
+                }
+            }
+
+            function simulateRackFailure() {
+                logToMonitor('⚠️ Simulating rack failure scenario...', 'warning');
+
+                // Simulate rack 2 failure
+                const rack2 = document.getElementById('rack-2');
+                if (rack2) {
+                    rack2.style.filter = 'grayscale(100%)';
+                    rack2.style.opacity = '0.5';
+
+                    // Show recovery process
+                    setTimeout(() => {
+                        logToMonitor('🔄 Initiating automatic recovery...', 'info');
+
+                        setTimeout(() => {
+                            rack2.style.filter = 'none';
+                            rack2.style.opacity = '1';
+                            logToMonitor('✅ Rack recovery completed - data replicated successfully', 'success');
+                        }, 2000);
+                    }, 2000);
+                }
+            }
+
+            function showNetworkTopology() {
+                logToMonitor('🌐 Displaying network topology information', 'info');
+
+                // Highlight network connections
+                const racks = document.querySelectorAll('.interactive-rack');
+                racks.forEach((rack, index) => {
+                    setTimeout(() => {
+                        rack.style.border = '3px solid #667eea';
+
+                        setTimeout(() => {
+                            rack.style.border = 'none';
+                        }, 1000);
+                    }, index * 300);
+                });
+            }
+
+            // Reset Process Monitor Function
+            function resetProcessMonitor() {
+                // Clear the log output
+                const logOutput = document.getElementById('log-output');
+                if (logOutput) {
+                    logOutput.innerHTML = 'HDFS System Ready - Click any simulation button to see real-time processes...';
+                }
+
+                // Reset statistics to default values
+                const activeNodes = document.getElementById('active-nodes');
+                const totalBlocks = document.getElementById('total-blocks');
+                const replicationFactor = document.getElementById('replication-factor');
+                const systemHealth = document.getElementById('system-health');
+
+                if (activeNodes) activeNodes.textContent = '3';
+                if (totalBlocks) totalBlocks.textContent = '0';
+                if (replicationFactor) replicationFactor.textContent = '3';
+                if (systemHealth) {
+                    systemHealth.textContent = 'HEALTHY';
+                    systemHealth.style.color = '#27ae60';
+                }
+
+                // Reset any running intervals
+                if (jobExecutionInterval) {
+                    clearInterval(jobExecutionInterval);
+                    jobExecutionInterval = null;
+                    jobExecutionRunning = false;
+                }
+
+                // Reset job execution state
+                currentJobStep = 0;
+                updateJobStepDisplay();
+
+                // Reset resource allocation displays
+                for (let i = 1; i <= 3; i++) {
+                    const cpuElement = document.getElementById(`cpu-usage-${i}`);
+                    const cpuBar = document.getElementById(`cpu-bar-${i}`);
+                    const memoryElement = document.getElementById(`memory-usage-${i}`);
+                    const memoryBar = document.getElementById(`memory-bar-${i}`);
+                    const tasksElement = document.getElementById(`active-tasks-${i}`);
+
+                    if (cpuElement && cpuBar) {
+                        const baseUsage = [25, 60, 45][i-1];
+                        cpuElement.textContent = `${baseUsage}%`;
+                        cpuBar.style.width = `${baseUsage}%`;
+                        cpuBar.style.background = baseUsage > 60 ? '#f39c12' : '#3498db';
+                    }
+
+                    if (memoryElement && memoryBar) {
+                        const baseMemory = [4, 10, 7][i-1];
+                        memoryElement.textContent = `${baseMemory}GB/16GB`;
+                        memoryBar.style.width = `${(baseMemory/16)*100}%`;
+                        memoryBar.style.background = baseMemory > 10 ? '#e67e22' : '#27ae60';
+                    }
+
+                    if (tasksElement) {
+                        tasksElement.textContent = [2, 5, 3][i-1];
+                    }
+                }
+
+                // Reset cluster statistics
+                const totalCpu = document.getElementById('total-cpu-usage');
+                const totalMemory = document.getElementById('total-memory-usage');
+                const totalTasks = document.getElementById('total-active-tasks');
+                const jobCompletion = document.getElementById('job-completion');
+
+                if (totalCpu) totalCpu.textContent = '43%';
+                if (totalMemory) totalMemory.textContent = '21GB';
+                if (totalTasks) totalTasks.textContent = '10';
+                if (jobCompletion) jobCompletion.textContent = '0%';
+
+                // Reset rack and node selections
+                document.querySelectorAll('.interactive-rack').forEach(rack => {
+                    rack.style.transform = 'scale(1)';
+                    rack.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)';
+                    rack.style.filter = 'none';
+                    rack.style.opacity = '1';
+                    rack.style.border = 'none';
+                });
+
+                document.querySelectorAll('.rack-datanode').forEach(node => {
+                    node.style.borderColor = 'transparent';
+                    node.style.transform = 'scale(1)';
+                });
+
+                // Hide info panels
+                const rackInfoPanel = document.getElementById('rack-info-panel');
+                const replicationPanel = document.getElementById('replication-strategy-panel');
+
+                if (rackInfoPanel) rackInfoPanel.style.display = 'none';
+                if (replicationPanel) replicationPanel.style.display = 'none';
+
+                // Reset progress bar
+                const progressBar = document.getElementById('job-progress-bar');
+                if (progressBar) progressBar.style.width = '20%';
+
+                // Log the reset action
+                logToMonitor('🔄 Process monitor reset - All systems restored to initial state', 'info');
+            }
+
+            // Initialize enhanced features on page load
+            document.addEventListener('DOMContentLoaded', function() {
+                // Initialize first job step
+                showJobStep(1);
+
+                // Initialize enhanced architecture
+                initializeEnhancedArchitecture();
+            });
+
+            // Redraw connection lines on window resize
+            window.addEventListener('resize', () => {
+                setTimeout(drawConnectionLines, 100);
+            });
         </script>
     </body>
 </html>
