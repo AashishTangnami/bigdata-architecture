@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Big Data Architecture Hub - Interactive Learning Platform</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 20px 20px 0 0;
+            min-height: 80vh;
+            padding: 40px;
+            margin-top: -20px;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
+        }
+
+        .technology-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .tech-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tech-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .tech-card:hover::before {
+            left: 100%;
+        }
+
+        .tech-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+
+        .tech-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .hadoop-card { border-left: 5px solid #ff6b35; }
+        .hadoop-card .tech-icon { color: #ff6b35; }
+
+        .hive-card { border-left: 5px solid #ffb300; }
+        .hive-card .tech-icon { color: #ffb300; }
+
+        .spark-card { border-left: 5px solid #e25a1c; }
+        .spark-card .tech-icon { color: #e25a1c; }
+
+        .tech-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .tech-description {
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .tech-features {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 25px;
+        }
+
+        .tech-features li {
+            padding: 8px 0;
+            color: #555;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .tech-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .explore-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .explore-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .comparison-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 50px 0;
+        }
+
+        .comparison-title {
+            text-align: center;
+            font-size: 2.2rem;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .architecture-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 40px 0;
+        }
+
+        .flow-item {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            flex: 1;
+            margin: 10px;
+            min-width: 200px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .flow-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .flow-arrow {
+            font-size: 2rem;
+            color: #667eea;
+            margin: 0 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+            display: block;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .interactive-features {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 50px 0;
+            text-align: center;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .feature-item {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .learning-path {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 50px 0;
+        }
+
+        .path-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+
+        .path-step {
+            background: white;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .path-step::after {
+            content: attr(data-label);
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            color: #666;
+            white-space: nowrap;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 60px 0;
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .technology-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .architecture-flow {
+                flex-direction: column;
+            }
+
+            .flow-arrow {
+                transform: rotate(90deg);
+                margin: 20px 0;
+            }
+
+            .path-steps {
+                flex-direction: column;
+                gap: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-section">
+        <div class="container">
+            <h1 class="hero-title">🚀 Big Data Architecture Hub</h1>
+            <p class="hero-subtitle">
+                Master Hadoop, Hive, and Spark through interactive learning experiences.<br>
+                Explore architectures, understand data flows, and build expertise in big data technologies.
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="main-content">
+            <section class="technology-overview">
+                <h2 style="text-align: center; font-size: 2.5rem; color: #2c3e50; margin-bottom: 20px;">
+                    🎯 Interactive Technology Deep Dives
+                </h2>
+                <p style="text-align: center; color: #666; font-size: 1.1rem; margin-bottom: 40px;">
+                    Click on any technology below to explore its architecture, components, and real-world applications through hands-on demonstrations.
+                </p>
+
+                <div class="technology-grid">
+                    <div class="tech-card hadoop-card" onclick="exploreHadoop()">
+                        <i class="fas fa-database tech-icon"></i>
+                        <h3 class="tech-title">Apache Hadoop HDFS</h3>
+                        <p class="tech-description">
+                            Distributed file system that provides high-throughput access to application data across clusters of commodity hardware.
+                        </p>
+                        <ul class="tech-features">
+                            <li>Interactive HDFS Architecture</li>
+                            <li>NameNode & DataNode Visualization</li>
+                            <li>Block Replication Simulator</li>
+                            <li>Fault Tolerance Demonstration</li>
+                            <li>Rack Awareness Explorer</li>
+                        </ul>
+                        <a href="hadoop.html" class="explore-btn">🔍 Explore Hadoop</a>
+                    </div>
+
+                    <div class="tech-card hive-card" onclick="exploreHive()">
+                        <i class="fas fa-warehouse tech-icon"></i>
+                        <h3 class="tech-title">Apache Hive</h3>
+                        <p class="tech-description">
+                            Data warehouse software that facilitates reading, writing, and managing large datasets in distributed storage using SQL.
+                        </p>
+                        <ul class="tech-features">
+                            <li>SQL to MapReduce Translation</li>
+                            <li>Metastore Architecture</li>
+                            <li>Query Processing Workflow</li>
+                            <li>Partitioning & Bucketing</li>
+                            <li>Performance Optimization</li>
+                        </ul>
+                        <a href="hive.html" class="explore-btn">🐝 Explore Hive</a>
+                    </div>
+
+                    <div class="tech-card spark-card" onclick="exploreSpark()">
+                        <i class="fas fa-bolt tech-icon"></i>
+                        <h3 class="tech-title">Apache Spark</h3>
+                        <p class="tech-description">
+                            Unified analytics engine for large-scale data processing with built-in modules for streaming, SQL, machine learning and graph processing.
+                        </p>
+                        <ul class="tech-features">
+                            <li>RDD Operations Playground</li>
+                            <li>DAG Execution Simulator</li>
+                            <li>Memory Management Visualizer</li>
+                            <li>Performance Comparison Tools</li>
+                            <li>Interactive Code Examples</li>
+                        </ul>
+                        <a href="spark.html" class="explore-btn">⚡ Explore Spark</a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="comparison-section">
+                <h2 class="comparison-title">🔄 Big Data Ecosystem Flow</h2>
+                <p style="text-align: center; color: #666; margin-bottom: 30px;">
+                    Understanding how these technologies work together in a complete big data pipeline
+                </p>
+
+                <div class="architecture-flow">
+                    <div class="flow-item">
+                        <i class="fas fa-database" style="font-size: 2rem; color: #ff6b35; margin-bottom: 10px;"></i>
+                        <h4>Hadoop HDFS</h4>
+                        <p>Distributed Storage Layer</p>
+                        <small>Stores massive datasets across clusters</small>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-item">
+                        <i class="fas fa-warehouse" style="font-size: 2rem; color: #ffb300; margin-bottom: 10px;"></i>
+                        <h4>Apache Hive</h4>
+                        <p>Data Warehouse Layer</p>
+                        <small>SQL interface for data analysis</small>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-item">
+                        <i class="fas fa-bolt" style="font-size: 2rem; color: #e25a1c; margin-bottom: 10px;"></i>
+                        <h4>Apache Spark</h4>
+                        <p>Processing Engine</p>
+                        <small>Fast in-memory computation</small>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-number">100x</span>
+                        <span class="stat-label">Faster than MapReduce</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">PB+</span>
+                        <span class="stat-label">Data Storage Capacity</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">SQL</span>
+                        <span class="stat-label">Familiar Query Language</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">99.9%</span>
+                        <span class="stat-label">Fault Tolerance</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="interactive-features">
+                <h2 style="font-size: 2.2rem; margin-bottom: 20px;">🎮 Interactive Learning Features</h2>
+                <p style="opacity: 0.9; margin-bottom: 30px;">
+                    Each technology page includes hands-on demonstrations and real-time visualizations
+                </p>
+
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <i class="fas fa-mouse-pointer feature-icon"></i>
+                        <h4>Clickable Components</h4>
+                        <p>Explore architecture components with detailed explanations</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-code feature-icon"></i>
+                        <h4>Live Code Examples</h4>
+                        <p>Edit and run code with simulated execution results</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-chart-line feature-icon"></i>
+                        <h4>Performance Visualizations</h4>
+                        <p>Interactive charts showing real performance comparisons</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-brain feature-icon"></i>
+                        <h4>Knowledge Quizzes</h4>
+                        <p>Test your understanding with interactive questions</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle feature-icon"></i>
+                        <h4>Fact-Checked Content</h4>
+                        <p>All information verified from official documentation</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-mobile-alt feature-icon"></i>
+                        <h4>Mobile Responsive</h4>
+                        <p>Learn on any device with optimized layouts</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="learning-path">
+                <h2 style="text-align: center; font-size: 2.2rem; color: #2c3e50; margin-bottom: 20px;">
+                    📚 Recommended Learning Path
+                </h2>
+                <p style="text-align: center; color: #666; margin-bottom: 40px;">
+                    Follow this sequence to build comprehensive big data expertise
+                </p>
+
+                <div class="path-steps">
+                    <div class="path-step" data-label="Foundation">1</div>
+                    <div class="path-step" data-label="Storage">2</div>
+                    <div class="path-step" data-label="Querying">3</div>
+                    <div class="path-step" data-label="Processing">4</div>
+                    <div class="path-step" data-label="Integration">5</div>
+                </div>
+
+                <div style="margin-top: 60px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                        <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                            <h4 style="color: #ff6b35; margin-bottom: 10px;">🏗️ Step 1-2: Foundation & Storage</h4>
+                            <p>Start with <strong>Hadoop HDFS</strong> to understand distributed storage, fault tolerance, and the foundation of big data architecture.</p>
+                        </div>
+                        <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                            <h4 style="color: #ffb300; margin-bottom: 10px;">🐝 Step 3: Data Warehousing</h4>
+                            <p>Learn <strong>Apache Hive</strong> for SQL-based data analysis and understanding how queries translate to distributed jobs.</p>
+                        </div>
+                        <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                            <h4 style="color: #e25a1c; margin-bottom: 10px;">⚡ Step 4-5: Advanced Processing</h4>
+                            <p>Master <strong>Apache Spark</strong> for high-performance data processing, machine learning, and real-time analytics.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="cta-section">
+                <h2 class="cta-title">🚀 Start Your Big Data Journey</h2>
+                <p style="color: #666; font-size: 1.1rem; margin-bottom: 30px;">
+                    Choose your starting point and begin exploring the world of distributed computing
+                </p>
+
+                <div class="cta-buttons">
+                    <a href="hadoop.html" class="explore-btn" style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);">
+                        🔍 Start with Hadoop
+                    </a>
+                    <a href="hive.html" class="explore-btn" style="background: linear-gradient(135deg, #ffb300 0%, #ff8f00 100%);">
+                        🐝 Begin with Hive
+                    </a>
+                    <a href="spark.html" class="explore-btn" style="background: linear-gradient(135deg, #e25a1c 0%, #d84315 100%);">
+                        ⚡ Jump to Spark
+                    </a>
+                </div>
+
+                <div style="margin-top: 50px; padding: 30px; background: #f8f9fa; border-radius: 15px;">
+                    <h3 style="color: #2c3e50; margin-bottom: 15px;">💡 Why This Interactive Approach?</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; text-align: left;">
+                        <div>
+                            <strong>🎯 Hands-on Learning:</strong> Interactive components help you understand complex architectures through exploration rather than just reading.
+                        </div>
+                        <div>
+                            <strong>📊 Visual Understanding:</strong> Diagrams and animations make abstract concepts concrete and memorable.
+                        </div>
+                        <div>
+                            <strong>✅ Verified Content:</strong> All information is fact-checked against official documentation from Apache projects.
+                        </div>
+                        <div>
+                            <strong>🔄 Progressive Learning:</strong> Each technology builds upon the previous, creating a comprehensive understanding of the big data ecosystem.
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // Interactive functionality for the main page
+        function exploreHadoop() {
+            // Add some visual feedback before navigation
+            const card = event.currentTarget;
+            card.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                window.location.href = 'hadoop.html';
+            }, 150);
+        }
+
+        function exploreHive() {
+            const card = event.currentTarget;
+            card.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                window.location.href = 'hive.html';
+            }, 150);
+        }
+
+        function exploreSpark() {
+            const card = event.currentTarget;
+            card.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                window.location.href = 'spark.html';
+            }, 150);
+        }
+
+        // Add smooth scrolling for internal links
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate stats on scroll
+            const observerOptions = {
+                threshold: 0.5,
+                rootMargin: '0px 0px -100px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'fadeInUp 0.6s ease forwards';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all cards and sections
+            document.querySelectorAll('.tech-card, .stat-card, .feature-item').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Add CSS animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(30px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+
+                .tech-card, .stat-card, .feature-item {
+                    opacity: 0;
+                }
+            `;
+            document.head.appendChild(style);
+        });
+
+        // Add particle effect to hero section
+        function createParticles() {
+            const heroSection = document.querySelector('.hero-section');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.style.cssText = `
+                    position: absolute;
+                    width: 4px;
+                    height: 4px;
+                    background: rgba(255,255,255,0.3);
+                    border-radius: 50%;
+                    pointer-events: none;
+                    animation: float ${3 + Math.random() * 4}s infinite ease-in-out;
+                    left: ${Math.random() * 100}%;
+                    top: ${Math.random() * 100}%;
+                    animation-delay: ${Math.random() * 2}s;
+                `;
+                heroSection.appendChild(particle);
+            }
+
+            // Add floating animation
+            const floatStyle = document.createElement('style');
+            floatStyle.textContent = `
+                @keyframes float {
+                    0%, 100% { transform: translateY(0px) rotate(0deg); }
+                    50% { transform: translateY(-20px) rotate(180deg); }
+                }
+            `;
+            document.head.appendChild(floatStyle);
+        }
+
+        // Initialize particles when page loads
+        window.addEventListener('load', createParticles);
+    </script>
+</body>
+</html>
