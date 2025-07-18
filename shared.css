@@ -1,0 +1,359 @@
+/* Shared CSS for Big Data Architecture Hub */
+/* Common styles used across all pages to reduce redundancy */
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    line-height: 1.6;
+    overflow-x: auto;
+}
+
+/* Common Container Styles */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Navigation Styles */
+nav {
+    background: rgba(0,0,0,0.1);
+    padding: 10px 0;
+    text-align: center;
+}
+
+nav a {
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+nav a:hover {
+    transform: translateY(-2px);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Common Button Styles */
+.clickable-component, .explore-btn, .run-button {
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.clickable-component {
+    background: #3498db;
+    color: white;
+    min-width: 150px;
+}
+
+.clickable-component:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.clickable-component.active {
+    background: #e74c3c;
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(231, 76, 60, 0.5);
+}
+
+.explore-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.explore-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.run-button {
+    background: #27ae60;
+    color: white;
+}
+
+.run-button:hover {
+    background: #229954;
+}
+
+/* Common Architecture Diagram Styles */
+.architecture-diagram {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+}
+
+.architecture-diagram::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+}
+
+.section-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #2c3e50;
+    text-align: center;
+    padding: 10px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 10px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Interactive Elements */
+.interactive-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+.interactive-demo {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+/* Information Panels */
+.info-panel {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 10px 0;
+    min-height: 100px;
+    display: none;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.info-panel.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Process Flow Styles */
+.process-flow, .architecture-flow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 20px 0;
+}
+
+.flow-item, .process-step {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    flex: 1;
+    margin: 10px;
+    min-width: 150px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.flow-item:hover, .process-step:hover {
+    transform: translateY(-5px);
+}
+
+.flow-arrow, .dag-arrow {
+    font-size: 2rem;
+    color: #e74c3c;
+    margin: 0 10px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
+}
+
+/* Code and Output Styles */
+.code-editor {
+    background: #2d3748;
+    color: #e2e8f0;
+    padding: 15px;
+    border-radius: 5px;
+    font-family: 'Courier New', monospace;
+    min-height: 200px;
+    border: none;
+    width: 100%;
+    resize: vertical;
+}
+
+.output-panel {
+    background: #1a1a1a;
+    color: #00ff00;
+    padding: 15px;
+    border-radius: 5px;
+    font-family: 'Courier New', monospace;
+    min-height: 100px;
+    margin: 10px 0;
+    white-space: pre-wrap;
+    overflow-y: auto;
+}
+
+/* Tab System */
+.tab-container {
+    margin: 20px 0;
+}
+
+.tab-buttons {
+    display: flex;
+    border-bottom: 2px solid #ddd;
+}
+
+.tab-button {
+    background: #f8f9fa;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-top: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.tab-button.active {
+    background: white;
+    border-top-color: #e25a1c;
+    color: #e25a1c;
+}
+
+.tab-content {
+    display: none;
+    padding: 20px;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Fact Check Boxes */
+.fact-check {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    border-left: 4px solid #28a745;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 5px;
+}
+
+.fact-check::before {
+    content: "✓ Fact-Checked: ";
+    font-weight: bold;
+    color: #28a745;
+}
+
+/* Performance Tables */
+.performance-table, .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.performance-table th, .comparison-table th {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-weight: bold;
+}
+
+.performance-table td, .comparison-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.performance-table tr:nth-child(even), .comparison-table tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .process-flow, .architecture-flow {
+        flex-direction: column;
+    }
+    
+    .flow-arrow, .dag-arrow {
+        transform: rotate(90deg);
+        margin: 20px 0;
+    }
+    
+    .tab-buttons {
+        flex-wrap: wrap;
+    }
+    
+    .tab-button {
+        flex: 1;
+        min-width: 120px;
+    }
+    
+    nav a {
+        margin: 0 8px;
+        font-size: 0.9rem;
+    }
+    
+    .clickable-component, .explore-btn {
+        margin: 5px;
+        min-width: 120px;
+    }
+}
+
+@media (max-width: 480px) {
+    .architecture-diagram {
+        padding: 15px;
+    }
+    
+    .section-title {
+        font-size: 1.2em;
+        padding: 8px;
+    }
+    
+    .flow-item, .process-step {
+        min-width: 100%;
+        margin: 5px 0;
+    }
+}

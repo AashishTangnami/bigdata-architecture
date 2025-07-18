@@ -383,6 +383,440 @@
             font-weight: bold;
             color: #28a745;
         }
+
+        /* Simple Spark Component Styles */
+        .simple-spark-component {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            min-width: 150px;
+            backdrop-filter: blur(10px);
+        }
+
+        .simple-spark-component:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: #ffb300;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .simple-spark-component.active {
+            background: rgba(255, 179, 0, 0.3);
+            border-color: #ffb300;
+            transform: scale(1.05);
+        }
+
+        /* Responsive design for side-by-side layout */
+        @media (max-width: 1024px) {
+            .side-by-side-container {
+                grid-template-columns: 1fr !important;
+                gap: 20px !important;
+            }
+
+            .simple-spark-component {
+                min-width: 100px !important;
+                padding: 12px !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .side-by-side-container {
+                padding: 20px !important;
+            }
+
+            .simple-spark-component {
+                min-width: 90px !important;
+                padding: 10px !important;
+            }
+
+            .simple-spark-component div {
+                font-size: 0.8em !important;
+            }
+        }
+
+        /* Enhanced Interactive Architecture Styles */
+        .enhanced-architecture-container {
+            background: linear-gradient(135deg, #ff6b35 0%, #e25a1c 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            position: relative;
+            min-height: 480px;
+            overflow: hidden;
+        }
+
+        .spark-component {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 12px 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 120px;
+            height: 100px;
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spark-component:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            border-color: #ffb300;
+        }
+
+        .spark-component.active {
+            border-color: #ff6b35;
+            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+            transform: scale(1.05);
+        }
+
+        .component-icon {
+            font-size: 1.8em;
+            margin-bottom: 4px;
+            display: block;
+            line-height: 1;
+        }
+
+        .component-title {
+            font-weight: bold;
+            color: #e25a1c;
+            margin-bottom: 2px;
+            font-size: 0.75em;
+            line-height: 1.1;
+        }
+
+        .component-subtitle {
+            font-size: 0.6em;
+            color: #666;
+            opacity: 0.8;
+            line-height: 1;
+        }
+
+        /* Connection Lines - Execution Flow Based */
+        .connection-line {
+            position: absolute;
+            background: linear-gradient(90deg, #ffb300, #ff6b35);
+            height: 3px;
+            border-radius: 2px;
+            opacity: 0.4;
+            transition: all 0.3s ease;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .connection-line.active {
+            opacity: 1;
+            height: 4px;
+            box-shadow: 0 0 10px rgba(255, 179, 0, 0.5);
+            z-index: 3;
+        }
+
+        /* Execution Step Colors with Layering */
+        .execution-step-1 { background: linear-gradient(90deg, #3498db, #2980b9); z-index: 10; } /* Resource Request - Blue */
+        .execution-step-2 { background: linear-gradient(90deg, #9b59b6, #8e44ad); z-index: 11; } /* Negotiation - Purple */
+        .execution-step-3 { background: linear-gradient(90deg, #e74c3c, #c0392b); z-index: 12; } /* DAG Creation - Red */
+        .execution-step-4 { background: linear-gradient(90deg, #f39c12, #e67e22); z-index: 13; } /* Executor Launch - Orange */
+        .execution-step-5 { background: linear-gradient(90deg, #27ae60, #229954); z-index: 14; } /* Task Distribution - Green */
+        .execution-step-6 { background: linear-gradient(90deg, #16a085, #138d75); z-index: 15; } /* Data Operations - Teal */
+        .execution-step-7 { background: linear-gradient(90deg, #2c3e50, #34495e); z-index: 16; } /* Results Collection - Dark */
+
+        /* Step Animation */
+        .execution-step-active {
+            opacity: 1 !important;
+            height: 5px !important;
+            animation: stepPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes stepPulse {
+            0%, 100% {
+                box-shadow: 0 0 5px rgba(255, 179, 0, 0.3);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 15px rgba(255, 179, 0, 0.8);
+                transform: scale(1.02);
+            }
+        }
+
+        /* Execution Flow Legend */
+        .execution-legend {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 0.8em;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-width: 200px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 3px;
+            border-radius: 2px;
+            margin-right: 8px;
+        }
+
+        .legend-step-1 { background: linear-gradient(90deg, #3498db, #2980b9); }
+        .legend-step-2 { background: linear-gradient(90deg, #9b59b6, #8e44ad); }
+        .legend-step-3 { background: linear-gradient(90deg, #e74c3c, #c0392b); }
+        .legend-step-4 { background: linear-gradient(90deg, #f39c12, #e67e22); }
+        .legend-step-5 { background: linear-gradient(90deg, #27ae60, #229954); }
+        .legend-step-6 { background: linear-gradient(90deg, #16a085, #138d75); }
+        .legend-step-7 { background: linear-gradient(90deg, #2c3e50, #34495e); }
+
+        /* Data Flow Animation */
+        .data-packet {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(circle, #ffb300 0%, #ff6b35 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255, 179, 0, 0.8);
+            animation: sparkDataFlow 3s linear infinite;
+            z-index: 10;
+        }
+
+        @keyframes sparkDataFlow {
+            0% { opacity: 0; transform: scale(0.5); }
+            10% { opacity: 1; transform: scale(1); }
+            90% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.5); }
+        }
+
+        /* Enhanced Statistics Panel */
+        .spark-stats-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 180px;
+            backdrop-filter: blur(10px);
+            font-size: 0.85em;
+        }
+
+        .spark-stats-panel h4 {
+            margin-bottom: 15px;
+            color: #e25a1c;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: #e25a1c;
+        }
+
+        /* Enhanced Info Panel */
+        .enhanced-spark-info-panel {
+            background: linear-gradient(135deg, #ff6b35 0%, #e25a1c 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            min-height: 200px;
+            transition: all 0.3s ease;
+        }
+
+        .enhanced-spark-info-panel h3 {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-content {
+            line-height: 1.6;
+        }
+
+        .info-specs {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .info-specs h4 {
+            margin-bottom: 10px;
+            color: #ffb300;
+        }
+
+        /* Header Enhancement */
+        .spark-header {
+            text-align: center;
+            background: linear-gradient(135deg, #e09f88 0%, #f8f8f8 100%);
+            color: white;
+            padding: 60px 30px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(226, 90, 28, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .spark-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: sparkHeaderGlow 6s ease-in-out infinite alternate;
+        }
+
+        @keyframes sparkHeaderGlow {
+            0% { transform: rotate(0deg) scale(1); opacity: 0.3; }
+            100% { transform: rotate(180deg) scale(1.1); opacity: 0.1; }
+        }
+
+        .spark-header h1 {
+            font-size: 2.8em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .spark-header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+        }
+
+        .spark-header-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 2;
+        }
+
+        .spark-header-stat {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .spark-header-stat:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .spark-header-stat-number {
+            font-size: 1.8em;
+            font-weight: bold;
+            display: block;
+            color: #ffb300;
+        }
+
+        .spark-header-stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        /* Responsive design for Spark architecture */
+        @media (max-width: 768px) {
+            .enhanced-architecture-container {
+                min-height: auto;
+                padding: 20px;
+            }
+
+            .spark-component {
+                position: relative !important;
+                margin: 15px auto;
+                display: block;
+                width: 140px;
+                height: 110px;
+                left: auto !important;
+                top: auto !important;
+                right: auto !important;
+                bottom: auto !important;
+            }
+
+            .spark-stats-panel {
+                position: relative !important;
+                top: auto !important;
+                right: auto !important;
+                margin: 20px auto;
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .connection-line {
+                display: none;
+            }
+
+            .component-title {
+                font-size: 0.8em;
+            }
+
+            .component-subtitle {
+                font-size: 0.65em;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .enhanced-architecture-container {
+                padding: 15px;
+            }
+
+            .spark-component {
+                width: 120px;
+                height: 100px;
+                margin: 10px auto;
+            }
+
+            .component-icon {
+                font-size: 1.6em;
+            }
+
+            .component-title {
+                font-size: 0.7em;
+            }
+
+            .component-subtitle {
+                font-size: 0.6em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -393,7 +827,31 @@
         <a href="spark.html" style="color: #e25a1c; text-decoration: none; margin: 0 15px; font-weight: bold;">⚡ Spark</a>
     </nav>
     <div class="container">
-        <h1>🚀 Interactive Apache Spark: Behind the Scenes of Big Data Processing</h1>
+        <div class="spark-header">
+            <h1>🚀 Interactive Apache Spark: Behind the Scenes of Big Data Processing</h1>
+            <p>
+                Comprehensive guide to Apache Spark's unified analytics engine for large-scale data processing.<br />
+                Understanding in-memory computing, RDDs, and distributed processing architecture.
+            </p>
+            <div class="spark-header-stats">
+                <div class="spark-header-stat">
+                    <span class="spark-header-stat-number">100x</span>
+                    <div class="spark-header-stat-label">Faster In-Memory</div>
+                </div>
+                <div class="spark-header-stat">
+                    <span class="spark-header-stat-number">4</span>
+                    <div class="spark-header-stat-label">Core Components</div>
+                </div>
+                <div class="spark-header-stat">
+                    <span class="spark-header-stat-number">5</span>
+                    <div class="spark-header-stat-label">Programming Languages</div>
+                </div>
+                <div class="spark-header-stat">
+                    <span class="spark-header-stat-number">∞</span>
+                    <div class="spark-header-stat-label">Scalability</div>
+                </div>
+            </div>
+        </div>
 
         <div class="interactive-section">
             <h2>🎯 Welcome to Interactive Spark Learning!</h2>
@@ -427,27 +885,126 @@
             <strong>Key Innovation:</strong> Spark's Resilient Distributed Datasets (RDDs) enable fault-tolerant, in-memory computing across distributed clusters.
         </div>
 
-        <h2>2. Interactive Spark Architecture Overview</h2>
+        <h2>2. Interactive Spark Architecture</h2>
 
-        <div class="interactive-demo">
-            <h3>🏗️ Clickable Spark Cluster Architecture</h3>
-            <p>Click on each component to learn how it works in Spark's distributed architecture:</p>
-            <div class="process-flow">
-                <button class="clickable-component" onclick="showComponentInfo('driver')">
-                    Driver Program<br/><small>SparkContext</small>
-                </button>
-                <div class="arrow">→</div>
-                <button class="clickable-component" onclick="showComponentInfo('cluster-manager')">
-                    Cluster Manager<br/><small>YARN/Mesos/Standalone</small>
-                </button>
-                <div class="arrow">→</div>
-                <button class="clickable-component" onclick="showComponentInfo('worker')">
-                    Worker Nodes<br/><small>Executors</small>
-                </button>
+        <!-- Side-by-Side Layout: Architecture + Details -->
+        <div style="background: linear-gradient(135deg, #c0aca5 0%, #ea743e 100%); border-radius: 20px; padding: 30px; margin: 30px 0; color: white;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: white;">🚀 How Spark Works: Interactive Overview</h3>
+                <p style="opacity: 0.9; font-size: 1.1em;">Click any component to learn how it fits into the Spark ecosystem</p>
             </div>
 
-            <div id="component-info" class="info-panel">
-                <p>Click on a component above to see detailed information about its role in Spark's architecture.</p>
+            <!-- Side-by-Side Container -->
+            <div class="side-by-side-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;">
+
+                <!-- Left Side: Architecture Diagram -->
+                <div style="background: rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 25px;">
+                    <h4 style="text-align: center; color: #ffffff; margin-bottom: 25px; font-size: 1.3em;">🏗️ Spark Architecture</h4>
+
+                    <!-- Simple 3-Layer Architecture -->
+                    <div style="display: grid; gap: 25px;">
+
+                        <!-- Layer 1: Control Layer -->
+                        <div style="text-align: center;">
+                            <h5 style="color: #fefefe; margin-bottom: 15px; font-size: 1em;">📋 Control Layer</h5>
+                            <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                                <div class="simple-spark-component" onclick="showSimpleComponentInfo('driver')" data-component="driver" style="min-width: 120px; padding: 15px;">
+                                    <div style="font-size: 2em; margin-bottom: 8px;">🚗</div>
+                                    <div style="font-weight: bold; margin-bottom: 3px; font-size: 0.9em;">Driver</div>
+                                    <div style="font-size: 0.75em; opacity: 0.8;">Coordinates</div>
+                                </div>
+                                <div class="simple-spark-component" onclick="showSimpleComponentInfo('cluster-manager')" data-component="cluster-manager" style="min-width: 120px; padding: 15px;">
+                                    <div style="font-size: 2em; margin-bottom: 8px;">🎯</div>
+                                    <div style="font-weight: bold; margin-bottom: 3px; font-size: 0.9em;">Cluster Mgr</div>
+                                    <div style="font-size: 0.75em; opacity: 0.8;">Resources</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Flow Arrow -->
+                        <div style="text-align: center; font-size: 1.5em; color: #fefefe;">⬇️</div>
+
+                        <!-- Layer 2: Processing Layer -->
+                        <div style="text-align: center;">
+                            <h5 style="color: #fefefe; margin-bottom: 15px; font-size: 1em;">⚙️ Processing Layer</h5>
+                            <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                                <div class="simple-spark-component" onclick="showSimpleComponentInfo('worker')" data-component="worker" style="min-width: 120px; padding: 15px;">
+                                    <div style="font-size: 2em; margin-bottom: 8px;">⚙️</div>
+                                    <div style="font-weight: bold; margin-bottom: 3px; font-size: 0.9em;">Workers</div>
+                                    <div style="font-size: 0.75em; opacity: 0.8;">Execute</div>
+                                </div>
+                                <div class="simple-spark-component" onclick="showSimpleComponentInfo('executor')" data-component="executor" style="min-width: 120px; padding: 15px;">
+                                    <div style="font-size: 2em; margin-bottom: 8px;">🔧</div>
+                                    <div style="font-weight: bold; margin-bottom: 3px; font-size: 0.9em;">Executors</div>
+                                    <div style="font-size: 0.75em; opacity: 0.8;">Run Code</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Flow Arrow -->
+                        <div style="text-align: center; font-size: 1.5em; color: #ffb300;">⬇️</div>
+
+                        <!-- Layer 3: Storage Layer -->
+                        <div style="text-align: center;">
+                            <h5 style="color: #fefefe; margin-bottom: 15px; font-size: 1em;">💾 Storage Layer</h5>
+                            <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                                <div class="simple-spark-component" onclick="showSimpleComponentInfo('rdd')" data-component="rdd" style="min-width: 120px; padding: 15px;">
+                                    <div style="font-size: 2em; margin-bottom: 8px;">💾</div>
+                                    <div style="font-weight: bold; margin-bottom: 3px; font-size: 0.9em;">RDD Cache</div>
+                                    <div style="font-size: 0.75em; opacity: 0.8;">Memory</div>
+                                </div>
+                                <div class="simple-spark-component" onclick="showSimpleComponentInfo('storage')" data-component="storage" style="min-width: 120px; padding: 15px;">
+                                    <div style="font-size: 2em; margin-bottom: 8px;">🗄️</div>
+                                    <div style="font-weight: bold; margin-bottom: 3px; font-size: 0.9em;">Data Store</div>
+                                    <div style="font-size: 0.75em; opacity: 0.8;">HDFS/S3</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side: Component Details + Execution Flow -->
+                <div style="display: grid; gap: 20px;">
+
+                    <!-- Component Info Panel -->
+                    <div id="simple-spark-info-panel" style="background: rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 25px; min-height: 300px;">
+                        <h4 id="simple-spark-info-title" style="color: #fefefe; margin-bottom: 15px; font-size: 1.3em;">🎯 Component Details</h4>
+                        <div id="simple-spark-info-content" style="line-height: 1.6; font-size: 0.95em;">
+                            <div style="text-align: center; padding: 40px 20px; opacity: 0.7;">
+                                <div style="font-size: 3em; margin-bottom: 15px;">👆</div>
+                                <p style="font-size: 1.1em; margin-bottom: 10px;">Click any component on the left</p>
+                                <p style="font-size: 0.9em;">to learn how it works in the Spark ecosystem</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Simple Execution Flow -->
+                    <div style="background: rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 25px;">
+                        <h4 style="text-align: center; color: #fefefe; margin-bottom: 20px; font-size: 1.3em;">🔄 Execution Flow</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: center;">
+                            <div style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px;">
+                                <div style="font-size: 1.2em; margin-bottom: 5px;">1️⃣</div>
+                                <div style="font-weight: bold; margin-bottom: 3px; font-size: 0.9em;">Submit Job</div>
+                                <div style="font-size: 0.75em; opacity: 0.8;">Driver gets code</div>
+                            </div>
+                            <div style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px;">
+                                <div style="font-size: 1.2em; margin-bottom: 5px;">2️⃣</div>
+                                <div style="font-weight: bold; margin-bottom: 3px; font-size: 0.9em;">Plan Tasks</div>
+                                <div style="font-size: 0.75em; opacity: 0.8;">Break into steps</div>
+                            </div>
+                            <div style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px;">
+                                <div style="font-size: 1.2em; margin-bottom: 5px;">3️⃣</div>
+                                <div style="font-weight: bold; margin-bottom: 3px; font-size: 0.9em;">Execute</div>
+                                <div style="font-size: 0.75em; opacity: 0.8;">Workers process</div>
+                            </div>
+                            <div style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px;">
+                                <div style="font-size: 1.2em; margin-bottom: 5px;">4️⃣</div>
+                                <div style="font-weight: bold; margin-bottom: 3px; font-size: 0.9em;">Results</div>
+                                <div style="font-size: 0.75em; opacity: 0.8;">Get answer</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -1146,9 +1703,124 @@ ssc.awaitTermination()
         let currentDAGStep = -1;
         let performanceChart = null;
 
+        // Simple Component Information System
+        const simpleSparkComponents = {
+            driver: {
+                title: "🚗 Driver Program",
+                description: "The brain of your Spark application that coordinates everything.",
+                details: [
+                    "• <strong>Main Function:</strong> Contains your application's main() method",
+                    "• <strong>SparkContext:</strong> Creates the connection to the Spark cluster",
+                    "• <strong>Job Planning:</strong> Breaks your code into tasks",
+                    "• <strong>Result Collection:</strong> Gathers results from workers",
+                    "• <strong>Monitoring:</strong> Tracks progress and handles failures"
+                ],
+                analogy: "Think of it like a project manager who plans the work, assigns tasks to team members, and collects the final results."
+            },
+            'cluster-manager': {
+                title: "🎯 Cluster Manager",
+                description: "Manages and allocates resources across the entire cluster.",
+                details: [
+                    "• <strong>Resource Allocation:</strong> Decides which machines get which tasks",
+                    "• <strong>YARN Integration:</strong> Works with Hadoop's resource manager",
+                    "• <strong>Standalone Mode:</strong> Spark's own simple cluster manager",
+                    "• <strong>Kubernetes:</strong> Modern container-based resource management",
+                    "• <strong>Load Balancing:</strong> Distributes work evenly across machines"
+                ],
+                analogy: "Like a hotel manager who assigns rooms to guests and makes sure everyone has what they need."
+            },
+            worker: {
+                title: "⚙️ Worker Nodes",
+                description: "The machines that do the actual work of processing your data.",
+                details: [
+                    "• <strong>Task Execution:</strong> Runs the actual data processing code",
+                    "• <strong>Data Storage:</strong> Keeps data in memory for fast access",
+                    "• <strong>Multiple Executors:</strong> Can run several tasks at once",
+                    "• <strong>Fault Tolerance:</strong> Automatically recovers from failures",
+                    "• <strong>Network Communication:</strong> Shares data with other workers"
+                ],
+                analogy: "Like factory workers on an assembly line - each one does their part of the job efficiently."
+            },
+            executor: {
+                title: "🔧 Executors",
+                description: "The actual processes that run your code on worker machines.",
+                details: [
+                    "• <strong>JVM Processes:</strong> Java Virtual Machine instances that run tasks",
+                    "• <strong>Memory Management:</strong> Handles both execution and storage memory",
+                    "• <strong>Task Slots:</strong> Can run multiple tasks simultaneously",
+                    "• <strong>Cache Management:</strong> Stores frequently used data in memory",
+                    "• <strong>Garbage Collection:</strong> Automatically cleans up unused memory"
+                ],
+                analogy: "Like individual workstations where the actual assembly work happens - each one can handle multiple small jobs."
+            },
+            rdd: {
+                title: "💾 RDD Storage",
+                description: "Resilient Distributed Datasets - Spark's way of storing data in memory.",
+                details: [
+                    "• <strong>In-Memory Storage:</strong> Keeps data in RAM for lightning-fast access",
+                    "• <strong>Fault Tolerance:</strong> Can recreate lost data automatically",
+                    "• <strong>Lazy Evaluation:</strong> Only computes data when you actually need it",
+                    "• <strong>Partitioning:</strong> Splits data across multiple machines",
+                    "• <strong>Caching:</strong> Stores frequently used datasets for reuse"
+                ],
+                analogy: "Like a smart filing cabinet that keeps your most important documents in easy reach and can recreate lost files."
+            },
+            storage: {
+                title: "🗄️ Data Storage",
+                description: "External storage systems where your raw data lives.",
+                details: [
+                    "• <strong>HDFS:</strong> Hadoop Distributed File System for big data",
+                    "• <strong>Amazon S3:</strong> Cloud storage for scalable data lakes",
+                    "• <strong>Databases:</strong> Traditional SQL and NoSQL databases",
+                    "• <strong>File Systems:</strong> Local files, network drives, etc.",
+                    "• <strong>Streaming Sources:</strong> Kafka, Kinesis for real-time data"
+                ],
+                analogy: "Like a warehouse where all your raw materials are stored before being processed in the factory."
+            }
+        };
+
+        function showSimpleComponentInfo(componentId) {
+            const component = simpleSparkComponents[componentId];
+            if (!component) return;
+
+            // Remove active class from all components
+            document.querySelectorAll('.simple-spark-component').forEach(comp => {
+                comp.classList.remove('active');
+            });
+
+            // Add active class to clicked component
+            document.querySelector(`[data-component="${componentId}"]`).classList.add('active');
+
+            // Update info panel
+            const infoPanel = document.getElementById('simple-spark-info-panel');
+            const titleElement = document.getElementById('simple-spark-info-title');
+            const contentElement = document.getElementById('simple-spark-info-content');
+
+            titleElement.innerHTML = component.title;
+
+            let contentHtml = `<p style="font-size: 1.1em; margin-bottom: 20px; color: #ffb300;"><strong>${component.description}</strong></p>`;
+
+            contentHtml += '<div style="margin-bottom: 20px;">';
+            component.details.forEach(detail => {
+                contentHtml += `<div style="margin-bottom: 10px; padding-left: 15px; border-left: 3px solid #ffb300;">${detail}</div>`;
+            });
+            contentHtml += '</div>';
+
+            contentHtml += `<div style="background: rgba(255, 179, 0, 0.1); padding: 15px; border-radius: 10px; border-left: 4px solid #ffb300;">`;
+            contentHtml += `<strong>💡 Simple Analogy:</strong><br>${component.analogy}`;
+            contentHtml += '</div>';
+
+            contentElement.innerHTML = contentHtml;
+            infoPanel.style.display = 'block';
+
+            // Smooth scroll to info panel
+            infoPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
         // Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
             initializePerformanceChart();
+            // Note: Removed the complex interactive architecture initialization
         });
 
         // Interactive tour functionality
@@ -1224,6 +1896,498 @@ ssc.awaitTermination()
 
             infoPanel.innerHTML = info;
             infoPanel.classList.add('active');
+        }
+
+        // Enhanced Interactive Architecture Functions
+        let sparkDataFlowAnimation = null;
+        let sparkStatsUpdateInterval = null;
+
+        // Component details for the enhanced interactive architecture
+        const sparkComponentDetails = {
+            driver: {
+                title: "🚗 Driver Program",
+                description: "The master node that coordinates the entire Spark application and contains the SparkContext",
+                details: [
+                    "• <strong>SparkContext:</strong> Entry point for all Spark functionality",
+                    "• <strong>DAG Scheduler:</strong> Converts logical execution plan into stages",
+                    "• <strong>Task Scheduler:</strong> Submits tasks to cluster manager",
+                    "• <strong>Block Manager Master:</strong> Coordinates storage across cluster",
+                    "• <strong>UI Server:</strong> Provides web interface for monitoring"
+                ],
+                specs: {
+                    "Memory Requirements": "2-8GB RAM for driver",
+                    "CPU": "2-4 cores recommended",
+                    "Network": "High bandwidth to workers",
+                    "Storage": "Local disk for logs and checkpoints"
+                }
+            },
+            "cluster-manager": {
+                title: "🎯 Cluster Manager",
+                description: "Allocates resources across applications and manages cluster-wide resource scheduling",
+                details: [
+                    "• <strong>YARN:</strong> Hadoop's resource manager with queue management",
+                    "• <strong>Mesos:</strong> General-purpose cluster manager with fine-grained sharing",
+                    "• <strong>Standalone:</strong> Spark's built-in simple cluster manager",
+                    "• <strong>Kubernetes:</strong> Container orchestration with auto-scaling",
+                    "• <strong>Local:</strong> Single-machine mode for development"
+                ],
+                specs: {
+                    "YARN": "Integrates with Hadoop ecosystem",
+                    "Mesos": "Fine-grained resource sharing",
+                    "Standalone": "Simple setup, basic features",
+                    "Kubernetes": "Cloud-native, auto-scaling"
+                }
+            },
+            worker: {
+                title: "⚙️ Worker Nodes",
+                description: "Execute tasks and store data partitions across the distributed cluster",
+                details: [
+                    "• <strong>Executor Processes:</strong> JVM processes that run tasks",
+                    "• <strong>Task Execution:</strong> Runs individual tasks from stages",
+                    "• <strong>Block Manager:</strong> Manages storage of RDD partitions",
+                    "• <strong>Shuffle Service:</strong> Handles data exchange between stages",
+                    "• <strong>Cache Management:</strong> In-memory and disk storage"
+                ],
+                specs: {
+                    "Memory": "60% execution, 40% storage by default",
+                    "CPU": "1 core per task slot",
+                    "Storage": "Local disk + optional HDFS",
+                    "Network": "High bandwidth for shuffle operations"
+                }
+            },
+            "app-master": {
+                title: "👑 Application Master",
+                description: "Negotiates resources with cluster manager and coordinates application lifecycle",
+                details: [
+                    "• <strong>Resource Negotiation:</strong> Requests containers from cluster manager",
+                    "• <strong>Executor Management:</strong> Launches and monitors executor processes",
+                    "• <strong>Failure Recovery:</strong> Handles executor failures and restarts",
+                    "• <strong>Dynamic Allocation:</strong> Scales executors based on workload",
+                    "• <strong>Security:</strong> Manages authentication and authorization"
+                ],
+                specs: {
+                    "YARN Mode": "Runs as YARN ApplicationMaster",
+                    "Memory": "512MB-2GB typical allocation",
+                    "Responsibilities": "Resource management, monitoring",
+                    "Lifecycle": "Lives for duration of application"
+                }
+            },
+            rdd: {
+                title: "💾 RDD Storage",
+                description: "Resilient Distributed Datasets stored in memory and disk across the cluster",
+                details: [
+                    "• <strong>In-Memory Caching:</strong> Stores frequently accessed data in RAM",
+                    "• <strong>Disk Spillover:</strong> Automatically spills to disk when memory full",
+                    "• <strong>Partitioning:</strong> Data split across multiple nodes",
+                    "• <strong>Lineage Tracking:</strong> Remembers how data was computed",
+                    "• <strong>Fault Tolerance:</strong> Recomputes lost partitions from lineage"
+                ],
+                specs: {
+                    "Storage Levels": "MEMORY_ONLY, MEMORY_AND_DISK, etc.",
+                    "Serialization": "Java, Kryo serialization options",
+                    "Compression": "LZ4, Snappy compression support",
+                    "Replication": "Configurable replication factor"
+                }
+            },
+            dag: {
+                title: "📊 DAG Scheduler",
+                description: "Converts logical execution plans into optimized stages for parallel execution",
+                details: [
+                    "• <strong>Stage Creation:</strong> Divides jobs into stages at shuffle boundaries",
+                    "• <strong>Task Generation:</strong> Creates tasks for each partition in a stage",
+                    "• <strong>Dependency Tracking:</strong> Manages narrow and wide dependencies",
+                    "• <strong>Optimization:</strong> Applies pipelining and other optimizations",
+                    "• <strong>Failure Handling:</strong> Resubmits failed stages and tasks"
+                ],
+                specs: {
+                    "Stage Types": "Shuffle map stages, result stages",
+                    "Dependencies": "Narrow (1:1), Wide (shuffle)",
+                    "Optimization": "Pipelining, predicate pushdown",
+                    "Scheduling": "FIFO, Fair scheduling modes"
+                }
+            }
+        };
+
+        // Show component details when clicked
+        function showSparkComponentDetails(componentId) {
+            const component = sparkComponentDetails[componentId];
+            if (!component) return;
+
+            // Remove active class from all components
+            document.querySelectorAll('.spark-component').forEach(comp => {
+                comp.classList.remove('active');
+            });
+
+            // Add active class to clicked component
+            document.getElementById(componentId + '-component').classList.add('active');
+
+            // Update info panel
+            const infoPanel = document.getElementById('spark-component-info-panel');
+            const titleElement = document.getElementById('spark-component-info-title');
+            const contentElement = document.getElementById('spark-component-info-content');
+            const specsElement = document.getElementById('spark-component-info-specs');
+            const specsContentElement = document.getElementById('spark-component-specs-content');
+
+            titleElement.innerHTML = component.title;
+
+            let detailsHtml = `<p style="margin-bottom: 15px; font-size: 1.1em;">${component.description}</p>`;
+            detailsHtml += '<div style="margin-bottom: 15px;">';
+            component.details.forEach(detail => {
+                detailsHtml += `<div style="margin-bottom: 8px; padding-left: 10px;">${detail}</div>`;
+            });
+            detailsHtml += '</div>';
+
+            contentElement.innerHTML = detailsHtml;
+
+            // Show specifications
+            if (component.specs) {
+                let specsHtml = '';
+                Object.entries(component.specs).forEach(([key, value]) => {
+                    specsHtml += `<div style="margin-bottom: 8px;"><strong>${key}:</strong> ${value}</div>`;
+                });
+                specsContentElement.innerHTML = specsHtml;
+                specsElement.style.display = 'block';
+            } else {
+                specsElement.style.display = 'none';
+            }
+
+            infoPanel.style.display = 'block';
+
+            // Trigger data flow animation
+            triggerSparkDataFlow(componentId);
+        }
+
+        // Trigger data flow animation
+        function triggerSparkDataFlow(sourceComponent) {
+            // Clear existing animation
+            if (sparkDataFlowAnimation) {
+                clearInterval(sparkDataFlowAnimation);
+            }
+
+            // Remove existing data packets
+            const flowContainer = document.getElementById('spark-data-flow-container');
+            flowContainer.innerHTML = '';
+
+            // Define execution flow paths based on component
+            const executionFlowPaths = {
+                driver: {
+                    steps: [1, 3, 7],
+                    lines: ['driver-to-cluster', 'driver-to-dag', 'worker1-to-driver', 'worker2-to-driver', 'worker3-to-driver'],
+                    description: 'Driver initiates resource requests, creates DAG, and collects results'
+                },
+                'cluster-manager': {
+                    steps: [1, 2],
+                    lines: ['driver-to-cluster', 'cluster-to-appmaster'],
+                    description: 'Cluster Manager handles resource allocation and negotiation'
+                },
+                'app-master': {
+                    steps: [2, 4],
+                    lines: ['cluster-to-appmaster', 'appmaster-to-worker1', 'appmaster-to-worker2', 'appmaster-to-worker3'],
+                    description: 'Application Master negotiates resources and launches executors'
+                },
+                worker: {
+                    steps: [4, 5, 6, 7],
+                    lines: ['appmaster-to-worker1', 'appmaster-to-worker2', 'appmaster-to-worker3',
+                           'dag-to-worker1', 'dag-to-worker2', 'dag-to-worker3',
+                           'worker1-to-rdd', 'worker2-to-rdd', 'worker3-to-rdd',
+                           'worker1-to-driver', 'worker2-to-driver', 'worker3-to-driver'],
+                    description: 'Workers execute tasks, manage data, and return results'
+                },
+                dag: {
+                    steps: [3, 5],
+                    lines: ['driver-to-dag', 'dag-to-worker1', 'dag-to-worker2', 'dag-to-worker3'],
+                    description: 'DAG Scheduler creates execution plan and distributes tasks'
+                },
+                rdd: {
+                    steps: [6],
+                    lines: ['worker1-to-rdd', 'worker2-to-rdd', 'worker3-to-rdd'],
+                    description: 'RDD Storage handles in-memory data caching and retrieval'
+                }
+            };
+
+            const componentFlow = executionFlowPaths[sourceComponent];
+            if (!componentFlow) return;
+
+            // Reset all connection lines
+            document.querySelectorAll('.connection-line').forEach(line => {
+                line.classList.remove('active', 'execution-step-active');
+            });
+
+            // Activate relevant execution steps
+            componentFlow.lines.forEach(lineId => {
+                const line = document.getElementById(lineId);
+                if (line) {
+                    line.classList.add('active', 'execution-step-active');
+                    createSparkDataPacket(line);
+                }
+            });
+
+            // Update info panel with execution flow information
+            const infoPanel = document.getElementById('spark-component-info-panel');
+            const contentElement = document.getElementById('spark-component-info-content');
+
+            if (contentElement && componentFlow.description) {
+                const currentContent = contentElement.innerHTML;
+                const flowInfo = `
+                    <div style="background: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 10px; margin-top: 15px;">
+                        <h4 style="color: #ffb300; margin-bottom: 10px;">🔄 Execution Flow</h4>
+                        <p style="margin-bottom: 10px;">${componentFlow.description}</p>
+                        <div style="font-size: 0.9em;">
+                            <strong>Involved Steps:</strong> ${componentFlow.steps.join(', ')}
+                        </div>
+                    </div>
+                `;
+                contentElement.innerHTML = currentContent + flowInfo;
+            }
+        }
+
+        // Create animated data packet
+        function createSparkDataPacket(line) {
+            const packet = document.createElement('div');
+            packet.className = 'data-packet';
+
+            const rect = line.getBoundingClientRect();
+            const containerRect = document.getElementById('spark-data-flow-container').getBoundingClientRect();
+
+            packet.style.left = (rect.left - containerRect.left) + 'px';
+            packet.style.top = (rect.top - containerRect.top + rect.height/2) + 'px';
+
+            document.getElementById('spark-data-flow-container').appendChild(packet);
+
+            // Animate packet along the line
+            let progress = 0;
+            const animatePacket = setInterval(() => {
+                progress += 2;
+                if (line.style.transform && line.style.transform.includes('rotate(90deg)')) {
+                    // Vertical line
+                    packet.style.top = (rect.top - containerRect.top + (rect.height * progress / 100)) + 'px';
+                } else {
+                    // Horizontal line
+                    packet.style.left = (rect.left - containerRect.left + (rect.width * progress / 100)) + 'px';
+                }
+
+                if (progress >= 100) {
+                    clearInterval(animatePacket);
+                    packet.remove();
+                }
+            }, 50);
+        }
+
+        // Update real-time statistics
+        function updateSparkStats() {
+            const stats = {
+                'active-apps': () => Math.floor(Math.random() * 3) + 2,
+                'running-jobs': () => Math.floor(Math.random() * 5) + 5,
+                'total-cores': () => 48 + Math.floor(Math.random() * 16),
+                'memory-used': () => (12.4 + Math.random() * 3.6).toFixed(1) + ' GB',
+                'rdd-partitions': () => 156 + Math.floor(Math.random() * 50)
+            };
+
+            Object.entries(stats).forEach(([id, generator]) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = generator();
+                }
+            });
+        }
+
+        // Initialize interactive architecture
+        function initializeSparkInteractiveArchitecture() {
+            // Start stats updates
+            updateSparkStats();
+            sparkStatsUpdateInterval = setInterval(updateSparkStats, 4000);
+
+            // Add hover effects to connection lines
+            document.querySelectorAll('.connection-line').forEach(line => {
+                line.addEventListener('mouseenter', () => {
+                    line.style.opacity = '1';
+                    line.style.height = '4px';
+                });
+
+                line.addEventListener('mouseleave', () => {
+                    if (!line.classList.contains('active')) {
+                        line.style.opacity = '0.7';
+                        line.style.height = '3px';
+                    }
+                });
+            });
+
+            // Show default component info
+            setTimeout(() => {
+                showSparkComponentDetails('driver');
+            }, 1000);
+        }
+
+        // Demonstrate complete execution flow step by step
+        let executionFlowDemo = null;
+
+        function demonstrateExecutionFlow() {
+            // Clear any existing demo
+            if (executionFlowDemo) {
+                clearInterval(executionFlowDemo);
+            }
+
+            resetExecutionFlow();
+
+            const executionSteps = [
+                {
+                    step: 1,
+                    lines: ['driver-to-cluster'],
+                    component: 'driver',
+                    title: 'Step 1: Resource Request',
+                    description: 'Driver Program requests resources from Cluster Manager'
+                },
+                {
+                    step: 2,
+                    lines: ['cluster-to-appmaster'],
+                    component: 'cluster-manager',
+                    title: 'Step 2: Resource Negotiation',
+                    description: 'Cluster Manager negotiates with Application Master'
+                },
+                {
+                    step: 3,
+                    lines: ['driver-to-dag'],
+                    component: 'dag',
+                    title: 'Step 3: DAG Creation',
+                    description: 'Driver creates DAG and sends to DAG Scheduler'
+                },
+                {
+                    step: 4,
+                    lines: ['appmaster-to-worker1', 'appmaster-to-worker2', 'appmaster-to-worker3'],
+                    component: 'app-master',
+                    title: 'Step 4: Executor Launch',
+                    description: 'Application Master launches Worker executors'
+                },
+                {
+                    step: 5,
+                    lines: ['dag-to-worker1', 'dag-to-worker2', 'dag-to-worker3'],
+                    component: 'dag',
+                    title: 'Step 5: Task Distribution',
+                    description: 'DAG Scheduler distributes tasks to Workers'
+                },
+                {
+                    step: 6,
+                    lines: ['worker1-to-rdd', 'worker2-to-rdd', 'worker3-to-rdd'],
+                    component: 'rdd',
+                    title: 'Step 6: Data Operations',
+                    description: 'Workers perform data operations with RDD Storage'
+                },
+                {
+                    step: 7,
+                    lines: ['worker1-to-driver', 'worker2-to-driver', 'worker3-to-driver'],
+                    component: 'driver',
+                    title: 'Step 7: Results Collection',
+                    description: 'Workers return results to Driver Program'
+                }
+            ];
+
+            let currentStepIndex = 0;
+
+            function showNextStep() {
+                if (currentStepIndex >= executionSteps.length) {
+                    // Demo complete, show summary
+                    showExecutionSummary();
+                    return;
+                }
+
+                const step = executionSteps[currentStepIndex];
+
+                // Reset all lines
+                document.querySelectorAll('.connection-line').forEach(line => {
+                    line.classList.remove('execution-step-active');
+                });
+
+                // Activate current step lines
+                step.lines.forEach(lineId => {
+                    const line = document.getElementById(lineId);
+                    if (line) {
+                        line.classList.add('execution-step-active');
+                        createSparkDataPacket(line);
+                    }
+                });
+
+                // Highlight current component
+                document.querySelectorAll('.spark-component').forEach(comp => {
+                    comp.classList.remove('active');
+                });
+                document.getElementById(step.component + '-component').classList.add('active');
+
+                // Update info panel
+                updateExecutionStepInfo(step);
+
+                currentStepIndex++;
+            }
+
+            // Start the demonstration
+            showNextStep();
+            executionFlowDemo = setInterval(showNextStep, 3000); // Show each step for 3 seconds
+        }
+
+        function resetExecutionFlow() {
+            if (executionFlowDemo) {
+                clearInterval(executionFlowDemo);
+                executionFlowDemo = null;
+            }
+
+            // Reset all visual states
+            document.querySelectorAll('.connection-line').forEach(line => {
+                line.classList.remove('active', 'execution-step-active');
+            });
+
+            document.querySelectorAll('.spark-component').forEach(comp => {
+                comp.classList.remove('active');
+            });
+
+            // Hide info panel
+            document.getElementById('spark-component-info-panel').style.display = 'none';
+        }
+
+        function updateExecutionStepInfo(step) {
+            const infoPanel = document.getElementById('spark-component-info-panel');
+            const titleElement = document.getElementById('spark-component-info-title');
+            const contentElement = document.getElementById('spark-component-info-content');
+
+            titleElement.innerHTML = step.title;
+            contentElement.innerHTML = `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="font-size: 3em; margin-bottom: 10px;">🎬</div>
+                    <h3 style="color: #ffb300; margin-bottom: 15px;">${step.title}</h3>
+                    <p style="font-size: 1.1em; margin-bottom: 15px;">${step.description}</p>
+                    <div style="background: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 10px;">
+                        <strong>Execution Step ${step.step} of 7</strong><br>
+                        <small>Watch the animated data flow to see this step in action</small>
+                    </div>
+                </div>
+            `;
+
+            infoPanel.style.display = 'block';
+        }
+
+        function showExecutionSummary() {
+            const titleElement = document.getElementById('spark-component-info-title');
+            const contentElement = document.getElementById('spark-component-info-content');
+
+            titleElement.innerHTML = '🎉 Execution Flow Complete';
+            contentElement.innerHTML = `
+                <div style="text-align: center;">
+                    <div style="font-size: 3em; margin-bottom: 15px;">✅</div>
+                    <h3 style="color: #27ae60; margin-bottom: 15px;">Spark Execution Flow Completed!</h3>
+                    <p style="margin-bottom: 20px;">You've seen how Spark processes jobs from start to finish:</p>
+                    <div style="text-align: left; background: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 10px;">
+                        <div style="margin-bottom: 8px;">✓ Resource allocation and negotiation</div>
+                        <div style="margin-bottom: 8px;">✓ DAG creation and task planning</div>
+                        <div style="margin-bottom: 8px;">✓ Executor launch and management</div>
+                        <div style="margin-bottom: 8px;">✓ Task distribution and execution</div>
+                        <div style="margin-bottom: 8px;">✓ Data operations and caching</div>
+                        <div>✓ Results collection and aggregation</div>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <button onclick="demonstrateExecutionFlow()" style="background: #e74c3c; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer;">
+                            🔄 Watch Again
+                        </button>
+                    </div>
+                </div>
+            `;
         }
 
         // Tab switching functionality
